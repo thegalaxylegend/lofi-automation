@@ -136,7 +136,17 @@ class Config:
 
     # ── Environment ──────────────────────────
     def _load_env(self) -> None:
-        load_dotenv(ENV_PATH)
+        # Only load from .env if it actually exists (local dev)
+        if ENV_PATH.exists():
+            load_dotenv(ENV_PATH)
+            logger.debug("Loaded variables from .env file: %s", ENV_PATH)
+        else:
+            logger.debug(".env file not found at %s. Relying on system environment.", ENV_PATH)
+
+        # Debug: List all available environment variables (names only) for troubleshooting
+        all_env_keys = list(os.environ.keys())
+        llm_keys_found = [k for k in all_env_keys if k.startswith(("GEMINI_API_KEY_", "GROQ_API_KEY_"))]
+        logger.info("Environment probe found keys: %s", ", ".join(llm_keys_found) if llm_keys_found else "NONE")
 
         self.gemini_keys: list[str] = self._collect_keys("GEMINI_API_KEY_", 6)
         self.groq_keys: list[str] = self._collect_keys("GROQ_API_KEY_", 5)
