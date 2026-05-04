@@ -1,0 +1,320 @@
+"""
+Main Orchestrator — The Pipeline Controller.
+
+Coordinates all agents in sequence to transform a single MP3 into:
+  1. A rendered long-form video (MP4)
+  2. A YouTube Short (MP4)
+  3. A thumbnail (JPG)
+  4. SEO metadata (title, description, tags)
+
+Usage:
+  python main.py audio/my_song.mp3
+  python main.py audio/           # process all MP3s in directory
+"""
+
+from __future__ import annotations
+
+import argparse
+import logging
+import sys
+import time
+from dataclasses import dataclass, field
+from pathlib import Path
+
+from core.config import Config, OUTPUT_DIR, TEMP_DIR
+from core.discord_webhook import DiscordNotifier
+from core.memory import initialize_all_memories
+
+logger = logging.getLogger(__name__)
+
+
+@dataclass
+class PipelineResult:
+    """Result of processing a single MP3 file."""
+
+    audio_file: str = ""
+    video_path: str = ""
+    short_path: str = ""
+    thumbnail_path: str = ""
+    metadata_path: str = ""
+    title: str = ""
+    success: bool = False
+    error: str = ""
+    render_time_sec: float = 0.0
+
+
+@dataclass
+class BatchResult:
+    """Result of processing all MP3 files in a batch."""
+
+    results: list[PipelineResult] = field(default_factory=list)
+    total_time_sec: float = 0.0
+
+    @property
+    def succeeded(self) -> int:
+        return sum(1 for r in self.results if r.success)
+
+    @property
+    def failed(self) -> int:
+        return sum(1 for r in self.results if not r.success)
+
+
+def process_single(audio_path: Path) -> PipelineResult:
+    """
+    Process a single MP3 through the full agent pipeline.
+
+    Order of operations:
+      Director → BackgroundFetcher → VideoEditor → Marketer →
+      ThumbnailCreator → Distributor → QATester → Compliance
+    """
+    result = PipelineResult(audio_file=str(audio_path))
+    start = time.time()
+
+    try:
+        # ── Agent 1: Director (Audio Analysis) ──────────────
+        logger.info("=" * 60)
+        logger.info("PIPELINE START: %s", audio_path.name)
+        logger.info("=" * 60)
+
+        from agents.director import Director
+        director = Director()
+        brief = director.analyze(audio_path)
+
+        logger.info("Director complete: mood=%s, energy=%s", brief.mood, brief.energy)
+
+        # ── Background Fetcher ──────────────────────────────
+        from agents.background_fetcher import BackgroundFetcher
+        fetcher = BackgroundFetcher()
+        bg_path = fetcher.fetch(brief.pexels_search_queries)
+
+        if bg_path is None:
+            raise RuntimeError(
+                "Failed to fetch background video. "
+                "Check Pexels/Pixabay API keys."
+            )
+
+        logger.info("Background fetched: %s", bg_path.name)
+
+        # ── Agent 2: Video Editor (FFmpeg Render) ───────────
+        from agents.video_editor import VideoEditor
+        editor = VideoEditor()
+        video_path = editor.render(audio_path, bg_path, brief)
+
+        result.video_path = str(video_path)
+        logger.info("Video rendered: %s", video_path.name)
+
+        # ── Agent 3: Marketer (SEO Metadata) ────────────────
+        from agents.marketer import Marketer
+        marketer = Marketer()
+        metadata = marketer.generate_metadata(
+            mood=brief.mood,
+            energy=brief.energy,
+            emotional_tone=brief.emotional_tone,
+            visual_style=brief.visual_style,
+            title_keywords=brief.title_keywords,
+            thumbnail_prompt_hint=brief.thumbnail_prompt,
+        )
+
+        # Save metadata to file
+        meta_path = OUTPUT_DIR / f"{audio_path.stem}_metadata.txt"
+        metadata.to_file(meta_path)
+        result.metadata_path = str(meta_path)
+        result.title = metadata.title
+        logger.info("Metadata generated: '%s'", metadata.title)
+
+        # ── Agent 4: Thumbnail Creator ──────────────────────
+        from agents.thumbnail_creator import ThumbnailCreator
+        thumb_creator = ThumbnailCreator()
+        thumb_path = thumb_creator.create(
+            title=metadata.title,
+            thumbnail_prompt=metadata.thumbnail_prompt,
+            output_name=f"{audio_path.stem}_thumb.jpg",
+        )
+
+        result.thumbnail_path = str(thumb_path)
+        logger.info("Thumbnail created: %s", thumb_path.name)
+
+        # ── Agent 10: Distributor (YouTube Short) ───────────
+        config = Config()
+        if config.auto_shorts:
+            from agents.distributor import Distributor
+            distributor = Distributor()
+            short_path = distributor.create_short(
+                audio_path=audio_path,
+                background_path=bg_path,
+                brief=brief,
+                shorts_text=metadata.shorts_text,
+            )
+            result.short_path = str(short_path)
+            logger.info("Short created: %s", short_path.name)
+
+        # ── Agent 5: QA Tester ──────────────────────────────
+        from agents.qa_tester import QATester
+        qa = QATester()
+        qa_result = qa.validate(
+            video_path=video_path,
+            thumbnail_path=thumb_path,
+            metadata=metadata,
+        )
+
+        if not qa_result.passed:
+            logger.warning("QA FAILED: %s", qa_result.summary())
+            # Don't halt — log the issue but continue
+            # The Analyst will review failures later
+
+        # ── Agent 6: Compliance Check ───────────────────────
+        from agents.compliance import ComplianceAgent
+        compliance = ComplianceAgent()
+        comp_result = compliance.check(metadata)
+
+        if not comp_result.is_safe:
+            logger.warning("COMPLIANCE FLAGGED: %s", comp_result.summary())
+            # Flag for manual review but don't delete the outputs
+
+        result.success = True
+
+    except Exception as exc:
+        result.error = str(exc)
+        result.success = False
+        logger.error("PIPELINE FAILED for %s: %s", audio_path.name, exc, exc_info=True)
+
+    result.render_time_sec = time.time() - start
+    logger.info(
+        "Pipeline %s for %s in %.1fs",
+        "COMPLETE" if result.success else "FAILED",
+        audio_path.name,
+        result.render_time_sec,
+    )
+    return result
+
+
+def process_batch(audio_dir: Path) -> BatchResult:
+    """Process all MP3 files in a directory."""
+    batch = BatchResult()
+    start = time.time()
+
+    mp3_files = sorted(audio_dir.glob("*.mp3"))
+    if not mp3_files:
+        logger.warning("No MP3 files found in %s", audio_dir)
+        return batch
+
+    logger.info("Found %d MP3 files to process.", len(mp3_files))
+
+    for mp3 in mp3_files:
+        result = process_single(mp3)
+        batch.results.append(result)
+
+    batch.total_time_sec = time.time() - start
+
+    logger.info(
+        "BATCH COMPLETE: %d/%d succeeded in %.1fs",
+        batch.succeeded, len(batch.results), batch.total_time_sec,
+    )
+    return batch
+
+
+def _send_discord_summary(batch: BatchResult) -> None:
+    """Send a pipeline completion summary to Discord."""
+    try:
+        notifier = DiscordNotifier()
+
+        for r in batch.results:
+            if r.success:
+                notifier.notify_upload(
+                    title=r.title or r.audio_file,
+                    channel_name=Config().channel.name,
+                )
+            else:
+                notifier.notify_error(
+                    error=r.error,
+                    agent="Pipeline",
+                )
+
+        notifier.notify_pipeline_complete({
+            "videos": batch.succeeded,
+            "shorts": sum(1 for r in batch.results if r.short_path),
+            "render_time": f"{batch.total_time_sec:.0f}s",
+            "api_calls": "N/A",
+        })
+    except Exception as exc:
+        logger.warning("Discord notification failed: %s", exc)
+
+
+def _cleanup_temp() -> None:
+    """Clean up temporary files after pipeline completion."""
+    if TEMP_DIR.exists():
+        for f in TEMP_DIR.iterdir():
+            if f.is_file() and f.suffix in (".mp4", ".jpg", ".png", ".webm"):
+                try:
+                    f.unlink()
+                except OSError:
+                    pass
+
+
+def main() -> None:
+    """Entry point for the pipeline."""
+    # Configure logging
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s [%(name)s] %(levelname)s: %(message)s",
+        datefmt="%H:%M:%S",
+    )
+
+    parser = argparse.ArgumentParser(
+        description="Lo-fi YouTube Automation Pipeline"
+    )
+    parser.add_argument(
+        "input",
+        help="Path to an MP3 file or a directory containing MP3 files.",
+    )
+    parser.add_argument(
+        "--channel",
+        default=None,
+        help="Channel key to use (e.g., 'lofi' or 'hindi'). Defaults to brand_config.",
+    )
+    parser.add_argument(
+        "--no-shorts",
+        action="store_true",
+        help="Skip YouTube Short generation.",
+    )
+    parser.add_argument(
+        "--no-discord",
+        action="store_true",
+        help="Skip Discord notifications.",
+    )
+    args = parser.parse_args()
+
+    # Initialize
+    config = Config()
+    if args.channel:
+        config.active_channel_key = args.channel
+    if args.no_shorts:
+        config.auto_shorts = False
+
+    initialize_all_memories()
+
+    input_path = Path(args.input)
+
+    if input_path.is_file() and input_path.suffix.lower() == ".mp3":
+        result = process_single(input_path)
+        batch = BatchResult(results=[result], total_time_sec=result.render_time_sec)
+    elif input_path.is_dir():
+        batch = process_batch(input_path)
+    else:
+        logger.error("Input must be an MP3 file or directory: %s", input_path)
+        sys.exit(1)
+
+    # Discord notifications
+    if not args.no_discord:
+        _send_discord_summary(batch)
+
+    # Cleanup temp files
+    _cleanup_temp()
+
+    # Exit with error code if any failures
+    if batch.failed > 0:
+        sys.exit(1)
+
+
+if __name__ == "__main__":
+    main()

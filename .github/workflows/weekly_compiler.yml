@@ -1,0 +1,85 @@
+name: Weekly Compilation Mix
+
+on:
+  schedule:
+    # Run every Sunday at 04:00 UTC (9:30 AM IST)
+    - cron: '0 4 * * 0'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  compile:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run Compiler
+        env:
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+          DISCORD_WEBHOOK_UPLOADS: ${{ secrets.DISCORD_WEBHOOK_UPLOADS }}
+        run: |
+          python -c "
+          from pathlib import Path
+          from core.memory import initialize_all_memories
+          from agents.compiler import Compiler
+          from agents.background_fetcher import BackgroundFetcher
+          from core.discord_webhook import DiscordNotifier
+          
+          initialize_all_memories()
+          
+          # Get all MP3s
+          audio_files = sorted(list(Path('audio').glob('*.mp3')))
+          
+          if len(audio_files) >= 2:
+              # Fetch a unique background
+              fetcher = BackgroundFetcher()
+              bg_path = fetcher.fetch(['lofi study', 'cozy aesthetic', 'relaxing nature'], min_duration=15)
+              
+              if bg_path:
+                  compiler = Compiler()
+                  result = compiler.compile(audio_files, bg_path)
+                  
+                  if result.success:
+                      notifier = DiscordNotifier()
+                      notifier.notify_upload(
+                          title='Weekly Study Mix ☕',
+                          channel_name='Compilation'
+                      )
+          "
+
+      - name: Upload compilation artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: compilation-output-${{ github.run_number }}
+          path: output/*.mp4
+          retention-days: 7
+
+      - name: Commit updated memory
+        if: success()
+        run: |
+          git config user.name "Lo-fi Bot"
+          git config user.email "bot@moodwire.dev"
+          git add memory/*.json temp/used_backgrounds.txt
+          git diff --cached --quiet || git commit -m "📦 Weekly compilation update [skip ci]"
+          git push

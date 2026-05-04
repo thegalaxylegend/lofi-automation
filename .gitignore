@@ -1,0 +1,22 @@
+# Environment
+.env
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Temporary files
+temp/
+*.tmp
+
+# Output files (too large for git)
+output/*.mp4
+output/*.avi
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/

@@ -1,0 +1,104 @@
+{
+  "channels": {
+    "lofi": {
+      "name": "MoodWire Lo-fi",
+      "handle": "@moodwire_lofi",
+      "tagline": "where focus finds its frequency",
+      "audience": "Students (JEE, NEET, CBSE), night owls, coders, readers",
+      "language": "English",
+      "brand_colors": {
+        "primary": "#6C3CE1",
+        "secondary": "#1A0A3E",
+        "accent": "#FF6B9D",
+        "text_light": "#F0E6FF",
+        "text_dark": "#0D0520"
+      },
+      "thumbnail": {
+        "width": 1280,
+        "height": 720,
+        "font_title": "Outfit-Bold",
+        "font_subtitle": "Inter-Regular",
+        "title_max_chars": 35,
+        "style": "dark_gradient_with_glow",
+        "logo_position": "bottom_right"
+      },
+      "video": {
+        "resolution": "1920x1080",
+        "fps": 30,
+        "crf": 18,
+        "codec": "libx264",
+        "preset": "medium",
+        "pixel_format": "yuv420p",
+        "audio_bitrate": "320k"
+      },
+      "shorts": {
+        "resolution": "1080x1920",
+        "max_duration_sec": 59,
+        "text_style": "floating_pov"
+      },
+      "seo": {
+        "default_tags": [
+          "lofi", "study music", "lofi hip hop", "chill beats",
+          "focus music", "study beats", "lofi radio", "jee preparation",
+          "neet study music", "night study", "coding music",
+          "relaxing music", "ambient", "concentration music"
+        ],
+        "target_title_length": 60,
+        "description_min_words": 100
+      }
+    },
+    "hindi": {
+      "name": "Mood Wire",
+      "handle": "@mood_wire_official",
+      "tagline": "where music meets emotions",
+      "audience": "Indian youth, Hindi-speaking, emotional/relatable content",
+      "language": "Hindi",
+      "brand_colors": {
+        "primary": "#FFD700",
+        "secondary": "#1A1A2E",
+        "accent": "#E94560",
+        "text_light": "#FFFFFF",
+        "text_dark": "#0F0F1A"
+      },
+      "thumbnail": {
+        "width": 1280,
+        "height": 720,
+        "font_title": "Outfit-Bold",
+        "font_subtitle": "Inter-Regular",
+        "title_max_chars": 40,
+        "style": "vibrant_cinematic",
+        "logo_position": "top_left"
+      },
+      "video": {
+        "resolution": "1920x1080",
+        "fps": 30,
+        "crf": 18,
+        "codec": "libx264",
+        "preset": "medium",
+        "pixel_format": "yuv420p",
+        "audio_bitrate": "320k"
+      },
+      "shorts": {
+        "resolution": "1080x1920",
+        "max_duration_sec": 59,
+        "text_style": "lyric_overlay"
+      },
+      "seo": {
+        "default_tags": [
+          "hindi songs", "sad songs", "emotional songs",
+          "new hindi song 2026", "mood wire", "student life",
+          "relatable songs", "indian music", "desi lofi"
+        ],
+        "target_title_length": 70,
+        "description_min_words": 80
+      }
+    }
+  },
+  "defaults": {
+    "active_channel": "lofi",
+    "upload_as_draft": true,
+    "auto_shorts": true,
+    "weekly_compilation": true,
+    "discord_reports": true
+  }
+}

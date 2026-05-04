@@ -1,0 +1,83 @@
+name: Lo-fi Video Pipeline
+
+on:
+  push:
+    paths:
+      - 'audio/**'
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: 'Channel key (lofi or hindi)'
+        required: false
+        default: 'lofi'
+
+permissions:
+  contents: write
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+
+      - name: Install FFmpeg
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt
+
+      - name: Initialize memory files
+        run: python -c "from core.memory import initialize_all_memories; initialize_all_memories()"
+
+      - name: Run pipeline
+        env:
+          GEMINI_API_KEY_1: ${{ secrets.GEMINI_API_KEY_1 }}
+          GEMINI_API_KEY_2: ${{ secrets.GEMINI_API_KEY_2 }}
+          GEMINI_API_KEY_3: ${{ secrets.GEMINI_API_KEY_3 }}
+          GEMINI_API_KEY_4: ${{ secrets.GEMINI_API_KEY_4 }}
+          GEMINI_API_KEY_5: ${{ secrets.GEMINI_API_KEY_5 }}
+          GEMINI_API_KEY_6: ${{ secrets.GEMINI_API_KEY_6 }}
+          GROQ_API_KEY_1: ${{ secrets.GROQ_API_KEY_1 }}
+          GROQ_API_KEY_2: ${{ secrets.GROQ_API_KEY_2 }}
+          GROQ_API_KEY_3: ${{ secrets.GROQ_API_KEY_3 }}
+          GROQ_API_KEY_4: ${{ secrets.GROQ_API_KEY_4 }}
+          GROQ_API_KEY_5: ${{ secrets.GROQ_API_KEY_5 }}
+          PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
+          PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+          DISCORD_WEBHOOK_UPLOADS: ${{ secrets.DISCORD_WEBHOOK_UPLOADS }}
+          DISCORD_WEBHOOK_DAILY: ${{ secrets.DISCORD_WEBHOOK_DAILY }}
+          DISCORD_WEBHOOK_ALERTS: ${{ secrets.DISCORD_WEBHOOK_ALERTS }}
+        run: |
+          CHANNEL="${{ github.event.inputs.channel || 'lofi' }}"
+          python main.py audio/ --channel "$CHANNEL"
+
+      - name: Upload output artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: pipeline-output-${{ github.run_number }}
+          path: |
+            output/*.mp4
+            output/*.jpg
+            output/*.txt
+          retention-days: 7
+
+      - name: Commit updated memory files
+        if: success()
+        run: |
+          git config user.name "Lo-fi Bot"
+          git config user.email "bot@moodwire.dev"
+          git add memory/*.json
+          git diff --cached --quiet || git commit -m "🧠 Update agent memory [skip ci]"
+          git push
