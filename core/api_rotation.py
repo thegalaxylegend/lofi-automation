@@ -143,7 +143,7 @@ class APIRotator:
         self,
         prompt: str,
         *,
-        model: str = "gemini-2.0-flash",
+        model: str = "gemini-2.5-flash",
         temperature: float = 0.7,
         max_retries: int = 3,
     ) -> str:
@@ -168,7 +168,7 @@ class APIRotator:
         prompt: str,
         *,
         mime_type: str = "audio/mpeg",
-        model: str = "gemini-2.0-flash",
+        model: str = "gemini-2.5-flash",
         temperature: float = 0.7,
         max_retries: int = 3,
     ) -> str:
