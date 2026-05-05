@@ -1,0 +1,59 @@
+{
+  "mood_visual_mappings": {
+    "melancholic": {
+      "colors": [
+        "#1a1a2e",
+        "#4a3d8f"
+      ],
+      "styles": [
+        "rainy window",
+        "starry night"
+      ]
+    },
+    "energetic": {
+      "colors": [
+        "#ff6b35",
+        "#ffd700"
+      ],
+      "styles": [
+        "city lights",
+        "neon street"
+      ]
+    },
+    "peaceful": {
+      "colors": [
+        "#2d5a27",
+        "#87ceeb"
+      ],
+      "styles": [
+        "forest stream",
+        "cloudy sky"
+      ]
+    },
+    "nostalgic": {
+      "colors": [
+        "#d4a373",
+        "#cdb4db"
+      ],
+      "styles": [
+        "sunset road",
+        "old room"
+      ]
+    },
+    "dark": {
+      "colors": [
+        "#0d0d0d",
+        "#6c3ce1"
+      ],
+      "styles": [
+        "cyberpunk",
+        "space"
+      ]
+    }
+  },
+  "performance_log": [],
+  "_meta": {
+    "last_updated": "2026-05-05T03:38:08.985578+00:00",
+    "memory_name": "director_mood_map"
+  }
+}

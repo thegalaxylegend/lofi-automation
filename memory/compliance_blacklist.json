@@ -1,0 +1,9 @@
+{
+  "banned_words": [],
+  "flagged_phrases": [],
+  "safe_patterns": [],
+  "_meta": {
+    "last_updated": "2026-05-05T03:38:08.986134+00:00",
+    "memory_name": "compliance_blacklist"
+  }
+}
