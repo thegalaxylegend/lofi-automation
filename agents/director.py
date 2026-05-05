@@ -121,8 +121,8 @@ class Director:
             media_path=str(audio_path),
             prompt=prompt,
             mime_type="audio/mpeg",
-            model="gemini-2.0-flash",
-            temperature=0.6,
+            model="gemini-2.5-flash",
+            temperature=0.7,
         )
 
         # Parse the JSON response
