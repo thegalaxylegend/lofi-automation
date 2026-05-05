@@ -151,14 +151,8 @@ class VideoEditor:
             zoom_speed = 0.0005 * (bpm / 80.0) 
             zoom_max = 1.0 + (bpm / 500.0)
             
-            # Alternate zoom in and zoom out
-            if i % 2 == 0:
-                z_expr = f"min(zoom+{zoom_speed},{zoom_max})"
-            else:
-                # To zoom out, start at max and decrement
-                # FFmpeg zoompan handles this by forcing the start zoom using an offset, but min/max is tricky.
-                # A simple "pan" or just standard zoom in is safer. We'll use standard zoom in for all to prevent FFmpeg stutter.
-                z_expr = f"min(zoom+{zoom_speed},{zoom_max})"
+            # Use simple zoom addition to avoid min() comma parsing errors in FFmpeg
+            z_expr = f"zoom+{zoom_speed}"
                 
             filters.append(
                 f"[{i}:v]scale={w}:{h}:force_original_aspect_ratio=increase,"
@@ -211,7 +205,8 @@ class VideoEditor:
         )
 
         # 5. Text Overlay
-        safe_channel = channel_name.replace("'", "\\'")
+        # Replace apostrophes with smart quotes to prevent breaking FFmpeg's single-quote parser
+        safe_channel = channel_name.replace("'", "’").replace(":", "\\:").replace(",", "\\,")
         filters.append(
             f"[withviz]drawtext="
             f"text='{safe_channel}':"
@@ -221,7 +216,7 @@ class VideoEditor:
         )
 
         if brief.text_overlay_suggestion:
-            safe_text = brief.text_overlay_suggestion.replace("'", "\\'").replace(":", "\\:")
+            safe_text = brief.text_overlay_suggestion.replace("'", "’").replace(":", "\\:").replace(",", "\\,")
             filters.append(
                 f"[withtext]drawtext="
                 f"text='{safe_text}':"
