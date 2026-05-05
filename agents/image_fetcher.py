@@ -55,7 +55,7 @@ class ImageFetcher:
                     headers = {
                         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
                     }
-                    response = requests.get(url, headers=headers, timeout=60)
+                    response = requests.get(url, headers=headers, timeout=120)
                     response.raise_for_status()
                     
                     # Verify it's actually an image
@@ -76,10 +76,17 @@ class ImageFetcher:
                     time.sleep(3)
                     break
                 except Exception as e:
-                    logger.error(f"Failed to generate image {i+1}: {e}")
-                    time.sleep(5) # Wait longer before retry
+                    logger.error(f"Failed to generate image {i+1} on attempt {attempt+1}: {e}")
+                    if attempt < 2:
+                        time.sleep(5) # Wait before retry
+                    else:
+                        # Final attempt failed
+                        if image_paths:
+                            logger.warning(f"Falling back to previous image for slot {i+1}")
+                            image_paths.append(image_paths[-1])
+                        else:
+                            logger.error(f"Slot {i+1} failed and no previous image to fallback to.")
 
-                
         if not image_paths:
             raise RuntimeError("Failed to generate any images for the video.")
             

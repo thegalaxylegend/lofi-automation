@@ -13,7 +13,7 @@ import subprocess
 from pathlib import Path
 
 from agents.director import CreativeBrief
-from core.config import Config, OUTPUT_DIR
+from core.config import Config, OUTPUT_DIR, TEMP_DIR
 
 logger = logging.getLogger(__name__)
 
