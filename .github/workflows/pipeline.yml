@@ -58,6 +58,8 @@ jobs:
           DISCORD_WEBHOOK_UPLOADS: ${{ secrets.DISCORD_WEBHOOK_UPLOADS }}
           DISCORD_WEBHOOK_DAILY: ${{ secrets.DISCORD_WEBHOOK_DAILY }}
           DISCORD_WEBHOOK_ALERTS: ${{ secrets.DISCORD_WEBHOOK_ALERTS }}
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: |
           CHANNEL="${{ github.event.inputs.channel || 'lofi' }}"
           python main.py audio/ --channel "$CHANNEL"
@@ -72,6 +74,13 @@ jobs:
             output/*.jpg
             output/*.txt
           retention-days: 7
+
+      - name: Deliver to Telegram
+        if: success()
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python core/delivery.py
 
       - name: Commit updated memory files
         if: success()
