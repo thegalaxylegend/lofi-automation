@@ -13,7 +13,7 @@ import subprocess
 from pathlib import Path
 
 from dotenv import load_dotenv
-from telegram import Update
+from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import (
     Application,
     CommandHandler,
@@ -46,11 +46,21 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
         logger.warning(f"Unauthorized access attempt from {user.first_name} (Chat ID: {chat_id})")
         return
 
+    # Create buttons
+    keyboard = [
+        ["🎬 Latest Uploads", "📊 Get Report"],
+        ["🛡️ Safety Status", "❓ Help"]
+    ]
+    reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
+
     await update.message.reply_html(
         rf"Hi {user.mention_html()}! 🎧\n\n"
-        "I am the Ouroboros Ingestion Bot.\n"
-        "Send me an MP3 file (from Udio/Beatoven) and I will automatically "
-        "push it to GitHub to start the video generation pipeline."
+        "I am the **Moodwire Ingestion Bot**.\n\n"
+        "📍 **HOW TO USE:**\n"
+        "Simply send or forward me any **MP3 file**, and I will automatically "
+        "push it to the cloud pipeline to generate your video.\n\n"
+        "Use the buttons below for quick status checks!",
+        reply_markup=reply_markup
     )
 
 
@@ -90,7 +100,7 @@ async def handle_audio(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         # Git operations to trigger Actions
         git_cmds = [
             ["git", "add", f"audio/{file_name}"],
-            ["git", "commit", "-m", f"🎵 Auto-ingest: {file_name} from Telegram"],
+            ["git", "commit", "--allow-empty", "-m", f"🎵 Auto-ingest: {file_name} from Telegram"],
             ["git", "push"]
         ]
 
