@@ -216,8 +216,8 @@ class VideoEditor:
         )
 
         # 5. Text Overlay
-        # Replace apostrophes with smart quotes to prevent breaking FFmpeg's single-quote parser
-        safe_channel = channel_name.replace("'", "’").replace(":", "\\:").replace(",", "\\,")
+        # Replace apostrophes, newlines, and other breaking characters
+        safe_channel = channel_name.replace("'", "’").replace(":", "\\:").replace(",", "\\,").replace("\n", " ").replace("\r", "").replace(";", "\\;").strip()
         filters.append(
             f"[withviz]drawtext="
             f"text='{safe_channel}':"
@@ -227,7 +227,7 @@ class VideoEditor:
         )
 
         if brief.text_overlay_suggestion:
-            safe_text = brief.text_overlay_suggestion.replace("'", "’").replace(":", "\\:").replace(",", "\\,")
+            safe_text = brief.text_overlay_suggestion.replace("'", "’").replace(":", "\\:").replace(",", "\\,").replace("\n", " ").replace("\r", "").replace(";", "\\;").strip()
             filters.append(
                 f"[withtext]drawtext="
                 f"text='{safe_text}':"
