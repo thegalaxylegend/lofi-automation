@@ -48,7 +48,14 @@ class ImageFetcher:
             
             try:
                 logger.info(f"Downloading image {i+1}/10...")
-                urllib.request.urlretrieve(url, output_path)
+                import requests
+                headers = {
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+                }
+                response = requests.get(url, headers=headers, timeout=60)
+                response.raise_for_status()
+                with open(output_path, "wb") as f:
+                    f.write(response.content)
                 image_paths.append(output_path)
             except Exception as e:
                 logger.error(f"Failed to generate image {i+1}: {e}")
