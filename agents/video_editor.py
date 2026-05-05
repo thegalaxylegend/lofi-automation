@@ -140,7 +140,7 @@ class VideoEditor:
         # Calculate timing per image based on beat structure
         num_images = len(image_paths)
         duration_per_img = audio_duration / num_images
-        frames_per_img = int(duration_per_img * fps)
+        frames_per_img = max(1, int(duration_per_img * fps))
 
         filters = []
         concat_inputs = ""

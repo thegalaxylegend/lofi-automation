@@ -41,6 +41,8 @@ class PipelineResult:
     success: bool = False
     error: str = ""
     render_time_sec: float = 0.0
+    youtube_id: str = ""
+    short_youtube_id: str = ""
 
 
 @dataclass
@@ -173,6 +175,47 @@ def process_single(audio_path: Path) -> PipelineResult:
             # Flag for manual review but don't delete the outputs
 
         result.success = True
+        
+        # ── Agent 11: YouTube Uploader ───────────────────────
+        try:
+            if config.youtube_refresh_token:
+                from core.youtube_uploader import YouTubeUploader
+                uploader = YouTubeUploader()
+                
+                privacy = "private" if config.upload_as_draft else "public"
+                
+                # Upload main video
+                logger.info("Uploading main video to YouTube (%s)...", privacy)
+                vid_id = uploader.upload_video(
+                    video_path=video_path,
+                    title=metadata.title,
+                    description=metadata.description,
+                    tags=metadata.tags,
+                    privacy_status=privacy
+                )
+                if vid_id:
+                    result.youtube_id = vid_id
+                    # Set thumbnail
+                    uploader.set_thumbnail(vid_id, thumb_path)
+                
+                # Upload short if created
+                if result.short_path:
+                    logger.info("Uploading Short to YouTube (%s)...", privacy)
+                    short_vid_id = uploader.upload_video(
+                        video_path=Path(result.short_path),
+                        title=f"{metadata.title} #shorts",
+                        description=f"{metadata.shorts_text}\n\n#shorts #lofi",
+                        tags=metadata.tags + ["shorts"],
+                        privacy_status=privacy
+                    )
+                    if short_vid_id:
+                        result.short_youtube_id = short_vid_id
+            else:
+                logger.info("YouTube refresh token missing. Skipping upload.")
+        except Exception as upload_exc:
+            logger.error("YouTube Upload failed (video still saved): %s", upload_exc)
+            result.error = f"Upload failed: {upload_exc}"
+            # We don't set result.success = False here because the video was rendered successfully.
 
     except Exception as exc:
         result.error = str(exc)

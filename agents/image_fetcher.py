@@ -58,8 +58,18 @@ class ImageFetcher:
                     response = requests.get(url, headers=headers, timeout=60)
                     response.raise_for_status()
                     
+                    # Verify it's actually an image
+                    content_type = response.headers.get("Content-Type", "")
+                    if "image" not in content_type:
+                        raise ValueError(f"Received non-image content type: {content_type}")
+
                     with open(output_path, "wb") as f:
                         f.write(response.content)
+                    
+                    # Final check: is the file non-empty?
+                    if output_path.stat().st_size < 100:
+                        raise ValueError("Downloaded image is too small (likely corrupt).")
+                        
                     image_paths.append(output_path)
                     
                     # Sleep to respect rate limits
