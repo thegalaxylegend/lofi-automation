@@ -97,10 +97,14 @@ async def handle_audio(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         
         await status_msg.edit_text(f"✅ Downloaded to `audio/`.\n🚀 Pushing to GitHub to trigger pipeline...")
 
+        # Touch a trigger file so Git detects a real change inside audio/
+        trigger_file = AUDIO_DIR / ".trigger"
+        trigger_file.write_text(str(update.message.date.timestamp()))
+        
         # Git operations to trigger Actions
         git_cmds = [
-            ["git", "add", f"audio/{file_name}"],
-            ["git", "commit", "--allow-empty", "-m", f"🎵 Auto-ingest: {file_name} from Telegram"],
+            ["git", "add", f"audio/{file_name}", "audio/.trigger"],
+            ["git", "commit", "-m", f"🎵 Auto-ingest: {file_name} from Telegram"],
             ["git", "push"]
         ]
 
