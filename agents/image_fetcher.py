@@ -46,19 +46,29 @@ class ImageFetcher:
             
             url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=1920&height=1080&nologo=true"
             
-            try:
-                logger.info(f"Downloading image {i+1}/10...")
-                import requests
-                headers = {
-                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-                }
-                response = requests.get(url, headers=headers, timeout=60)
-                response.raise_for_status()
-                with open(output_path, "wb") as f:
-                    f.write(response.content)
-                image_paths.append(output_path)
-            except Exception as e:
-                logger.error(f"Failed to generate image {i+1}: {e}")
+            import requests
+            import time
+            
+            for attempt in range(3):
+                try:
+                    logger.info(f"Downloading image {i+1}/10 (Attempt {attempt+1})...")
+                    headers = {
+                        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+                    }
+                    response = requests.get(url, headers=headers, timeout=60)
+                    response.raise_for_status()
+                    
+                    with open(output_path, "wb") as f:
+                        f.write(response.content)
+                    image_paths.append(output_path)
+                    
+                    # Sleep to respect rate limits
+                    time.sleep(3)
+                    break
+                except Exception as e:
+                    logger.error(f"Failed to generate image {i+1}: {e}")
+                    time.sleep(5) # Wait longer before retry
+
                 
         if not image_paths:
             raise RuntimeError("Failed to generate any images for the video.")

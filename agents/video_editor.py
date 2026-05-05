@@ -167,7 +167,10 @@ class VideoEditor:
             )
             concat_inputs += f"[v{i}]"
 
-        filters.append(f"{concat_inputs}concat=n={num_images}:v=1:a=0[slideshow]")
+        if num_images == 1:
+            filters.append(f"[v0]copy[slideshow]")
+        else:
+            filters.append(f"{concat_inputs}concat=n={num_images}:v=1:a=0[slideshow]")
 
         # 2. Color grading
         filters.append(
@@ -277,4 +280,6 @@ class VideoEditor:
     def _visualizer_height(brief: CreativeBrief, video_height: int) -> int:
         ratios = {"subtle": 0.08, "moderate": 0.12, "intense": 0.18}
         ratio = ratios.get(brief.visualizer_intensity, 0.08)
-        return max(60, int(video_height * ratio))
+        raw_h = max(60, int(video_height * ratio))
+        return raw_h if raw_h % 2 == 0 else raw_h + 1
+
