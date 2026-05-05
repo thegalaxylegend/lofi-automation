@@ -194,6 +194,11 @@ class VideoEditor:
             f"[graded]noise=c0s={grain_amount}:c0f=t+u:allf=t+u[grained]"
         )
 
+        # Ensure we have a font file to avoid fontconfig failures on CI/Static FFmpeg
+        font_path = self._ensure_font()
+        # Escape for FFmpeg
+        safe_font_path = str(font_path.absolute()).replace("\\", "/").replace(":", "\\:")
+
         # 4. Audio Visualizer
         viz_h = self._visualizer_height(brief, h)
         primary_color = brief.color_palette[0] if brief.color_palette else "#6C3CE1"
@@ -204,7 +209,7 @@ class VideoEditor:
         filters.append(
             f"[{audio_idx}:a]showcqt=s={w}x{viz_h}:"
             f"count=6:fcount=2:sono_h=0:bar_h=1:sono_g=4:bar_g=2:"
-            f"font='sans':fontcolor='{_hex_to_ffmpeg_color(primary_color)}':tc=0.33:tlength=2[viz]"
+            f"fontfile='{safe_font_path}':fontcolor='{_hex_to_ffmpeg_color(primary_color)}':tc=0.33:tlength=2[viz]"
         )
 
         viz_y = h - viz_h - 20
@@ -229,7 +234,7 @@ class VideoEditor:
             f"textfile='{safe_channel_path}':"
             f"fontsize=24:fontcolor=white@0.7:"
             f"x=w-tw-30:y=h-th-30:"
-            f"font='sans-serif'[withtext]"
+            f"fontfile='{safe_font_path}'[withtext]"
         )
 
         if brief.text_overlay_suggestion:
@@ -238,13 +243,15 @@ class VideoEditor:
                 f.write(brief.text_overlay_suggestion)
             
             safe_text_path = str(suggestion_txt_path.absolute()).replace("\\", "/").replace(":", "\\:")
+            # Use escaped commas for the enable expression just to be 100% safe
+            enable_expr = f"between(t\\,3\\,{audio_duration - 2})"
             filters.append(
                 f"[withtext]drawtext="
                 f"textfile='{safe_text_path}':"
                 f"fontsize=28:fontcolor=white@0.8:"
                 f"x=(w-tw)/2:y=h*0.15:"
-                f"font='sans-serif':"
-                f"enable='between(t,3,{audio_duration - 2})'[final]"
+                f"fontfile='{safe_font_path}':"
+                f"enable='{enable_expr}'[final]"
             )
             last_label = "final"
         else:
@@ -298,4 +305,18 @@ class VideoEditor:
         ratio = ratios.get(brief.visualizer_intensity, 0.08)
         raw_h = max(60, int(video_height * ratio))
         return raw_h if raw_h % 2 == 0 else raw_h + 1
+
+    @staticmethod
+    def _ensure_font() -> Path:
+        import urllib.request
+        font_path = TEMP_DIR / "Roboto-Regular.ttf"
+        if not font_path.exists():
+            url = "https://github.com/googlefonts/roboto/raw/main/src/hinted/Roboto-Regular.ttf"
+            logger.info("Downloading standard Roboto font for FFmpeg...")
+            try:
+                urllib.request.urlretrieve(url, font_path)
+            except Exception as e:
+                logger.error(f"Failed to download font: {e}")
+                raise RuntimeError("Could not download required font for FFmpeg.")
+        return font_path
 
