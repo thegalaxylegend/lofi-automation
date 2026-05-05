@@ -35,7 +35,12 @@ Return ONLY valid JSON with this exact structure (no markdown, no explanation):
   "color_palette": ["<hex color 1>", "<hex color 2>", "<hex color 3>"],
   "visualizer_intensity": "<subtle, moderate, intense — how reactive should the audio visualizer be>",
   "text_overlay_suggestion": "<a short poetic/relatable line for the video, e.g. 'for when it's 3am and the exam is tomorrow'>",
-  "pexels_search_queries": ["<search query 1>", "<search query 2>", "<search query 3>"],
+  "image_prompts": [
+    "<Prompt 1: Describe the opening scene matching the mood, highly detailed 4k cinematic>",
+    "<Prompt 2: The narrative progresses slightly...>",
+    "...",
+    "<Prompt 10: The final closing scene>"
+  ],
   "thumbnail_prompt": "<detailed prompt for AI image generation for the thumbnail>",
   "title_keywords": ["<keyword1>", "<keyword2>", "<keyword3>"]
 }
@@ -43,7 +48,7 @@ Return ONLY valid JSON with this exact structure (no markdown, no explanation):
 Rules:
 - BPM: estimate based on the tempo you hear.
 - Color palette: choose colors that match the mood for video color grading.
-- Pexels queries: suggest 3 different search terms for finding background videos.
+- Image prompts: Write exactly 10 highly detailed prompts for an AI image generator (like Midjourney). They should form a visual story over the course of the song. Describe lighting, atmosphere, style, and subject matter clearly without text.
 - Thumbnail prompt: describe a scene that captures the mood (no text in the image).
 - Be specific and creative. This brief drives the entire video production.
 """
@@ -63,7 +68,7 @@ class CreativeBrief:
     color_palette: list[str] = field(default_factory=lambda: ["#1a1a2e", "#4a3d8f", "#6c3ce1"])
     visualizer_intensity: str = "subtle"
     text_overlay_suggestion: str = ""
-    pexels_search_queries: list[str] = field(default_factory=lambda: ["lo-fi aesthetic", "rainy window", "cozy room"])
+    image_prompts: list[str] = field(default_factory=lambda: ["A cozy rainy window at night, lo-fi anime style, 4k, masterpiece"] * 10)
     thumbnail_prompt: str = ""
     title_keywords: list[str] = field(default_factory=list)
     source_file: str = ""
@@ -80,7 +85,7 @@ class CreativeBrief:
             "color_palette": self.color_palette,
             "visualizer_intensity": self.visualizer_intensity,
             "text_overlay_suggestion": self.text_overlay_suggestion,
-            "pexels_search_queries": self.pexels_search_queries,
+            "image_prompts": self.image_prompts,
             "thumbnail_prompt": self.thumbnail_prompt,
             "title_keywords": self.title_keywords,
             "source_file": self.source_file,
@@ -185,7 +190,7 @@ class Director:
             color_palette=data.get("color_palette", ["#1a1a2e", "#4a3d8f", "#6c3ce1"]),
             visualizer_intensity=data.get("visualizer_intensity", "subtle"),
             text_overlay_suggestion=data.get("text_overlay_suggestion", ""),
-            pexels_search_queries=data.get("pexels_search_queries", ["lo-fi aesthetic"]),
+            image_prompts=data.get("image_prompts", ["A cozy rainy window at night, lo-fi anime style, 4k, masterpiece"] * 10),
             thumbnail_prompt=data.get("thumbnail_prompt", ""),
             title_keywords=data.get("title_keywords", []),
             source_file=source_file,

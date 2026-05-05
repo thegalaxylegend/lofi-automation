@@ -82,23 +82,24 @@ def process_single(audio_path: Path) -> PipelineResult:
 
         logger.info("Director complete: mood=%s, energy=%s", brief.mood, brief.energy)
 
-        # ── Background Fetcher ──────────────────────────────
-        from agents.background_fetcher import BackgroundFetcher
-        fetcher = BackgroundFetcher()
-        bg_path = fetcher.fetch(brief.pexels_search_queries)
+        # ── Audio Analyzer (Mathematics extraction) ─────────
+        from core.audio_analyzer import AudioAnalyzer
+        audio_math = AudioAnalyzer.analyze_audio(audio_path)
 
-        if bg_path is None:
-            raise RuntimeError(
-                "Failed to fetch background video. "
-                "Check Pexels/Pixabay API keys."
-            )
+        # ── Image Fetcher ──────────────────────────────
+        from agents.image_fetcher import ImageFetcher
+        fetcher = ImageFetcher()
+        image_paths = fetcher.fetch_images(brief)
 
-        logger.info("Background fetched: %s", bg_path.name)
+        if not image_paths:
+            raise RuntimeError("Failed to fetch AI images.")
+
+        logger.info(f"Images generated: {len(image_paths)}")
 
         # ── Agent 2: Video Editor (FFmpeg Render) ───────────
         from agents.video_editor import VideoEditor
         editor = VideoEditor()
-        video_path = editor.render(audio_path, bg_path, brief)
+        video_path = editor.render(audio_path, image_paths, brief, audio_math)
 
         result.video_path = str(video_path)
         logger.info("Video rendered: %s", video_path.name)
@@ -141,7 +142,7 @@ def process_single(audio_path: Path) -> PipelineResult:
             distributor = Distributor()
             short_path = distributor.create_short(
                 audio_path=audio_path,
-                background_path=bg_path,
+                background_path=image_paths[0],  # Use the first image for the short
                 brief=brief,
                 shorts_text=metadata.shorts_text,
             )
