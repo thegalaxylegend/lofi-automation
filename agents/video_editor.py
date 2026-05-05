@@ -216,21 +216,31 @@ class VideoEditor:
         )
 
         # 5. Text Overlay
-        # Replace apostrophes, newlines, and other breaking characters
-        safe_channel = channel_name.replace("'", "’").replace(":", "\\:").replace(",", "\\,").replace("\n", " ").replace("\r", "").replace(";", "\\;").strip()
+        # Write text files for drawtext to completely bypass FFmpeg filter parsing/escaping hell
+        channel_txt_path = TEMP_DIR / f"{audio_path.stem}_channel.txt"
+        with open(channel_txt_path, "w", encoding="utf-8") as f:
+            f.write(channel_name)
+        
+        # FFmpeg filter arguments use : as separator, so escape drive letter colons, and use forward slashes
+        safe_channel_path = str(channel_txt_path.absolute()).replace("\\", "/").replace(":", "\\:")
+        
         filters.append(
             f"[withviz]drawtext="
-            f"text='{safe_channel}':"
+            f"textfile='{safe_channel_path}':"
             f"fontsize=24:fontcolor=white@0.7:"
             f"x=w-tw-30:y=h-th-30:"
             f"font='sans-serif'[withtext]"
         )
 
         if brief.text_overlay_suggestion:
-            safe_text = brief.text_overlay_suggestion.replace("'", "’").replace(":", "\\:").replace(",", "\\,").replace("\n", " ").replace("\r", "").replace(";", "\\;").strip()
+            suggestion_txt_path = TEMP_DIR / f"{audio_path.stem}_suggestion.txt"
+            with open(suggestion_txt_path, "w", encoding="utf-8") as f:
+                f.write(brief.text_overlay_suggestion)
+            
+            safe_text_path = str(suggestion_txt_path.absolute()).replace("\\", "/").replace(":", "\\:")
             filters.append(
                 f"[withtext]drawtext="
-                f"text='{safe_text}':"
+                f"textfile='{safe_text_path}':"
                 f"fontsize=28:fontcolor=white@0.8:"
                 f"x=(w-tw)/2:y=h*0.15:"
                 f"font='sans-serif':"
