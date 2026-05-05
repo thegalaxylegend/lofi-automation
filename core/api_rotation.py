@@ -145,7 +145,7 @@ class APIRotator:
         *,
         model: str = "gemini-2.5-flash",
         temperature: float = 0.7,
-        max_retries: int = 3,
+        max_retries: int = 100,
     ) -> str:
         """Generate text using Gemini with Groq fallback."""
 
@@ -170,7 +170,7 @@ class APIRotator:
         mime_type: str = "audio/mpeg",
         model: str = "gemini-2.5-flash",
         temperature: float = 0.7,
-        max_retries: int = 3,
+        max_retries: int = 100,
     ) -> str:
         """
         Generate text with a media file attachment (audio/image).
