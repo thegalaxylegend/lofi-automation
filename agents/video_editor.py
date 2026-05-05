@@ -76,7 +76,9 @@ class VideoEditor:
             output_name = f"{stem}_final.mp4"
         output_path = OUTPUT_DIR / output_name
 
-        cmd = self._build_ffmpeg_command(
+        filter_script_path = TEMP_DIR / f"{audio_path.stem}_filters.txt"
+        
+        cmd, filter_complex = self._build_ffmpeg_command(
             audio_path=audio_path,
             image_paths=image_paths,
             output_path=output_path,
@@ -91,9 +93,14 @@ class VideoEditor:
             pixel_format=vs.pixel_format,
             audio_bitrate=vs.audio_bitrate,
             channel_name=channel_name,
+            filter_script_path=filter_script_path,
         )
 
-        logger.info("FFmpeg command executing...")
+        # Write filter script
+        with open(filter_script_path, "w", encoding="utf-8") as f:
+            f.write(filter_complex)
+
+        logger.info("FFmpeg command executing via filter script...")
         try:
             result = subprocess.run(cmd, capture_output=True, text=True, timeout=1200)
             if result.returncode != 0:
@@ -103,6 +110,9 @@ class VideoEditor:
         except subprocess.TimeoutExpired:
             logger.error("FFmpeg render timed out after 1200s.")
             raise
+        finally:
+            if filter_script_path.exists():
+                filter_script_path.unlink()
 
         if not output_path.exists() or output_path.stat().st_size < 1024:
             raise RuntimeError(f"Output file missing or too small: {output_path}")
@@ -127,7 +137,8 @@ class VideoEditor:
         pixel_format: str,
         audio_bitrate: str,
         channel_name: str,
-    ) -> list[str]:
+        filter_script_path: Path,
+    ) -> tuple[list[str], str]:
         
         width, height = resolution.split("x")
         w, h = int(width), int(height)
@@ -229,7 +240,7 @@ class VideoEditor:
         else:
             last_label = "withtext"
 
-        filter_complex = ";".join(filters)
+        filter_complex = ";\n".join(filters)
 
         cmd = ["ffmpeg", "-y"]
         # Add all images as inputs
@@ -241,7 +252,7 @@ class VideoEditor:
         cmd.extend(["-i", str(audio_path)])
 
         cmd.extend([
-            "-filter_complex", filter_complex,
+            "-filter_script", str(filter_script_path),
             "-map", f"[{last_label}]",
             "-map", f"{audio_idx}:a",
             "-c:v", codec,
@@ -255,7 +266,7 @@ class VideoEditor:
             str(output_path),
         ])
 
-        return cmd
+        return cmd, filter_complex
 
     @staticmethod
     def _mood_color_grade(brief: CreativeBrief) -> dict[str, float]:
