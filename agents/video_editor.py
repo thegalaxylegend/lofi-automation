@@ -161,7 +161,6 @@ class VideoEditor:
             # Dynamic zoom speed tied to BPM
             # Using 0.0002 for a slower, smoother zoom effect
             zoom_speed = 0.0002 * (bpm / 80.0) 
-            zoom_max = 1.0 + (bpm / 500.0)
             
             # Use simple zoom addition to avoid min() comma parsing errors in FFmpeg
             z_expr = f"zoom+{zoom_speed}"
@@ -182,8 +181,7 @@ class VideoEditor:
         filters.append(
             f"[slideshow]eq=brightness={color_params['brightness']}:"
             f"contrast={color_params['contrast']}:"
-            f"saturation={color_params['saturation']},"
-            f"hue=s=0[graded]"
+            f"saturation={color_params['saturation']}[graded]"
         )
 
         # 3. Dynamic Film Grain (Intensity tied to Audio Energy)
@@ -256,7 +254,8 @@ class VideoEditor:
             )
             last_label = "final"
         else:
-            last_label = "withtext"
+            filters.append(f"[withtext]copy[final]")
+            last_label = "final"
 
         filter_complex = ";\n".join(filters)
 
