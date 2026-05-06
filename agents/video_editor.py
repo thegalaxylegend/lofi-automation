@@ -75,6 +75,7 @@ class VideoEditor:
             stem = audio_path.stem
             output_name = f"{stem}_final.mp4"
         output_path = OUTPUT_DIR / output_name
+        output_path.parent.mkdir(parents=True, exist_ok=True)
 
         filter_script_path = TEMP_DIR / f"{audio_path.stem}_filters.txt"
         
@@ -102,13 +103,13 @@ class VideoEditor:
 
         logger.info("FFmpeg command executing via filter script...")
         try:
-            result = subprocess.run(cmd, capture_output=True, text=True, timeout=1200)
+            result = subprocess.run(cmd, capture_output=True, text=True, timeout=1800)
             if result.returncode != 0:
                 error_msg = result.stderr[-2000:] if result.stderr else "Unknown error"
                 logger.error(f"FFmpeg render failed:\n{error_msg}")
                 raise RuntimeError(f"FFmpeg render failed: {error_msg}")
         except subprocess.TimeoutExpired:
-            logger.error("FFmpeg render timed out after 1200s.")
+            logger.error("FFmpeg render timed out after 1800s.")
             raise
         finally:
             if filter_script_path.exists():
@@ -150,8 +151,9 @@ class VideoEditor:
         
         # Calculate timing per image based on beat structure
         num_images = len(image_paths)
-        duration_per_img = audio_duration / num_images
-        frames_per_img = max(1, int(duration_per_img * fps))
+        total_frames = int(audio_duration * fps)
+        frames_per_img = max(1, total_frames // num_images)
+        extra_frames = total_frames % num_images
 
         filters = []
         concat_inputs = ""
@@ -164,11 +166,14 @@ class VideoEditor:
             
             # Use simple zoom addition to avoid min() comma parsing errors in FFmpeg
             z_expr = f"zoom+{zoom_speed}"
+            
+            # Distribute remainder frames to early images
+            current_frames = frames_per_img + (1 if i < extra_frames else 0)
                 
             filters.append(
                 f"[{i}:v]scale={w}:{h}:force_original_aspect_ratio=increase,"
                 f"crop={w}:{h},"
-                f"zoompan=z='{z_expr}':d={frames_per_img}:s={w}x{h}:fps={fps}[v{i}]"
+                f"zoompan=z='{z_expr}':d={current_frames}:s={w}x{h}:fps={fps}[v{i}]"
             )
             concat_inputs += f"[v{i}]"
 
@@ -190,13 +195,13 @@ class VideoEditor:
         grain_amount = min(24, base_grain + energy_spike)
         
         filters.append(
-            f"[graded]noise=c0s={grain_amount}:c0f=t+u:allf=t+u[grained]"
+            f"[graded]noise=c0s={grain_amount}:c0f=t+u[grained]"
         )
 
         # Ensure we have a font file to avoid fontconfig failures on CI/Static FFmpeg
         font_path = self._ensure_font()
-        # Escape for FFmpeg
-        safe_font_path = str(font_path.absolute()).replace("\\", "/").replace(":", "\\:")
+        # Escape for FFmpeg (drive letter colons, backslashes, and single quotes)
+        safe_font_path = str(font_path.absolute()).replace("\\", "/").replace(":", "\\:").replace("'", "'\\''")
 
         # 4. Audio Visualizer
         viz_h = self._visualizer_height(brief, h)
@@ -226,7 +231,8 @@ class VideoEditor:
             f.write(channel_name)
         
         # FFmpeg filter arguments use : as separator, so escape drive letter colons, and use forward slashes
-        safe_channel_path = str(channel_txt_path.absolute()).replace("\\", "/").replace(":", "\\:")
+        # Also escape single quotes to prevent filtergraph parse errors on usernames like O'Connor
+        safe_channel_path = str(channel_txt_path.absolute()).replace("\\", "/").replace(":", "\\:").replace("'", "'\\''")
         
         filters.append(
             f"[withviz]drawtext="
@@ -241,7 +247,7 @@ class VideoEditor:
             with open(suggestion_txt_path, "w", encoding="utf-8") as f:
                 f.write(brief.text_overlay_suggestion)
             
-            safe_text_path = str(suggestion_txt_path.absolute()).replace("\\", "/").replace(":", "\\:")
+            safe_text_path = str(suggestion_txt_path.absolute()).replace("\\", "/").replace(":", "\\:").replace("'", "'\\''")
             # Use escaped commas for the enable expression just to be 100% safe
             enable_expr = f"between(t\\,3\\,{audio_duration - 2})"
             filters.append(
@@ -315,6 +321,9 @@ class VideoEditor:
             logger.info("Downloading standard Roboto font for FFmpeg...")
             try:
                 urllib.request.urlretrieve(url, font_path)
+                if font_path.stat().st_size < 100000:
+                    font_path.unlink()
+                    raise ValueError("Font file is suspiciously small or corrupt")
             except Exception as e:
                 logger.error(f"Failed to download font: {e}")
                 raise RuntimeError("Could not download required font for FFmpeg.")

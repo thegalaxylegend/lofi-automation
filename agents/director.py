@@ -10,8 +10,8 @@ from __future__ import annotations
 
 import json
 import logging
-from dataclasses import dataclass, field
 from pathlib import Path
+from pydantic import BaseModel, Field, field_validator, ValidationError
 
 from core.api_rotation import APIRotator
 from core.memory import director_memory
@@ -54,42 +54,40 @@ Rules:
 """
 
 
-@dataclass
-class CreativeBrief:
+class CreativeBrief(BaseModel):
     """Structured output from the Director's audio analysis."""
 
     mood: str = "peaceful"
     secondary_mood: str | None = None
     bpm_estimate: int = 90
     energy: str = "low"
-    instruments: list[str] = field(default_factory=list)
+    instruments: list[str] = Field(default_factory=list)
     emotional_tone: str = ""
     visual_style: str = "cozy study room"
-    color_palette: list[str] = field(default_factory=lambda: ["#1a1a2e", "#4a3d8f", "#6c3ce1"])
+    color_palette: list[str] = Field(default_factory=lambda: ["#1a1a2e", "#4a3d8f", "#6c3ce1"])
     visualizer_intensity: str = "subtle"
     text_overlay_suggestion: str = ""
-    image_prompts: list[str] = field(default_factory=lambda: ["A cozy rainy window at night, lo-fi anime style, 4k, masterpiece"] * 10)
+    image_prompts: list[str] = Field(default_factory=lambda: ["A cozy rainy window at night, lo-fi anime style, 4k, masterpiece"] * 10)
     thumbnail_prompt: str = ""
-    title_keywords: list[str] = field(default_factory=list)
+    title_keywords: list[str] = Field(default_factory=list)
     source_file: str = ""
 
+    @field_validator("color_palette", mode="before")
+    @classmethod
+    def ensure_hex_prefix(cls, v):
+        if not isinstance(v, list):
+            return ["#1a1a2e", "#4a3d8f", "#6c3ce1"]
+        return [c if c.startswith("#") else f"#{c}" for c in v]
+
+    @field_validator("text_overlay_suggestion", mode="before")
+    @classmethod
+    def sanitize_null_strings(cls, v):
+        if not v or str(v).strip().lower() in ["none", "null", ""]:
+            return ""
+        return str(v)
+
     def to_dict(self) -> dict:
-        return {
-            "mood": self.mood,
-            "secondary_mood": self.secondary_mood,
-            "bpm_estimate": self.bpm_estimate,
-            "energy": self.energy,
-            "instruments": self.instruments,
-            "emotional_tone": self.emotional_tone,
-            "visual_style": self.visual_style,
-            "color_palette": self.color_palette,
-            "visualizer_intensity": self.visualizer_intensity,
-            "text_overlay_suggestion": self.text_overlay_suggestion,
-            "image_prompts": self.image_prompts,
-            "thumbnail_prompt": self.thumbnail_prompt,
-            "title_keywords": self.title_keywords,
-            "source_file": self.source_file,
-        }
+        return self.model_dump()
 
 
 class Director:
@@ -174,24 +172,9 @@ class Director:
 
         try:
             data = json.loads(cleaned)
-        except json.JSONDecodeError:
-            logger.error("Director failed to parse LLM response. Using defaults.")
+            data["source_file"] = source_file
+            return CreativeBrief.model_validate(data)
+        except (json.JSONDecodeError, ValidationError) as e:
+            logger.error(f"Director failed to parse LLM response: {e}. Using defaults.")
             logger.debug("Raw response: %s", raw[:500])
             return CreativeBrief(source_file=source_file)
-
-        return CreativeBrief(
-            mood=data.get("mood", "peaceful"),
-            secondary_mood=data.get("secondary_mood"),
-            bpm_estimate=int(data.get("bpm_estimate", 90)),
-            energy=data.get("energy", "low"),
-            instruments=data.get("instruments", []),
-            emotional_tone=data.get("emotional_tone", ""),
-            visual_style=data.get("visual_style", "cozy study room"),
-            color_palette=data.get("color_palette", ["#1a1a2e", "#4a3d8f", "#6c3ce1"]),
-            visualizer_intensity=data.get("visualizer_intensity", "subtle"),
-            text_overlay_suggestion=data.get("text_overlay_suggestion", ""),
-            image_prompts=data.get("image_prompts", ["A cozy rainy window at night, lo-fi anime style, 4k, masterpiece"] * 10),
-            thumbnail_prompt=data.get("thumbnail_prompt", ""),
-            title_keywords=data.get("title_keywords", []),
-            source_file=source_file,
-        )

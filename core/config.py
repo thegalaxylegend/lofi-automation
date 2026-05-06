@@ -26,7 +26,9 @@ ENV_PATH = PROJECT_ROOT / ".env"
 BRAND_CONFIG_PATH = PROJECT_ROOT / "brand_config.json"
 MEMORY_DIR = PROJECT_ROOT / "memory"
 OUTPUT_DIR = PROJECT_ROOT / "output"
-TEMP_DIR = PROJECT_ROOT / "temp"
+import uuid
+
+TEMP_DIR = PROJECT_ROOT / f"temp_{uuid.uuid4().hex}"
 TEMPLATES_DIR = PROJECT_ROOT / "templates"
 
 # Ensure directories exist

@@ -59,7 +59,7 @@ class ImageFetcher:
                     response.raise_for_status()
                     
                     content_type = response.headers.get("Content-Type", "")
-                    if "image" not in content_type:
+                    if content_type not in ["image/jpeg", "image/png", "image/webp"]:
                         raise ValueError(f"Received non-image content type: {content_type}")
 
                     with open(output_path, "wb") as f:
@@ -77,12 +77,18 @@ class ImageFetcher:
             logger.error(f"Slot {i+1} completely failed.")
             return i, None
 
-        # Execute in parallel with 5 workers
+        # Execute in parallel with 5 workers, maintaining strict order
         with ThreadPoolExecutor(max_workers=5) as executor:
             futures = [executor.submit(download_single, i, p) for i, p in enumerate(prompts)]
-            for future in as_completed(futures):
-                idx, path = future.result()
-                image_paths[idx] = path
+            
+            # Iterate through futures in the order they were submitted (preserves narrative order)
+            for i, future in enumerate(futures):
+                try:
+                    idx, path = future.result()
+                    image_paths[idx] = path
+                except Exception as e:
+                    logger.error(f"Catastrophic thread failure for slot {i+1}: {e}")
+                    image_paths[i] = None
 
         # Fill in any failed slots with the previous successful image
         final_paths = []
