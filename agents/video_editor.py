@@ -201,15 +201,15 @@ class VideoEditor:
 
         # 4. Audio Visualizer
         viz_h = self._visualizer_height(brief, h)
-        primary_color = brief.color_palette[0] if brief.color_palette else "#6C3CE1"
         
         # Audio is at input index len(image_paths)
         audio_idx = len(image_paths)
         
+        # Removed fontfile and fontcolor to prevent parse errors on some FFmpeg builds
         filters.append(
             f"[{audio_idx}:a]showcqt=s={w}x{viz_h}:"
             f"count=6:fcount=2:sono_h=0:bar_h=1:sono_g=4:bar_g=2:"
-            f"fontfile='{safe_font_path}':fontcolor='{_hex_to_ffmpeg_color(primary_color)}':tc=0.33:tlength=2[viz]"
+            f"tc=0.33:tlength=2[viz]"
         )
 
         viz_y = h - viz_h - 20
