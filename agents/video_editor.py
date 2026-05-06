@@ -157,6 +157,7 @@ class VideoEditor:
 
         filters = []
         concat_inputs = ""
+        img_durations = []
         
         # 1. Build Parallax Slideshow
         for i in range(num_images):
@@ -169,6 +170,7 @@ class VideoEditor:
             
             # Distribute remainder frames to early images
             current_frames = frames_per_img + (1 if i < extra_frames else 0)
+            img_durations.append(current_frames / fps)
                 
             filters.append(
                 f"[{i}:v]scale={w}:{h}:force_original_aspect_ratio=increase,"
@@ -267,9 +269,9 @@ class VideoEditor:
 
         cmd = ["ffmpeg", "-y"]
         # Add all images as inputs
-        for img in image_paths:
+        for i, img in enumerate(image_paths):
             # We loop the image so zoompan has enough frames
-            cmd.extend(["-loop", "1", "-t", str(duration_per_img), "-i", str(img)])
+            cmd.extend(["-loop", "1", "-t", str(img_durations[i]), "-i", str(img)])
             
         # Add audio as input
         cmd.extend(["-i", str(audio_path)])

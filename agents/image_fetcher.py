@@ -39,6 +39,9 @@ class ImageFetcher:
         from concurrent.futures import ThreadPoolExecutor, as_completed
 
         def download_single(i, prompt):
+            # Stagger startup to prevent hammering the API instantly
+            time.sleep(i * 1.5)
+
             safe_name = f"bg_img_{i:02d}.jpg"
             output_path = self.temp_dir / safe_name
             
@@ -49,7 +52,7 @@ class ImageFetcher:
             # explicitly ask for flux model which is best for 16:9
             url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=1920&height=1080&nologo=true&seed={seed}&model=flux"
             
-            for attempt in range(3):
+            for attempt in range(5):
                 try:
                     logger.info(f"Downloading image {i+1}/10 (Attempt {attempt+1})...")
                     headers = {
@@ -69,16 +72,28 @@ class ImageFetcher:
                         raise ValueError("Downloaded image is too small (likely corrupt).")
                         
                     return i, output_path
+                except requests.exceptions.HTTPError as e:
+                    logger.error(f"Failed to generate image {i+1} on attempt {attempt+1}: {e}")
+                    if attempt < 4:
+                        if e.response is not None and e.response.status_code == 429:
+                            retry_after = int(e.response.headers.get("Retry-After", 15))
+                            logger.info(f"Rate limited (429). Sleeping {retry_after}s...")
+                            time.sleep(retry_after)
+                        else:
+                            wait_time = 5 * (2 ** attempt)
+                            time.sleep(wait_time + random.uniform(0, 3))
                 except Exception as e:
                     logger.error(f"Failed to generate image {i+1} on attempt {attempt+1}: {e}")
-                    if attempt < 2:
-                        time.sleep(5)
+                    if attempt < 4:
+                        wait_time = 5 * (2 ** attempt)
+                        logger.info(f"Sleeping {wait_time}s before retrying slot {i+1}...")
+                        time.sleep(wait_time + random.uniform(0, 3))
             
             logger.error(f"Slot {i+1} completely failed.")
             return i, None
 
-        # Execute in parallel with 5 workers, maintaining strict order
-        with ThreadPoolExecutor(max_workers=5) as executor:
+        # Execute in parallel with 2 workers to prevent Pollinations.ai 429 Rate Limits
+        with ThreadPoolExecutor(max_workers=2) as executor:
             futures = [executor.submit(download_single, i, p) for i, p in enumerate(prompts)]
             
             # Iterate through futures in the order they were submitted (preserves narrative order)
