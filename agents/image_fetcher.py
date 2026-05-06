@@ -17,37 +17,37 @@ class ImageFetcher:
 
     def fetch_images(self, brief: CreativeBrief) -> list[Path]:
         """
-        Generates and downloads a sequence of images for the video.
+        Generates and downloads a sequence of images for the video in parallel.
         """
-        image_paths = []
         prompts = brief.image_prompts
         if not prompts:
             logger.warning("No image prompts found. Generating a default prompt.")
             prompts = [f"lo-fi aesthetic, {brief.mood} vibe, highly detailed 4k"] * 10
 
-        # Ensure we have at least 10 images (if they provided fewer, we repeat the last one)
+        # Ensure exactly 10 images
         while len(prompts) < 10:
             prompts.append(prompts[-1])
-            
-        # We only need 10 images to avoid taking too long
         prompts = prompts[:10]
 
-        logger.info(f"Generating {len(prompts)} images via Pollinations.ai...")
+        logger.info(f"Generating {len(prompts)} images via Pollinations.ai (Parallel)...")
 
-        for i, prompt in enumerate(prompts):
-            # Safe filename
+        image_paths = [None] * 10
+        
+        import requests
+        import time
+        import random
+        from concurrent.futures import ThreadPoolExecutor, as_completed
+
+        def download_single(i, prompt):
             safe_name = f"bg_img_{i:02d}.jpg"
             output_path = self.temp_dir / safe_name
             
-            # Encode prompt for URL
-            # Add some base style tags to ensure consistency
             full_prompt = f"{prompt}, anime lo-fi style, masterpiece, 8k resolution, cinematic lighting"
             encoded_prompt = urllib.parse.quote(full_prompt)
-            
-            url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=1920&height=1080&nologo=true"
-            
-            import requests
-            import time
+            # Added a random seed to bypass cache and ensure unique images
+            seed = random.randint(1, 100000)
+            # explicitly ask for flux model which is best for 16:9
+            url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=1920&height=1080&nologo=true&seed={seed}&model=flux"
             
             for attempt in range(3):
                 try:
@@ -58,7 +58,6 @@ class ImageFetcher:
                     response = requests.get(url, headers=headers, timeout=120)
                     response.raise_for_status()
                     
-                    # Verify it's actually an image
                     content_type = response.headers.get("Content-Type", "")
                     if "image" not in content_type:
                         raise ValueError(f"Received non-image content type: {content_type}")
@@ -66,28 +65,37 @@ class ImageFetcher:
                     with open(output_path, "wb") as f:
                         f.write(response.content)
                     
-                    # Final check: is the file non-empty?
                     if output_path.stat().st_size < 100:
                         raise ValueError("Downloaded image is too small (likely corrupt).")
                         
-                    image_paths.append(output_path)
-                    
-                    # Sleep to respect rate limits
-                    time.sleep(3)
-                    break
+                    return i, output_path
                 except Exception as e:
                     logger.error(f"Failed to generate image {i+1} on attempt {attempt+1}: {e}")
                     if attempt < 2:
-                        time.sleep(5) # Wait before retry
-                    else:
-                        # Final attempt failed
-                        if image_paths:
-                            logger.warning(f"Falling back to previous image for slot {i+1}")
-                            image_paths.append(image_paths[-1])
-                        else:
-                            logger.error(f"Slot {i+1} failed and no previous image to fallback to.")
+                        time.sleep(5)
+            
+            logger.error(f"Slot {i+1} completely failed.")
+            return i, None
 
-        if not image_paths:
+        # Execute in parallel with 5 workers
+        with ThreadPoolExecutor(max_workers=5) as executor:
+            futures = [executor.submit(download_single, i, p) for i, p in enumerate(prompts)]
+            for future in as_completed(futures):
+                idx, path = future.result()
+                image_paths[idx] = path
+
+        # Fill in any failed slots with the previous successful image
+        final_paths = []
+        last_good = None
+        for path in image_paths:
+            if path is not None:
+                final_paths.append(path)
+                last_good = path
+            elif last_good is not None:
+                logger.warning("Falling back to previous image for a failed slot.")
+                final_paths.append(last_good)
+
+        if not final_paths:
             raise RuntimeError("Failed to generate any images for the video.")
             
-        return image_paths
+        return final_paths

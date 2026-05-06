@@ -159,7 +159,8 @@ class VideoEditor:
         # 1. Build Parallax Slideshow
         for i in range(num_images):
             # Dynamic zoom speed tied to BPM
-            zoom_speed = 0.0005 * (bpm / 80.0) 
+            # Using 0.0002 for a slower, smoother zoom effect
+            zoom_speed = 0.0002 * (bpm / 80.0) 
             zoom_max = 1.0 + (bpm / 500.0)
             
             # Use simple zoom addition to avoid min() comma parsing errors in FFmpeg
