@@ -269,7 +269,7 @@ class VideoEditor:
         cmd.extend(["-i", str(audio_path)])
 
         cmd.extend([
-            "-filter_script", str(filter_script_path),
+            "-filter_complex_script", str(filter_script_path),
             "-map", f"[{last_label}]",
             "-map", f"{audio_idx}:a",
             "-c:v", codec,
