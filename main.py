@@ -142,9 +142,19 @@ def process_single(audio_path: Path) -> PipelineResult:
         if config.auto_shorts:
             from agents.distributor import Distributor
             distributor = Distributor()
+
+            # Pick the best image for the Short based on Director's analysis
+            short_img = image_paths[0]  # default
+            if brief.has_sections and brief.shorts.image_section:
+                # Find the section index that matches the AI-selected section
+                for i, sec in enumerate(brief.sections):
+                    if sec.name == brief.shorts.image_section and i < len(image_paths):
+                        short_img = image_paths[i]
+                        break
+
             short_path = distributor.create_short(
                 audio_path=audio_path,
-                background_path=image_paths[0],  # Use the first image for the short
+                background_path=short_img,
                 brief=brief,
                 shorts_text=metadata.shorts_text,
             )
@@ -233,23 +243,23 @@ def process_single(audio_path: Path) -> PipelineResult:
 
 
 def process_batch(audio_dir: Path) -> BatchResult:
-    """Process all MP3 files in a directory."""
+    """Process only the NEWEST MP3 file in a directory (by modification time)."""
     batch = BatchResult()
     start = time.time()
 
-    mp3_files = sorted(audio_dir.glob("*.mp3"))
+    mp3_files = sorted(audio_dir.glob("*.mp3"), key=lambda f: f.stat().st_mtime, reverse=True)
     if not mp3_files:
         logger.warning("No MP3 files found in %s", audio_dir)
         return batch
 
-    logger.info("Found %d MP3 files to process.", len(mp3_files))
+    # Process only the newest file to avoid timeouts and duplicates
+    newest = mp3_files[0]
+    logger.info("Found %d MP3 files. Processing newest: %s", len(mp3_files), newest.name)
 
-    for mp3 in mp3_files:
-        result = process_single(mp3)
-        batch.results.append(result)
+    result = process_single(newest)
+    batch.results.append(result)
 
     batch.total_time_sec = time.time() - start
-
     logger.info(
         "BATCH COMPLETE: %d/%d succeeded in %.1fs",
         batch.succeeded, len(batch.results), batch.total_time_sec,

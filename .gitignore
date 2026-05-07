@@ -7,11 +7,14 @@ venv/
 
 # Temporary files
 temp/
+temp_*/
 *.tmp
 
 # Output files (too large for git)
 output/*.mp4
 output/*.avi
+output/*.jpg
+output/*.png
 
 # OS files
 .DS_Store

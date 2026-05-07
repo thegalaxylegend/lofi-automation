@@ -1,11 +1,12 @@
 """
-Agent 10: The Distributor — YouTube Shorts Factory.
+Agent 10: The Distributor — AI-Directed YouTube Shorts Factory.
 
-Takes a finished long-form video and creates a vertical Short:
-  1. Extracts the most energetic 30-50 second segment
-  2. Crops to 9:16 vertical (1080x1920)
-  3. Adds floating POV/relatable text overlay
-  4. Renders via FFmpeg
+Uses the Director's creative brief to create intelligent Shorts:
+  1. AI-selected best segment (not blind middle 40 seconds)
+  2. Vertical crop with slow pan for visual movement
+  3. Hook text in first 1.5 seconds (POV style)
+  4. Emotional mood text in the middle
+  5. No fade out (encourages replay/loop)
 """
 
 from __future__ import annotations
@@ -15,16 +16,13 @@ import subprocess
 from pathlib import Path
 
 from agents.director import CreativeBrief
-from core.config import Config, OUTPUT_DIR
+from core.config import Config, OUTPUT_DIR, TEMP_DIR, TEMPLATES_DIR
 
 logger = logging.getLogger(__name__)
 
 
 class Distributor:
-    """
-    Creates YouTube Shorts from long-form videos.
-    Extracts the best segment and reformats for vertical.
-    """
+    """Creates AI-directed YouTube Shorts from the Director's creative brief."""
 
     def __init__(self) -> None:
         self.config = Config()
@@ -38,83 +36,112 @@ class Distributor:
         *,
         output_name: str | None = None,
     ) -> Path:
-        """
-        Create a vertical YouTube Short.
-
-        Args:
-            audio_path: Original MP3 file.
-            background_path: Background video.
-            brief: CreativeBrief from the Director.
-            shorts_text: POV text to overlay.
-            output_name: Optional custom filename.
-
-        Returns:
-            Path to the rendered Short MP4.
-        """
         audio_path = Path(audio_path)
         background_path = Path(background_path)
         sc = self.config.channel.shorts
-        colors = self.config.channel.brand_colors
 
         if output_name is None:
-            stem = audio_path.stem
-            output_name = f"{stem}_short.mp4"
+            output_name = f"{audio_path.stem}_short.mp4"
         output_path = OUTPUT_DIR / output_name
 
-        max_dur = sc.max_duration_sec
         w, h = sc.width, sc.height
+        max_dur = sc.max_duration_sec
 
         # Get audio duration
         duration = self._get_duration(audio_path)
         if duration <= 0:
             raise ValueError(f"Cannot get duration for {audio_path}")
 
-        # Pick the segment: use the middle portion for best energy
-        if duration > max_dur:
-            start_time = max(0, (duration - max_dur) / 2)
-            segment_dur = max_dur
+        # AI-selected segment from Director's brief
+        if brief.has_sections and brief.shorts.duration_sec > 0:
+            start_time = brief.shorts.recommended_start_sec
+            segment_dur = min(brief.shorts.duration_sec, max_dur)
+            hook_text = brief.shorts.hook_text
+            mood_text = brief.shorts.mood_text
+            logger.info(
+                "AI-selected Short segment: %.1fs-%.1fs (%s)",
+                start_time, start_time + segment_dur, brief.shorts.reasoning[:60],
+            )
         else:
-            start_time = 0
-            segment_dur = duration
+            # Fallback: middle portion
+            if duration > max_dur:
+                start_time = max(0, (duration - max_dur) / 2)
+                segment_dur = max_dur
+            else:
+                start_time, segment_dur = 0, duration
+            hook_text = ""
+            mood_text = shorts_text or brief.text_overlay_suggestion or ""
+
+        # Ensure segment doesn't exceed audio
+        if start_time + segment_dur > duration:
+            start_time = max(0, duration - segment_dur)
 
         logger.info(
-            "Distributor: creating Short from %.1fs-%.1fs (%.1fs total)",
+            "Distributor: Short from %.1fs-%.1fs (%.1fs)",
             start_time, start_time + segment_dur, segment_dur,
         )
 
-        # Prepare text overlay
-        if not shorts_text:
-            shorts_text = brief.text_overlay_suggestion or ""
-        safe_text = shorts_text.replace("'", "\\'").replace(":", "\\:")
+        # Get font
+        font_path = self._ensure_font()
+        safe_font = str(font_path.absolute()).replace("\\", "/").replace(":", "\\:")
 
-        # Build FFmpeg filter for vertical crop + text
+        # Build filter chain
         filters: list[str] = []
 
-        # Crop to vertical center
+        # Scale + vertical center crop with slow zoom for movement
+        zoom_frames = int(segment_dur * 30)
         filters.append(
-            f"[0:v]scale=-2:{h},crop={w}:{h}:(iw-{w})/2:0[cropped]"
+            f"[0:v]scale=-2:{h}:force_original_aspect_ratio=increase,"
+            f"crop={w}:{h}:(iw-{w})/2:0,"
+            f"zoompan=z='zoom+0.0001':d={zoom_frames}:s={w}x{h}:fps=30,"
+            f"setpts=PTS-STARTPTS[cropped]"
         )
 
-        # Add text overlay if provided
-        if safe_text:
+        last_label = "cropped"
+
+        # Fade in (but NO fade out — encourages replay)
+        filters.append(f"[{last_label}]fade=t=in:st=0:d=0.5[faded]")
+        last_label = "faded"
+
+        # Hook text (first 1.5 seconds — stops scrollers)
+        if hook_text:
+            hook_file = TEMP_DIR / f"{audio_path.stem}_hook.txt"
+            hook_file.write_text(hook_text, encoding="utf-8")
+            safe_hook = str(hook_file.absolute()).replace("\\", "/").replace(":", "\\:")
             filters.append(
-                f"[cropped]drawtext="
-                f"text='{safe_text}':"
+                f"[{last_label}]drawtext="
+                f"textfile='{safe_hook}':"
+                f"fontsize=32:fontcolor=white@0.95:"
+                f"x=(w-tw)/2:y=h*0.35:"
+                f"fontfile='{safe_font}':"
+                f"borderw=2:bordercolor=black@0.6:"
+                f"enable='between(t,0.3,4.0)'[hooked]"
+            )
+            last_label = "hooked"
+
+        # Mood text (middle of the short — emotional punch)
+        if mood_text:
+            mood_file = TEMP_DIR / f"{audio_path.stem}_mood.txt"
+            mood_file.write_text(mood_text, encoding="utf-8")
+            safe_mood = str(mood_file.absolute()).replace("\\", "/").replace(":", "\\:")
+            mid_start = segment_dur * 0.35
+            mid_end = segment_dur * 0.70
+            filters.append(
+                f"[{last_label}]drawtext="
+                f"textfile='{safe_mood}':"
                 f"fontsize=36:fontcolor=white@0.9:"
                 f"x=(w-tw)/2:y=h*0.42:"
-                f"font='sans-serif':"
-                f"borderw=2:bordercolor=black@0.5[final]"
+                f"fontfile='{safe_font}':"
+                f"borderw=2:bordercolor=black@0.5:"
+                f"enable='between(t,{mid_start:.1f},{mid_end:.1f})'[final]"
             )
             last_label = "final"
-        else:
-            last_label = "cropped"
 
         filter_complex = ";".join(filters)
 
         cmd = [
             "ffmpeg", "-y",
-            "-ss", str(start_time),
-            "-stream_loop", "-1",
+            "-loop", "1",
             "-i", str(background_path),
             "-ss", str(start_time),
             "-i", str(audio_path),
@@ -141,7 +168,7 @@ class Distributor:
             raise RuntimeError("Short render timed out")
 
         if not output_path.exists() or output_path.stat().st_size < 1024:
-            raise RuntimeError(f"Short output missing or corrupted: {output_path}")
+            raise RuntimeError(f"Short output missing: {output_path}")
 
         size_mb = output_path.stat().st_size / (1024 * 1024)
         logger.info("✅ Short rendered: %s (%.1f MB)", output_path.name, size_mb)
@@ -159,3 +186,21 @@ class Distributor:
             return float(result.stdout.strip())
         except Exception:
             return 0.0
+
+    @staticmethod
+    def _ensure_font() -> Path:
+        """Reuse the same font logic as VideoEditor."""
+        fonts_dir = TEMPLATES_DIR / "fonts"
+        fonts_dir.mkdir(parents=True, exist_ok=True)
+        font_path = fonts_dir / "Roboto-Regular.ttf"
+        if font_path.exists() and font_path.stat().st_size > 50_000:
+            return font_path
+
+        for sys_font in [
+            Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"),
+            Path("C:/Windows/Fonts/arial.ttf"),
+        ]:
+            if sys_font.exists():
+                return sys_font
+
+        return font_path  # Will use default if missing

@@ -1,9 +1,10 @@
-name: Weekly Compilation Mix
+name: Weekly Compilation Mix (DISABLED - pending compiler agent)
 
 on:
-  schedule:
-    # Run every Sunday at 04:00 UTC (9:30 AM IST)
-    - cron: '0 4 * * 0'
+  # DISABLED: BackgroundFetcher and Compiler agents don't exist yet.
+  # Re-enable once the 1-hour study mix feature is built.
+  # schedule:
+  #   - cron: '0 4 * * 0'
   workflow_dispatch:
 
 permissions:

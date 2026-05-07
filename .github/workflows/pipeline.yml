@@ -29,8 +29,11 @@ jobs:
           python-version: '3.12'
           cache: 'pip'
 
-      - name: Install FFmpeg
+      - name: Install FFmpeg & fonts
         uses: FedericoCarboni/setup-ffmpeg@v3
+
+      - name: Install system fonts (for FFmpeg text rendering)
+        run: sudo apt-get install -y -qq fonts-dejavu-core fonts-noto
 
       - name: Install Python dependencies
         run: pip install -r requirements.txt

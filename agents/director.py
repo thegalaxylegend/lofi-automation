@@ -1,83 +1,256 @@
 """
-Agent 1: The Director — Audio Analysis Agent.
+Agent 1: The Director — AI Creative Engine.
 
-Listens to an MP3 file via Gemini's native audio understanding.
-Extracts mood, BPM, energy, instruments, and generates a creative
-brief that tells every downstream agent exactly what to produce.
+Listens to an MP3 via Gemini's native audio understanding and produces
+a COMPLETE CREATIVE BRIEF — a 10-dimension analysis that drives every
+downstream agent with song-specific, section-by-section instructions.
+
+This is the BRAIN of the entire system. Every other agent reads this brief.
 """
 
 from __future__ import annotations
 
 import json
 import logging
+from datetime import datetime, timezone
 from pathlib import Path
 from pydantic import BaseModel, Field, field_validator, ValidationError
+from typing import Any
 
 from core.api_rotation import APIRotator
 from core.memory import director_memory
 
 logger = logging.getLogger(__name__)
 
-ANALYSIS_PROMPT = """You are the Creative Director for a premium lo-fi YouTube channel.
+# ──────────────────────────────────────────────
+#  The Complete Creative Director Prompt
+# ──────────────────────────────────────────────
+ANALYSIS_PROMPT = """You are the Creative Director for "Mood Wire" — a premium Hindi music YouTube channel targeting Indian students (JEE, NEET, college). Your audience is 16-24 year old Indians who listen to emotional/motivational Hindi songs during late-night study sessions.
 
-Listen to this audio track carefully. Analyze every aspect of it.
+Listen to this ENTIRE audio track deeply. Feel its emotional journey — not just one mood, but how the emotion EVOLVES from start to finish.
 
-Return ONLY valid JSON with this exact structure (no markdown, no explanation):
+You must produce a COMPLETE CREATIVE BRIEF. Every editor, thumbnail artist, and marketer on the team will use YOUR brief as their only guide.
 
-{
-  "mood": "<primary mood: one of melancholic, energetic, peaceful, nostalgic, dark, dreamy, romantic, anxious>",
+Current date: {current_date}
+Season context: {season_context}
+
+Return ONLY valid JSON with this EXACT structure:
+
+{{
+  "song_dna": {{
+    "detected_title": "<title if vocals contain it, or descriptive name>",
+    "language": "<hindi/english/mixed/instrumental>",
+    "genre": "<e.g., emotional ballad, lo-fi hip hop, motivational, romantic>",
+    "overall_feeling": "<one evocative sentence capturing the song's soul>",
+    "duration_seconds": <estimated total duration as integer>
+  }},
+
+  "mood": "<primary mood: melancholic, energetic, peaceful, nostalgic, dark, dreamy, romantic, anxious>",
   "secondary_mood": "<secondary mood if mixed, or null>",
   "bpm_estimate": <estimated BPM as integer>,
-  "energy": "<low, medium, high>",
-  "instruments": ["<list of detected instruments/elements>"],
-  "emotional_tone": "<1-2 sentence description of the emotional feeling>",
-  "visual_style": "<recommended visual aesthetic: e.g. rainy tokyo street, cozy study room, starry rooftop>",
-  "color_palette": ["<hex color 1>", "<hex color 2>", "<hex color 3>"],
-  "visualizer_intensity": "<subtle, moderate, intense — how reactive should the audio visualizer be>",
-  "text_overlay_suggestion": "<a short poetic/relatable line for the video, e.g. 'for when it's 3am and the exam is tomorrow'>",
-  "image_prompts": [
-    "<Prompt 1: Describe the opening scene matching the mood, highly detailed 4k cinematic>",
-    "<Prompt 2: The narrative progresses slightly...>",
-    "...",
-    "<Prompt 10: The final closing scene>"
-  ],
-  "thumbnail_prompt": "<detailed prompt for AI image generation for the thumbnail>",
-  "title_keywords": ["<keyword1>", "<keyword2>", "<keyword3>"]
-}
+  "energy": "<low/medium/high>",
+  "instruments": ["<detected instruments/elements>"],
 
-Rules:
-- BPM: estimate based on the tempo you hear.
-- Color palette: choose colors that match the mood for video color grading.
-- Image prompts: Write exactly 10 highly detailed prompts for an AI image generator (like Midjourney). They should form a visual story over the course of the song. Describe lighting, atmosphere, style, and subject matter clearly without text.
-- Thumbnail prompt: describe a scene that captures the mood (no text in the image).
-- Be specific and creative. This brief drives the entire video production.
+  "emotional_journey": {{
+    "arc_type": "<despair_to_hope/building_intensity/calm_throughout/emotional_rollercoaster/slow_burn>",
+    "arc_description": "<2-3 sentences describing how the emotion transforms>"
+  }},
+
+  "narrative_thread": {{
+    "story_summary": "<The visual story connecting ALL images, e.g. 'A student journey through a lonely exam night, from isolation to finding hope in sunrise'>",
+    "visual_motif": "<One recurring element in every image: rain, city lights, empty spaces, windows>"
+  }},
+
+  "sections": [
+    {{
+      "name": "<intro/verse_1/pre_chorus/chorus/verse_2/bridge/outro>",
+      "start_sec": <float>,
+      "end_sec": <float>,
+      "energy": "<very_low/low/medium/high/very_high/fading>",
+      "emotion": "<specific emotion for THIS section>",
+      "musical_elements": "<what instruments/sounds are active here>",
+
+      "image_prompt": "<VERY detailed AI image prompt, minimum 40 words. Include: specific Indian cultural elements (hostel room, chai tapri, railway platform, campus), lighting, color palette, atmosphere, subject/character, camera angle, art style (lo-fi anime/cinematic). The visual_motif MUST appear in this prompt.>",
+
+      "color_grade": {{
+        "brightness": <-0.1 to 0.1>,
+        "contrast": <0.8 to 1.3>,
+        "saturation": <0.5 to 1.4>,
+        "red_shift": <-0.1 to 0.1>,
+        "green_shift": <-0.1 to 0.1>,
+        "blue_shift": <-0.1 to 0.1>
+      }},
+
+      "zoom": {{
+        "direction": "<zoom_in/zoom_out/pan_left/pan_right/static>",
+        "speed": "<very_slow/slow/medium/fast>"
+      }},
+
+      "grain_intensity": <0 to 6>,
+
+      "text_overlay": {{
+        "text": "<evocative Hindi or English text, or empty string if none>",
+        "appear_at_sec": <float or 0>,
+        "duration_sec": <float or 0>,
+        "position": "<center/center_bottom/top_center>"
+      }}
+    }}
+  ],
+
+  "transitions": [
+    {{
+      "from_section": "<name>",
+      "to_section": "<name>",
+      "type": "<slow_dissolve/fast_dissolve/fade_through_black/direct_cut>",
+      "duration_sec": <0.5 to 4.0>
+    }}
+  ],
+
+  "shorts": {{
+    "recommended_start_sec": <float>,
+    "recommended_end_sec": <float>,
+    "duration_sec": <int, 15-58>,
+    "reasoning": "<why this segment is the best hook>",
+    "hook_text": "<POV text for first 1.5 seconds, relatable to Indian students>",
+    "mood_text": "<Hindi emotional text for middle of Short>",
+    "image_section": "<which section's image to use>"
+  }},
+
+  "thumbnail": {{
+    "best_section": "<which section's image makes the best thumbnail>",
+    "thumbnail_prompt": "<separate detailed prompt for thumbnail image — more vibrant, more contrast, eye-catching at small size, no text in the image>",
+    "suggested_title_text": "<bold Hindi text for the thumbnail overlay>",
+    "text_color": "<hex color for title text>",
+    "text_glow_color": "<hex color for glow>"
+  }},
+
+  "visual_style": "<overall visual aesthetic>",
+  "color_palette": ["<hex1>", "<hex2>", "<hex3>"],
+  "text_overlay_suggestion": "<best single poetic line from the song>",
+  "image_prompts": ["<prompt1>", "<prompt2>", "<prompt3>", "<prompt4>", "<prompt5>"],
+  "thumbnail_prompt": "<detailed thumbnail generation prompt>",
+  "title_keywords": ["<keyword1>", "<keyword2>", "<keyword3>"],
+  "visualizer_intensity": "subtle"
+}}
+
+CRITICAL RULES:
+- Return ONLY valid JSON. No markdown. No explanation.
+- The "sections" array must cover the ENTIRE song duration with no gaps.
+- Each section's color_grade must be DIFFERENT — no two sections look the same.
+- Each image_prompt MUST include the visual_motif element.
+- Include Indian cultural elements in image prompts when appropriate.
+- The shorts segment should be the ACTUAL best hook, not always the middle.
+- The "image_prompts" array must have exactly 5 prompts matching the sections (one per section, pick the best 5 if more sections exist).
+- Be SPECIFIC to THIS song. Do not give generic responses.
 """
 
 
-class CreativeBrief(BaseModel):
-    """Structured output from the Director's audio analysis."""
+# ──────────────────────────────────────────────
+#  Data Models
+# ──────────────────────────────────────────────
 
+class SectionColorGrade(BaseModel):
+    brightness: float = 0.0
+    contrast: float = 1.0
+    saturation: float = 0.9
+    red_shift: float = 0.0
+    green_shift: float = 0.0
+    blue_shift: float = 0.0
+
+class SectionZoom(BaseModel):
+    direction: str = "zoom_in"
+    speed: str = "slow"
+
+class SectionTextOverlay(BaseModel):
+    text: str = ""
+    appear_at_sec: float = 0
+    duration_sec: float = 0
+    position: str = "center"
+
+class SongSection(BaseModel):
+    name: str = "intro"
+    start_sec: float = 0
+    end_sec: float = 30
+    energy: str = "low"
+    emotion: str = "peaceful"
+    musical_elements: str = ""
+    image_prompt: str = ""
+    color_grade: SectionColorGrade = Field(default_factory=SectionColorGrade)
+    zoom: SectionZoom = Field(default_factory=SectionZoom)
+    grain_intensity: int = 3
+    text_overlay: SectionTextOverlay = Field(default_factory=SectionTextOverlay)
+
+class SongTransition(BaseModel):
+    from_section: str = ""
+    to_section: str = ""
+    type: str = "slow_dissolve"
+    duration_sec: float = 1.5
+
+class ShortsDirective(BaseModel):
+    recommended_start_sec: float = 0
+    recommended_end_sec: float = 40
+    duration_sec: int = 40
+    reasoning: str = ""
+    hook_text: str = ""
+    mood_text: str = ""
+    image_section: str = "chorus"
+
+class ThumbnailDirective(BaseModel):
+    best_section: str = "chorus"
+    thumbnail_prompt: str = ""
+    suggested_title_text: str = ""
+    text_color: str = "#FFFFFF"
+    text_glow_color: str = "#FF6B9D"
+
+class EmotionalJourney(BaseModel):
+    arc_type: str = "slow_burn"
+    arc_description: str = ""
+
+class NarrativeThread(BaseModel):
+    story_summary: str = ""
+    visual_motif: str = "rain"
+
+class SongDNA(BaseModel):
+    detected_title: str = ""
+    language: str = "hindi"
+    genre: str = "emotional ballad"
+    overall_feeling: str = ""
+    duration_seconds: int = 120
+
+
+class CreativeBrief(BaseModel):
+    """The complete 10-dimension creative brief from the Director."""
+
+    # Legacy fields (backward compatible with old code)
     mood: str = "peaceful"
     secondary_mood: str | None = None
     bpm_estimate: int = 90
     energy: str = "low"
     instruments: list[str] = Field(default_factory=list)
-    emotional_tone: str = ""
     visual_style: str = "cozy study room"
     color_palette: list[str] = Field(default_factory=lambda: ["#1a1a2e", "#4a3d8f", "#6c3ce1"])
     visualizer_intensity: str = "subtle"
     text_overlay_suggestion: str = ""
-    image_prompts: list[str] = Field(default_factory=lambda: ["A cozy rainy window at night, lo-fi anime style, 4k, masterpiece"] * 10)
+    image_prompts: list[str] = Field(default_factory=lambda: ["lo-fi anime style, cozy rainy window, 4k"] * 5)
     thumbnail_prompt: str = ""
     title_keywords: list[str] = Field(default_factory=list)
     source_file: str = ""
+
+    # New Creative Engine fields
+    song_dna: SongDNA = Field(default_factory=SongDNA)
+    emotional_journey: EmotionalJourney = Field(default_factory=EmotionalJourney)
+    narrative_thread: NarrativeThread = Field(default_factory=NarrativeThread)
+    sections: list[SongSection] = Field(default_factory=list)
+    transitions: list[SongTransition] = Field(default_factory=list)
+    shorts: ShortsDirective = Field(default_factory=ShortsDirective)
+    thumbnail: ThumbnailDirective = Field(default_factory=ThumbnailDirective)
 
     @field_validator("color_palette", mode="before")
     @classmethod
     def ensure_hex_prefix(cls, v):
         if not isinstance(v, list):
             return ["#1a1a2e", "#4a3d8f", "#6c3ce1"]
-        return [c if c.startswith("#") else f"#{c}" for c in v]
+        return [c if str(c).startswith("#") else f"#{c}" for c in v]
 
     @field_validator("text_overlay_suggestion", mode="before")
     @classmethod
@@ -86,14 +259,44 @@ class CreativeBrief(BaseModel):
             return ""
         return str(v)
 
+    @property
+    def has_sections(self) -> bool:
+        """Whether the Director produced section-level analysis."""
+        return len(self.sections) >= 2
+
     def to_dict(self) -> dict:
         return self.model_dump()
 
 
+# ──────────────────────────────────────────────
+#  Season Context
+# ──────────────────────────────────────────────
+def _get_season_context() -> str:
+    month = datetime.now(timezone.utc).month
+    seasons = {
+        1: "Board exam preparation season, pre-JEE stress, winter cold nights",
+        2: "Board exams approaching, Valentine's Day, intense study pressure",
+        3: "Board exams happening, farewell season, last days of school",
+        4: "Results anxiety, farewell season, new beginnings ahead",
+        5: "JEE Mains/Advanced season, summer heat, exam results",
+        6: "Results declared, college admissions, new chapter beginning",
+        7: "Monsoon begins, new college life, hostel life starts, homesickness",
+        8: "Monsoon, settling into college, independence, missing home",
+        9: "Mid-semester season, Navratri, campus life settling in",
+        10: "Diwali approaching, homesickness peaks, festival celebrations",
+        11: "Winter exams, year-end reflection, cold campus nights",
+        12: "Winter break, going home, New Year hopes, reunion with family",
+    }
+    return seasons.get(month, "General study and campus life")
+
+
+# ──────────────────────────────────────────────
+#  Director Agent
+# ──────────────────────────────────────────────
 class Director:
     """
     Analyzes an audio file and produces a CreativeBrief that drives
-    all downstream agents (Video Editor, Marketer, Thumbnail Creator).
+    all downstream agents with song-specific creative decisions.
     """
 
     def __init__(self) -> None:
@@ -101,25 +304,14 @@ class Director:
         self.memory = director_memory()
 
     def analyze(self, audio_path: str | Path) -> CreativeBrief:
-        """
-        Listen to an MP3 and return a structured CreativeBrief.
-
-        Args:
-            audio_path: Path to the MP3 file.
-
-        Returns:
-            CreativeBrief with mood, colors, visual style, etc.
-        """
         audio_path = Path(audio_path)
         if not audio_path.exists():
             raise FileNotFoundError(f"Audio file not found: {audio_path}")
 
         logger.info("Director analyzing: %s", audio_path.name)
 
-        # Enhance prompt with learned preferences from memory
         prompt = self._build_prompt()
 
-        # Send audio to Gemini for analysis
         raw_response = self.rotator.generate_text_with_media(
             media_path=str(audio_path),
             prompt=prompt,
@@ -128,44 +320,40 @@ class Director:
             temperature=0.7,
         )
 
-        # Parse the JSON response
         brief = self._parse_response(raw_response, str(audio_path))
 
         logger.info(
-            "Director brief: mood=%s, energy=%s, style=%s",
-            brief.mood, brief.energy, brief.visual_style,
+            "Director brief: mood=%s, energy=%s, sections=%d, arc=%s",
+            brief.mood, brief.energy, len(brief.sections),
+            brief.emotional_journey.arc_type,
         )
 
         return brief
 
     def _build_prompt(self) -> str:
-        """Enhance the base prompt with learned rules from memory."""
-        base = ANALYSIS_PROMPT
-        mem_data = self.memory.load()
+        base = ANALYSIS_PROMPT.format(
+            current_date=datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+            season_context=_get_season_context(),
+        )
 
-        # If the Analyst has logged performance rules, inject them
+        mem_data = self.memory.load()
         perf_log = mem_data.get("performance_log", [])
         if perf_log:
-            # Get the last 5 performance entries
             recent = perf_log[-5:]
             rules_text = "\n".join(
                 f"- {entry.get('rule', '')}" for entry in recent if entry.get("rule")
             )
             if rules_text:
                 base += (
-                    f"\n\nIMPORTANT — Learned rules from past performance data:\n"
-                    f"{rules_text}\n"
-                    f"Apply these rules when making your creative decisions."
+                    f"\n\nLearned rules from past performance:\n{rules_text}\n"
+                    f"Apply these rules when making creative decisions."
                 )
 
         return base
 
     def _parse_response(self, raw: str, source_file: str) -> CreativeBrief:
-        """Parse the LLM JSON response into a CreativeBrief."""
-        # Strip markdown code fences if present
         cleaned = raw.strip()
         if cleaned.startswith("```"):
-            # Remove ```json and closing ```
             lines = cleaned.split("\n")
             lines = [l for l in lines if not l.strip().startswith("```")]
             cleaned = "\n".join(lines)
@@ -173,8 +361,42 @@ class Director:
         try:
             data = json.loads(cleaned)
             data["source_file"] = source_file
+
+            # Parse nested objects that Pydantic needs help with
+            if "sections" in data and isinstance(data["sections"], list):
+                for i, s in enumerate(data["sections"]):
+                    if isinstance(s, dict):
+                        if "color_grade" in s and isinstance(s["color_grade"], dict):
+                            s["color_grade"] = SectionColorGrade(**s["color_grade"])
+                        if "zoom" in s and isinstance(s["zoom"], dict):
+                            s["zoom"] = SectionZoom(**s["zoom"])
+                        if "text_overlay" in s and isinstance(s["text_overlay"], dict):
+                            s["text_overlay"] = SectionTextOverlay(**s["text_overlay"])
+                        data["sections"][i] = SongSection(**s)
+
+            if "transitions" in data and isinstance(data["transitions"], list):
+                data["transitions"] = [
+                    SongTransition(**t) if isinstance(t, dict) else t
+                    for t in data["transitions"]
+                ]
+
+            for key in ["shorts", "thumbnail", "song_dna", "emotional_journey", "narrative_thread"]:
+                if key in data and isinstance(data[key], dict):
+                    model_map = {
+                        "shorts": ShortsDirective,
+                        "thumbnail": ThumbnailDirective,
+                        "song_dna": SongDNA,
+                        "emotional_journey": EmotionalJourney,
+                        "narrative_thread": NarrativeThread,
+                    }
+                    try:
+                        data[key] = model_map[key](**data[key])
+                    except Exception:
+                        pass
+
             return CreativeBrief.model_validate(data)
+
         except (json.JSONDecodeError, ValidationError) as e:
-            logger.error(f"Director failed to parse LLM response: {e}. Using defaults.")
+            logger.error("Director failed to parse LLM response: %s. Using defaults.", e)
             logger.debug("Raw response: %s", raw[:500])
             return CreativeBrief(source_file=source_file)

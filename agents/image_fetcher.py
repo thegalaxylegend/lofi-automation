@@ -4,6 +4,7 @@ import logging
 from pathlib import Path
 
 from agents.director import CreativeBrief
+from core.config import TEMP_DIR
 
 logger = logging.getLogger(__name__)
 
@@ -12,26 +13,36 @@ class ImageFetcher:
     Downloads AI-generated images using the free Pollinations.ai API based on Director prompts.
     """
     def __init__(self):
-        self.temp_dir = Path("temp")
+        self.temp_dir = TEMP_DIR
         self.temp_dir.mkdir(exist_ok=True)
 
     def fetch_images(self, brief: CreativeBrief) -> list[Path]:
         """
-        Generates and downloads a sequence of images for the video in parallel.
+        Generates and downloads images based on Director's creative brief.
+        Uses section-specific prompts from Creative Engine when available,
+        falls back to generic image_prompts otherwise.
         """
-        prompts = brief.image_prompts
+        # Prefer section-specific prompts from Creative Engine
+        if brief.has_sections:
+            prompts = [sec.image_prompt for sec in brief.sections if sec.image_prompt]
+            target_count = len(brief.sections)
+            logger.info("Using %d section-specific image prompts from Creative Engine", len(prompts))
+        else:
+            prompts = brief.image_prompts
+            target_count = 5
+
         if not prompts:
-            logger.warning("No image prompts found. Generating a default prompt.")
-            prompts = [f"lo-fi aesthetic, {brief.mood} vibe, highly detailed 4k"] * 10
+            logger.warning("No image prompts found. Generating default prompts.")
+            prompts = [f"lo-fi aesthetic, {brief.mood} vibe, highly detailed 4k"] * target_count
 
-        # Ensure exactly 10 images
-        while len(prompts) < 10:
+        # Ensure we have the right number of prompts
+        while len(prompts) < target_count:
             prompts.append(prompts[-1])
-        prompts = prompts[:10]
+        prompts = prompts[:target_count]
 
-        logger.info(f"Generating {len(prompts)} images via Pollinations.ai (Parallel)...")
+        logger.info(f"Generating {len(prompts)} images via Pollinations.ai...")
 
-        image_paths = [None] * 10
+        image_paths = [None] * len(prompts)
         
         import requests
         import time
@@ -54,7 +65,7 @@ class ImageFetcher:
             
             for attempt in range(5):
                 try:
-                    logger.info(f"Downloading image {i+1}/10 (Attempt {attempt+1})...")
+                    logger.info(f"Downloading image {i+1}/{target_count} (Attempt {attempt+1})...")
                     headers = {
                         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
                     }
