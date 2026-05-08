@@ -10,6 +10,9 @@ a production-quality video with:
   - Timed text overlays at meaningful moments
   - Professional fade in/out
   - Audio normalization
+
+Supports FFmpeg builds with or without drawtext filter.
+When drawtext is unavailable, text is burned into images via Pillow.
 """
 
 from __future__ import annotations
@@ -40,7 +43,7 @@ def _get_duration(file_path: str | Path) -> float:
 
 
 def _safe_ffmpeg_path(path: Path) -> str:
-    """Escape path for FFmpeg filter_complex_script (colons, backslashes)."""
+    """Escape path for FFmpeg filter_complex (colons, backslashes)."""
     s = str(path.absolute()).replace("\\", "/")
     s = s.replace(":", "\\:")
     return s
@@ -63,6 +66,65 @@ def _zoom_params(direction: str, speed: str) -> str:
         return f"zoom+{spd:.5f}"
 
 
+def _check_drawtext_support() -> bool:
+    """Check if the installed FFmpeg has drawtext filter support."""
+    try:
+        result = subprocess.run(
+            ["ffmpeg", "-filters"],
+            capture_output=True, text=True, timeout=10,
+        )
+        return "drawtext" in result.stdout
+    except (subprocess.SubprocessError, FileNotFoundError):
+        return False
+
+
+def _burn_text_on_image(
+    image_path: Path,
+    text: str,
+    position: str,
+    font_path: Path,
+    font_size: int = 30,
+    opacity: float = 0.85,
+) -> Path:
+    """
+    Burn text onto an image using Pillow. Returns path to the new image.
+    Used as fallback when FFmpeg drawtext is not available.
+    """
+    from PIL import Image, ImageDraw, ImageFont
+
+    img = Image.open(image_path).convert("RGBA")
+    overlay = Image.new("RGBA", img.size, (0, 0, 0, 0))
+    draw = ImageDraw.Draw(overlay)
+
+    try:
+        font = ImageFont.truetype(str(font_path), font_size)
+    except Exception:
+        font = ImageFont.load_default()
+
+    # Get text bounding box
+    bbox = draw.textbbox((0, 0), text, font=font)
+    tw = bbox[2] - bbox[0]
+    th = bbox[3] - bbox[1]
+    w, h = img.size
+
+    # Calculate position
+    pos_map = {
+        "center": ((w - tw) // 2, (h - th) // 2),
+        "center_bottom": ((w - tw) // 2, int(h * 0.80)),
+        "top_center": ((w - tw) // 2, int(h * 0.10)),
+        "bottom_right": (w - tw - 30, h - th - 30),
+    }
+    xy = pos_map.get(position, pos_map["center"])
+
+    alpha = int(255 * opacity)
+    draw.text(xy, text, font=font, fill=(255, 255, 255, alpha))
+
+    result = Image.alpha_composite(img, overlay).convert("RGB")
+    out_path = image_path.parent / f"{image_path.stem}_text{image_path.suffix}"
+    result.save(out_path, quality=95)
+    return out_path
+
+
 class VideoEditor:
     """Renders production-quality videos using the Director's creative brief."""
 
@@ -70,6 +132,11 @@ class VideoEditor:
         self.config = Config()
         if not shutil.which("ffmpeg"):
             raise EnvironmentError("FFmpeg not found.")
+        self._has_drawtext = _check_drawtext_support()
+        if self._has_drawtext:
+            logger.info("FFmpeg drawtext filter: AVAILABLE")
+        else:
+            logger.warning("FFmpeg drawtext filter: NOT AVAILABLE — using Pillow text burn-in")
 
     def render(
         self,
@@ -121,6 +188,7 @@ class VideoEditor:
                 brief, audio_math, vs, channel_name, filter_script_path,
             )
 
+        # Write filter script and execute FFmpeg
         with open(filter_script_path, "w", encoding="utf-8") as f:
             f.write(filter_text)
 
@@ -160,6 +228,13 @@ class VideoEditor:
         section_images = []
         for i in range(len(sections)):
             section_images.append(image_paths[i % num_images])
+
+        # If drawtext is NOT available, burn watermark + text overlays into images via Pillow
+        if not self._has_drawtext:
+            font_path = self._ensure_font()
+            section_images = self._burn_all_text_into_images(
+                section_images, sections, channel_name, font_path,
+            )
 
         font_path = self._ensure_font()
         safe_font = _safe_ffmpeg_path(font_path)
@@ -245,50 +320,55 @@ class VideoEditor:
             f"fade=t=out:st={fade_out_start:.2f}:d={fade_out}[faded]"
         )
 
-        # Step 4: Channel watermark
-        ch_txt = TEMP_DIR / f"{audio_path.stem}_ch.txt"
-        ch_txt.write_text(channel_name, encoding="utf-8")
-        filters.append(
-            f"[faded]drawtext=textfile='{_safe_ffmpeg_path(ch_txt)}':"
-            f"fontsize=22:fontcolor=white@0.25:"
-            f"x=w-tw-30:y=h-th-30:"
-            f"fontfile='{safe_font}'[watermarked]"
-        )
+        # Step 4 & 5: Text overlays (only if drawtext is available)
+        if self._has_drawtext:
+            # Channel watermark via drawtext
+            ch_txt = TEMP_DIR / f"{audio_path.stem}_ch.txt"
+            ch_txt.write_text(channel_name, encoding="utf-8")
+            filters.append(
+                f"[faded]drawtext=textfile='{_safe_ffmpeg_path(ch_txt)}':"
+                f"fontsize=22:fontcolor=white@0.25:"
+                f"x=w-tw-30:y=h-th-30:"
+                f"fontfile='{safe_font}'[watermarked]"
+            )
 
-        # Step 5: Section-specific text overlays
-        last_label = "watermarked"
-        text_idx = 0
-        for sec in sections:
-            if sec.text_overlay.text and sec.text_overlay.duration_sec > 0:
-                txt_file = TEMP_DIR / f"{audio_path.stem}_txt{text_idx}.txt"
-                txt_file.write_text(sec.text_overlay.text, encoding="utf-8")
-                new_label = f"txt{text_idx}"
-                appear = sec.text_overlay.appear_at_sec
-                end = appear + sec.text_overlay.duration_sec
+            # Section-specific text overlays
+            last_label = "watermarked"
+            text_idx = 0
+            for sec in sections:
+                if sec.text_overlay.text and sec.text_overlay.duration_sec > 0:
+                    txt_file = TEMP_DIR / f"{audio_path.stem}_txt{text_idx}.txt"
+                    txt_file.write_text(sec.text_overlay.text, encoding="utf-8")
+                    new_label = f"txt{text_idx}"
+                    appear = sec.text_overlay.appear_at_sec
+                    end = appear + sec.text_overlay.duration_sec
 
-                pos_map = {
-                    "center": "x=(w-tw)/2:y=(h-th)/2",
-                    "center_bottom": "x=(w-tw)/2:y=h*0.80",
-                    "top_center": "x=(w-tw)/2:y=h*0.10",
-                }
-                pos = pos_map.get(sec.text_overlay.position, pos_map["center"])
+                    pos_map = {
+                        "center": "x=(w-tw)/2:y=(h-th)/2",
+                        "center_bottom": "x=(w-tw)/2:y=h*0.80",
+                        "top_center": "x=(w-tw)/2:y=h*0.10",
+                    }
+                    pos = pos_map.get(sec.text_overlay.position, pos_map["center"])
 
-                filters.append(
-                    f"[{last_label}]drawtext="
-                    f"textfile='{_safe_ffmpeg_path(txt_file)}':"
-                    f"fontsize=30:fontcolor=white@0.85:"
-                    f"{pos}:"
-                    f"fontfile='{safe_font}':"
-                    f"enable='between(t,{appear:.1f},{end:.1f})'[{new_label}]"
-                )
-                last_label = new_label
-                text_idx += 1
+                    filters.append(
+                        f"[{last_label}]drawtext="
+                        f"textfile='{_safe_ffmpeg_path(txt_file)}':"
+                        f"fontsize=30:fontcolor=white@0.85:"
+                        f"{pos}:"
+                        f"fontfile='{safe_font}':"
+                        f"enable='between(t,{appear:.1f},{end:.1f})'[{new_label}]"
+                    )
+                    last_label = new_label
+                    text_idx += 1
 
-        # Final label
-        if last_label != "watermarked":
-            filters.append(f"[{last_label}]copy[final]")
+            # Final label
+            if last_label != "watermarked":
+                filters.append(f"[{last_label}]copy[final]")
+            else:
+                filters.append("[watermarked]copy[final]")
         else:
-            filters.append("[watermarked]copy[final]")
+            # No drawtext: text was already burned into images via Pillow
+            filters.append("[faded]copy[final]")
 
         # Audio normalization
         audio_idx = len(sections)
@@ -296,14 +376,14 @@ class VideoEditor:
 
         filter_text = ";\n".join(filters)
 
-        # Build command
+        # Build command — use -filter_complex instead of deprecated -filter_complex_script
         cmd = ["ffmpeg", "-y"]
         for i in range(len(sections)):
             cmd.extend(["-loop", "1", "-t", str(img_durations[i]), "-i", str(section_images[i])])
         cmd.extend(["-i", str(audio_path)])
 
         cmd.extend([
-            "-filter_complex_script", str(filter_script_path),
+            "-filter_complex", filter_text,
             "-map", "[final]",
             "-map", "[anorm]",
             "-c:v", vs.codec, "-preset", vs.preset,
@@ -338,6 +418,13 @@ class VideoEditor:
 
         font_path = self._ensure_font()
         safe_font = _safe_ffmpeg_path(font_path)
+
+        # If no drawtext, burn watermark into images via Pillow
+        if not self._has_drawtext:
+            image_paths = [
+                _burn_text_on_image(img, channel_name, "bottom_right", font_path, 22, 0.3)
+                for img in image_paths
+            ]
 
         filters = []
         img_durs = []
@@ -374,25 +461,30 @@ class VideoEditor:
         fade_out_st = max(0, audio_duration - 3)
         filters.append(f"[grained]fade=t=in:st=0:d=2,fade=t=out:st={fade_out_st:.2f}:d=3[faded]")
 
-        ch_txt = TEMP_DIR / f"{audio_path.stem}_ch.txt"
-        ch_txt.write_text(channel_name, encoding="utf-8")
-        filters.append(
-            f"[faded]drawtext=textfile='{_safe_ffmpeg_path(ch_txt)}':"
-            f"fontsize=22:fontcolor=white@0.3:x=w-tw-30:y=h-th-30:"
-            f"fontfile='{safe_font}'[final]"
-        )
+        if self._has_drawtext:
+            ch_txt = TEMP_DIR / f"{audio_path.stem}_ch.txt"
+            ch_txt.write_text(channel_name, encoding="utf-8")
+            filters.append(
+                f"[faded]drawtext=textfile='{_safe_ffmpeg_path(ch_txt)}':"
+                f"fontsize=22:fontcolor=white@0.3:x=w-tw-30:y=h-th-30:"
+                f"fontfile='{safe_font}'[final]"
+            )
+        else:
+            # Text already burned into images via Pillow
+            filters.append("[faded]copy[final]")
 
         audio_idx = num_images
         filters.append(f"[{audio_idx}:a]loudnorm=I=-16:TP=-1.5:LRA=11[anorm]")
 
         filter_text = ";\n".join(filters)
 
+        # Build command — use -filter_complex instead of deprecated -filter_complex_script
         cmd = ["ffmpeg", "-y"]
         for i, img in enumerate(image_paths):
             cmd.extend(["-loop", "1", "-t", str(img_durs[i]), "-i", str(img)])
         cmd.extend(["-i", str(audio_path)])
         cmd.extend([
-            "-filter_complex_script", str(filter_script_path),
+            "-filter_complex", filter_text,
             "-map", "[final]", "-map", "[anorm]",
             "-c:v", vs.codec, "-preset", vs.preset,
             "-crf", str(vs.crf), "-pix_fmt", vs.pixel_format,
@@ -441,6 +533,25 @@ class VideoEditor:
         }
         return grades.get(brief.mood, grades["peaceful"])
 
+    def _burn_all_text_into_images(
+        self,
+        section_images: list[Path],
+        sections: list,
+        channel_name: str,
+        font_path: Path,
+    ) -> list[Path]:
+        """Burn channel watermark (and text overlays) into section images via Pillow."""
+        result = []
+        for i, (img_path, sec) in enumerate(zip(section_images, sections)):
+            # Burn watermark
+            out = _burn_text_on_image(img_path, channel_name, "bottom_right", font_path, 22, 0.25)
+            # Burn section text overlay if present
+            if sec.text_overlay.text and sec.text_overlay.duration_sec > 0:
+                pos = sec.text_overlay.position or "center"
+                out = _burn_text_on_image(out, sec.text_overlay.text, pos, font_path, 30, 0.85)
+            result.append(out)
+        return result
+
     @staticmethod
     def _ensure_font() -> Path:
         fonts_dir = TEMPLATES_DIR / "fonts"
@@ -450,28 +561,34 @@ class VideoEditor:
         if font_path.exists() and font_path.stat().st_size > 50_000:
             return font_path
 
+        # Updated URLs — the old google/fonts paths moved to googlefonts org
         urls = [
-            "https://github.com/google/fonts/raw/main/apache/roboto/Roboto-Regular.ttf",
-            "https://raw.githubusercontent.com/google/fonts/main/apache/roboto/Roboto-Regular.ttf",
+            "https://github.com/googlefonts/roboto/releases/download/v2.138/roboto-unhinted.zip",
             "https://github.com/googlefonts/roboto-classic/raw/main/fonts/ttf/Roboto-Regular.ttf",
+            "https://github.com/google/fonts/raw/main/apache/roboto/Roboto%5Bwdth%2Cwght%5D.ttf",
         ]
-        for url in urls:
+
+        # Try direct TTF downloads first
+        for url in urls[1:]:
             try:
                 logger.info("Downloading font: %s", url[:80])
                 urllib.request.urlretrieve(url, font_path)
-                if font_path.stat().st_size > 50_000:
+                if font_path.exists() and font_path.stat().st_size > 50_000:
                     return font_path
                 font_path.unlink(missing_ok=True)
             except Exception as e:
                 logger.warning("Font download failed: %s", e)
                 font_path.unlink(missing_ok=True)
 
+        # System font fallbacks (most reliable on CI)
         for sys_font in [
             Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"),
+            Path("/usr/share/fonts/truetype/noto/NotoSans-Regular.ttf"),
             Path("/usr/share/fonts/TTF/DejaVuSans.ttf"),
             Path("C:/Windows/Fonts/arial.ttf"),
         ]:
             if sys_font.exists():
+                logger.info("Using system font: %s", sys_font)
                 return sys_font
 
         raise RuntimeError("Could not find any font. Install: sudo apt install fonts-dejavu-core")

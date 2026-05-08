@@ -36,12 +36,17 @@ logger = logging.getLogger(__name__)
 AUDIO_DIR = Path("audio")
 AUDIO_DIR.mkdir(exist_ok=True)
 
+# Telegram file download timeout (seconds) — large MP3s can take a while
+FILE_DOWNLOAD_TIMEOUT = 300
+# Git operation timeout (seconds)
+GIT_TIMEOUT = 120
+
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Send a welcome message."""
     user = update.effective_user
     chat_id = str(update.message.chat_id)
-    
+
     if ALLOWED_CHAT_ID and chat_id != ALLOWED_CHAT_ID:
         logger.warning(f"Unauthorized access attempt from {user.first_name} (Chat ID: {chat_id})")
         return
@@ -54,10 +59,10 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     reply_markup = ReplyKeyboardMarkup(keyboard, resize_keyboard=True)
 
     await update.message.reply_html(
-        rf"Hi {user.mention_html()}! 🎧\n\n"
-        "I am the **Moodwire Ingestion Bot**.\n\n"
-        "📍 **HOW TO USE:**\n"
-        "Simply send or forward me any **MP3 file**, and I will automatically "
+        rf"Hi {user.mention_html()}! 🎧" + "\n\n"
+        "I am the <b>Moodwire Ingestion Bot</b>.\n\n"
+        "📍 <b>HOW TO USE:</b>\n"
+        "Simply send or forward me any <b>MP3 file</b>, and I will automatically "
         "push it to the cloud pipeline to generate your video.\n\n"
         "Use the buttons below for quick status checks!",
         reply_markup=reply_markup
@@ -67,14 +72,14 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
 async def handle_audio(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Download audio file and trigger GitHub push."""
     chat_id = str(update.message.chat_id)
-    
+
     # Security check
     if ALLOWED_CHAT_ID and chat_id != ALLOWED_CHAT_ID:
         return
 
     # Check for audio file
     audio_msg = update.message.audio or update.message.voice or update.message.document
-    
+
     if not audio_msg:
         await update.message.reply_text("Please send an MP3 audio file.")
         return
@@ -82,7 +87,7 @@ async def handle_audio(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     # Ensure it's an audio file
     mime_type = getattr(audio_msg, "mime_type", "")
     file_name = getattr(audio_msg, "file_name", "voice_note.mp3")
-    
+
     if "audio" not in mime_type and not file_name.endswith((".mp3", ".wav", ".m4a")):
         await update.message.reply_text("That doesn't look like an audio file.")
         return
@@ -90,40 +95,101 @@ async def handle_audio(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
     status_msg = await update.message.reply_text(f"📥 Downloading `{file_name}`...")
 
     try:
-        # Download the file
-        file = await context.bot.get_file(audio_msg.file_id)
+        # Download the file with explicit timeout
+        file = await asyncio.wait_for(
+            context.bot.get_file(audio_msg.file_id),
+            timeout=60,
+        )
         file_path = AUDIO_DIR / file_name
-        await file.download_to_drive(file_path)
-        
-        await status_msg.edit_text(f"✅ Downloaded to `audio/`.\n🚀 Pushing to GitHub to trigger pipeline...")
+        await asyncio.wait_for(
+            file.download_to_drive(file_path),
+            timeout=FILE_DOWNLOAD_TIMEOUT,
+        )
+
+        # Verify file was actually downloaded
+        if not file_path.exists() or file_path.stat().st_size < 100:
+            await status_msg.edit_text("❌ Download failed: file is empty or missing.")
+            return
+
+        file_size_mb = file_path.stat().st_size / (1024 * 1024)
+        await status_msg.edit_text(
+            f"✅ Downloaded `{file_name}` ({file_size_mb:.1f} MB).\n"
+            f"🚀 Pushing to GitHub to trigger pipeline..."
+        )
 
         # Touch a trigger file so Git detects a real change inside audio/
         trigger_file = AUDIO_DIR / ".trigger"
         trigger_file.write_text(str(update.message.date.timestamp()))
-        
+
         # Git operations to trigger Actions
+        # Step 1: Pull latest to avoid conflicts (rebase to keep linear history)
+        pull_result = subprocess.run(
+            ["git", "pull", "--rebase", "--autostash"],
+            capture_output=True, text=True, timeout=GIT_TIMEOUT,
+        )
+        if pull_result.returncode != 0:
+            logger.warning(f"Git pull warning: {pull_result.stderr}")
+            # Don't fail on pull issues — try to push anyway
+
         git_cmds = [
             ["git", "add", f"audio/{file_name}", "audio/.trigger"],
             ["git", "commit", "-m", f"🎵 Auto-ingest: {file_name} from Telegram"],
-            ["git", "push"]
+            ["git", "push"],
         ]
 
         for cmd in git_cmds:
-            result = subprocess.run(cmd, capture_output=True, text=True)
-            if result.returncode != 0:
-                error = result.stderr or result.stdout
-                logger.error(f"Git command failed: {' '.join(cmd)}\n{error}")
-                await status_msg.edit_text(f"❌ GitHub push failed on `{' '.join(cmd)}`.\nCheck logs.")
+            try:
+                result = subprocess.run(
+                    cmd, capture_output=True, text=True, timeout=GIT_TIMEOUT,
+                )
+                if result.returncode != 0:
+                    error = result.stderr or result.stdout
+
+                    # If push fails, try pulling and pushing again
+                    if cmd[1] == "push":
+                        logger.warning(f"Push failed, trying pull --rebase + push: {error}")
+                        subprocess.run(
+                            ["git", "pull", "--rebase", "--autostash"],
+                            capture_output=True, text=True, timeout=GIT_TIMEOUT,
+                        )
+                        retry = subprocess.run(
+                            ["git", "push"],
+                            capture_output=True, text=True, timeout=GIT_TIMEOUT,
+                        )
+                        if retry.returncode == 0:
+                            continue  # Push succeeded on retry
+                        error = retry.stderr or retry.stdout
+
+                    logger.error(f"Git command failed: {' '.join(cmd)}\n{error}")
+                    await status_msg.edit_text(
+                        f"❌ GitHub push failed on `{' '.join(cmd)}`.\n"
+                        f"Error: {error[:200]}\n"
+                        f"The file was saved locally. Try running `git push` manually."
+                    )
+                    return
+            except subprocess.TimeoutExpired:
+                logger.error(f"Git command timed out: {' '.join(cmd)}")
+                await status_msg.edit_text(
+                    f"❌ Git command timed out: `{' '.join(cmd)}`.\n"
+                    f"The file was saved locally. Check your internet connection."
+                )
                 return
 
         await status_msg.edit_text(
-            f"🎉 **Pipeline Triggered!**\n\n"
-            f"File: `{file_name}` is now processing in the cloud.\n"
-            f"I'll ping Discord when the final video is ready."
+            f"🎉 <b>Pipeline Triggered!</b>\n\n"
+            f"File: <code>{file_name}</code> is now processing in the cloud.\n"
+            f"I'll ping Discord when the final video is ready.",
+            parse_mode="HTML",
         )
 
+    except asyncio.TimeoutError:
+        logger.error(f"Timeout downloading file: {file_name}")
+        await status_msg.edit_text(
+            f"❌ Timed out downloading `{file_name}`.\n"
+            f"The file may be too large. Try sending a smaller file or check your connection."
+        )
     except Exception as e:
-        logger.error(f"Error handling audio: {e}")
+        logger.error(f"Error handling audio: {e}", exc_info=True)
         await status_msg.edit_text(f"❌ Error processing file: {e}")
 
 
@@ -133,14 +199,24 @@ def main() -> None:
         logger.error("TELEGRAM_BOT_TOKEN not found in .env file!")
         return
 
-    # Create the Application
-    application = Application.builder().token(TOKEN).build()
+    # Create the Application with extended timeouts for large file handling
+    application = (
+        Application.builder()
+        .token(TOKEN)
+        .connect_timeout(30)
+        .read_timeout(60)
+        .write_timeout(60)
+        .build()
+    )
 
     # Commands
     application.add_handler(CommandHandler("start", start))
 
     # Messages (audio files and documents)
-    application.add_handler(MessageHandler(filters.AUDIO | filters.VOICE | filters.Document.AUDIO, handle_audio))
+    application.add_handler(MessageHandler(
+        filters.AUDIO | filters.VOICE | filters.Document.AUDIO | filters.Document.ALL,
+        handle_audio,
+    ))
 
     # Run the bot until the user presses Ctrl-C
     logger.info("Starting Telegram Bot... Send an MP3 to trigger the pipeline.")
