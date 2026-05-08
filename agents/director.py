@@ -47,6 +47,7 @@ Return ONLY valid JSON with this EXACT structure:
 
   "mood": "<primary mood: melancholic, energetic, peaceful, nostalgic, dark, dreamy, romantic, anxious>",
   "secondary_mood": "<secondary mood if mixed, or null>",
+  "emotional_tone": "<evocative 3-5 word description of the specific emotional character>",
   "bpm_estimate": <estimated BPM as integer>,
   "energy": "<low/medium/high>",
   "instruments": ["<detected instruments/elements>"],
@@ -224,6 +225,7 @@ class CreativeBrief(BaseModel):
     # Legacy fields (backward compatible with old code)
     mood: str = "peaceful"
     secondary_mood: str | None = None
+    emotional_tone: str = ""
     bpm_estimate: int = 90
     energy: str = "low"
     instruments: list[str] = Field(default_factory=list)

@@ -37,7 +37,7 @@ def send_to_telegram():
             meta = f.read()
             # Extract title if possible
             for line in meta.split("\n"):
-                if line.startswith("Title:"):
+                if line.upper().startswith("TITLE:"):
                     caption += f"🎬 *{line}*\n"
     
     caption += f"\n📁 File: `{video_path.name}`"
