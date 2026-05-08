@@ -213,18 +213,27 @@ class Compiler:
         channel_name = self.config.channel.name
         w, h = vs.width, vs.height
 
-        safe_name = channel_name.replace("'", "\\'")
+        # Check if drawtext is available in this FFmpeg build
+        has_drawtext = self._check_drawtext()
 
-        filter_complex = (
+        base_filters = (
             f"[0:v]scale={w}:{h}:force_original_aspect_ratio=decrease,"
             f"pad={w}:{h}:(ow-iw)/2:(oh-ih)/2:color=black,"
             f"fps={vs.fps},"
             f"eq=brightness=-0.03:contrast=1.05:saturation=0.8,"
-            f"noise=c0s=10:c0f=t+u:allf=t+u,"
-            f"drawtext=text='{safe_name}':"
-            f"fontsize=28:fontcolor=white@0.6:"
-            f"x=w-tw-30:y=h-th-30:font='sans-serif'[v]"
+            f"noise=c0s=10:c0f=t+u:allf=t+u"
         )
+
+        if has_drawtext:
+            safe_name = channel_name.replace("'", "\\'")
+            filter_complex = (
+                f"{base_filters},"
+                f"drawtext=text='{safe_name}':"
+                f"fontsize=28:fontcolor=white@0.6:"
+                f"x=w-tw-30:y=h-th-30:font='sans-serif'[v]"
+            )
+        else:
+            filter_complex = f"{base_filters}[v]"
 
         cmd = [
             "ffmpeg", "-y",
@@ -267,3 +276,15 @@ class Compiler:
             return float(out.stdout.strip())
         except Exception:
             return 0.0
+
+    @staticmethod
+    def _check_drawtext() -> bool:
+        """Check if the installed FFmpeg has drawtext filter support."""
+        try:
+            result = subprocess.run(
+                ["ffmpeg", "-filters"],
+                capture_output=True, text=True, timeout=10,
+            )
+            return "drawtext" in result.stdout
+        except (subprocess.SubprocessError, FileNotFoundError):
+            return False

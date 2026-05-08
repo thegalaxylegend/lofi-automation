@@ -7,6 +7,9 @@ Uses the Director's creative brief to create intelligent Shorts:
   3. Hook text in first 1.5 seconds (POV style)
   4. Emotional mood text in the middle
   5. No fade out (encourages replay/loop)
+
+Supports FFmpeg builds with or without drawtext filter.
+When drawtext is unavailable, text is burned into the background image via Pillow.
 """
 
 from __future__ import annotations
@@ -21,11 +24,79 @@ from core.config import Config, OUTPUT_DIR, TEMP_DIR, TEMPLATES_DIR
 logger = logging.getLogger(__name__)
 
 
+def _check_drawtext_support() -> bool:
+    """Check if the installed FFmpeg has drawtext filter support."""
+    try:
+        result = subprocess.run(
+            ["ffmpeg", "-filters"],
+            capture_output=True, text=True, timeout=10,
+        )
+        return "drawtext" in result.stdout
+    except (subprocess.SubprocessError, FileNotFoundError):
+        return False
+
+
+def _burn_text_on_image_for_short(
+    image_path: Path,
+    texts: list[tuple[str, str, int, float]],  # [(text, position, font_size, opacity), ...]
+    font_path: Path,
+    target_w: int,
+    target_h: int,
+) -> Path:
+    """
+    Burn multiple text overlays onto a vertical image for Shorts.
+    Returns path to the new image.
+    """
+    from PIL import Image, ImageDraw, ImageFont
+
+    img = Image.open(image_path).convert("RGBA")
+    # Resize to target dimensions
+    img = img.resize((target_w, target_h), Image.LANCZOS)
+    overlay = Image.new("RGBA", img.size, (0, 0, 0, 0))
+    draw = ImageDraw.Draw(overlay)
+
+    for text, position, font_size, opacity in texts:
+        if not text:
+            continue
+        try:
+            font = ImageFont.truetype(str(font_path), font_size)
+        except Exception:
+            font = ImageFont.load_default()
+
+        bbox = draw.textbbox((0, 0), text, font=font)
+        tw = bbox[2] - bbox[0]
+        th = bbox[3] - bbox[1]
+        w, h = img.size
+
+        pos_map = {
+            "hook": ((w - tw) // 2, int(h * 0.35)),
+            "mood": ((w - tw) // 2, int(h * 0.42)),
+        }
+        xy = pos_map.get(position, ((w - tw) // 2, int(h * 0.40)))
+
+        alpha = int(255 * opacity)
+        # Draw text with dark border for readability
+        border_w = 2
+        for dx in range(-border_w, border_w + 1):
+            for dy in range(-border_w, border_w + 1):
+                if dx != 0 or dy != 0:
+                    draw.text((xy[0] + dx, xy[1] + dy), text, font=font, fill=(0, 0, 0, int(alpha * 0.6)))
+        draw.text(xy, text, font=font, fill=(255, 255, 255, alpha))
+
+    result = Image.alpha_composite(img, overlay).convert("RGB")
+    out_path = image_path.parent / f"{image_path.stem}_short_text{image_path.suffix}"
+    result.save(out_path, quality=95)
+    return out_path
+
+
 class Distributor:
     """Creates AI-directed YouTube Shorts from the Director's creative brief."""
 
     def __init__(self) -> None:
         self.config = Config()
+        self._has_drawtext = _check_drawtext_support()
+        if not self._has_drawtext:
+            logger.warning("Distributor: drawtext not available — using Pillow text burn-in for Shorts")
 
     def create_short(
         self,
@@ -85,6 +156,17 @@ class Distributor:
         font_path = self._ensure_font()
         safe_font = str(font_path.absolute()).replace("\\", "/").replace(":", "\\:")
 
+        # If drawtext not available, burn text into the background image
+        if not self._has_drawtext and (hook_text or mood_text):
+            texts = []
+            if hook_text:
+                texts.append((hook_text, "hook", 32, 0.95))
+            if mood_text:
+                texts.append((mood_text, "mood", 36, 0.9))
+            background_path = _burn_text_on_image_for_short(
+                background_path, texts, font_path, w, h,
+            )
+
         # Build filter chain
         filters: list[str] = []
 
@@ -103,39 +185,39 @@ class Distributor:
         filters.append(f"[{last_label}]fade=t=in:st=0:d=0.5[faded]")
         last_label = "faded"
 
-        # Hook text (first 1.5 seconds — stops scrollers)
-        if hook_text:
-            hook_file = TEMP_DIR / f"{audio_path.stem}_hook.txt"
-            hook_file.write_text(hook_text, encoding="utf-8")
-            safe_hook = str(hook_file.absolute()).replace("\\", "/").replace(":", "\\:")
-            filters.append(
-                f"[{last_label}]drawtext="
-                f"textfile='{safe_hook}':"
-                f"fontsize=32:fontcolor=white@0.95:"
-                f"x=(w-tw)/2:y=h*0.35:"
-                f"fontfile='{safe_font}':"
-                f"borderw=2:bordercolor=black@0.6:"
-                f"enable='between(t,0.3,4.0)'[hooked]"
-            )
-            last_label = "hooked"
+        # Hook text and mood text only if drawtext is available
+        if self._has_drawtext:
+            if hook_text:
+                hook_file = TEMP_DIR / f"{audio_path.stem}_hook.txt"
+                hook_file.write_text(hook_text, encoding="utf-8")
+                safe_hook = str(hook_file.absolute()).replace("\\", "/").replace(":", "\\:")
+                filters.append(
+                    f"[{last_label}]drawtext="
+                    f"textfile='{safe_hook}':"
+                    f"fontsize=32:fontcolor=white@0.95:"
+                    f"x=(w-tw)/2:y=h*0.35:"
+                    f"fontfile='{safe_font}':"
+                    f"borderw=2:bordercolor=black@0.6:"
+                    f"enable='between(t,0.3,4.0)'[hooked]"
+                )
+                last_label = "hooked"
 
-        # Mood text (middle of the short — emotional punch)
-        if mood_text:
-            mood_file = TEMP_DIR / f"{audio_path.stem}_mood.txt"
-            mood_file.write_text(mood_text, encoding="utf-8")
-            safe_mood = str(mood_file.absolute()).replace("\\", "/").replace(":", "\\:")
-            mid_start = segment_dur * 0.35
-            mid_end = segment_dur * 0.70
-            filters.append(
-                f"[{last_label}]drawtext="
-                f"textfile='{safe_mood}':"
-                f"fontsize=36:fontcolor=white@0.9:"
-                f"x=(w-tw)/2:y=h*0.42:"
-                f"fontfile='{safe_font}':"
-                f"borderw=2:bordercolor=black@0.5:"
-                f"enable='between(t,{mid_start:.1f},{mid_end:.1f})'[final]"
-            )
-            last_label = "final"
+            if mood_text:
+                mood_file = TEMP_DIR / f"{audio_path.stem}_mood.txt"
+                mood_file.write_text(mood_text, encoding="utf-8")
+                safe_mood = str(mood_file.absolute()).replace("\\", "/").replace(":", "\\:")
+                mid_start = segment_dur * 0.35
+                mid_end = segment_dur * 0.70
+                filters.append(
+                    f"[{last_label}]drawtext="
+                    f"textfile='{safe_mood}':"
+                    f"fontsize=36:fontcolor=white@0.9:"
+                    f"x=(w-tw)/2:y=h*0.42:"
+                    f"fontfile='{safe_font}':"
+                    f"borderw=2:bordercolor=black@0.5:"
+                    f"enable='between(t,{mid_start:.1f},{mid_end:.1f})'[final]"
+                )
+                last_label = "final"
 
         filter_complex = ";".join(filters)
 
@@ -198,6 +280,8 @@ class Distributor:
 
         for sys_font in [
             Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"),
+            Path("/usr/share/fonts/truetype/noto/NotoSans-Regular.ttf"),
+            Path("/usr/share/fonts/TTF/DejaVuSans.ttf"),
             Path("C:/Windows/Fonts/arial.ttf"),
         ]:
             if sys_font.exists():
