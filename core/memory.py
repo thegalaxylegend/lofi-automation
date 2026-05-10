@@ -95,6 +95,11 @@ def scout_memory() -> Memory:
     return Memory("scout_trends")
 
 
+def pipeline_memory() -> Memory:
+    """Memory for tracking processed audio files to prevent duplicates."""
+    return Memory("pipeline_history")
+
+
 def initialize_all_memories() -> None:
     """Create default memory files if they don't exist."""
     defaults = {
@@ -135,6 +140,10 @@ def initialize_all_memories() -> None:
             "trending_keywords": [],
             "color_trends": [],
             "last_scan": None,
+        },
+        "pipeline_history": {
+            "processed_files": [],
+            "last_run": None,
         },
     }
     for name, default_data in defaults.items():

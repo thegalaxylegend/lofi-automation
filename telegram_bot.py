@@ -10,7 +10,16 @@ import asyncio
 import logging
 import os
 import subprocess
+import re
 from pathlib import Path
+
+from core.config import PROJECT_ROOT
+
+from core.config import PROJECT_ROOT
+
+from core.config import PROJECT_ROOT
+
+from core.config import PROJECT_ROOT
 
 from dotenv import load_dotenv
 from telegram import Update, ReplyKeyboardMarkup
@@ -40,6 +49,15 @@ AUDIO_DIR.mkdir(exist_ok=True)
 FILE_DOWNLOAD_TIMEOUT = 300
 # Git operation timeout (seconds)
 GIT_TIMEOUT = 120
+
+
+def sanitize_filename(name: str) -> str:
+    """Remove special characters and spaces from filename."""
+    # Keep alphanumeric, dots, and underscores
+    name = re.sub(r"[^a-zA-Z0-9._-]", "_", name)
+    # Prevent multiple underscores
+    name = re.sub(r"_+", "_", name)
+    return name
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -92,6 +110,9 @@ async def handle_audio(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         await update.message.reply_text("That doesn't look like an audio file.")
         return
 
+    # Sanitize the filename to prevent Git/CLI issues
+    file_name = sanitize_filename(file_name)
+
     status_msg = await update.message.reply_text(f"📥 Downloading `{file_name}`...")
 
     try:
@@ -126,6 +147,7 @@ async def handle_audio(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         pull_result = subprocess.run(
             ["git", "pull", "--rebase", "--autostash"],
             capture_output=True, text=True, timeout=GIT_TIMEOUT,
+            cwd=PROJECT_ROOT,
         )
         if pull_result.returncode != 0:
             logger.warning(f"Git pull warning: {pull_result.stderr}")
@@ -141,6 +163,7 @@ async def handle_audio(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
             try:
                 result = subprocess.run(
                     cmd, capture_output=True, text=True, timeout=GIT_TIMEOUT,
+                    cwd=PROJECT_ROOT,
                 )
                 if result.returncode != 0:
                     error = result.stderr or result.stdout
@@ -151,10 +174,12 @@ async def handle_audio(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
                         subprocess.run(
                             ["git", "pull", "--rebase", "--autostash"],
                             capture_output=True, text=True, timeout=GIT_TIMEOUT,
+                            cwd=PROJECT_ROOT,
                         )
                         retry = subprocess.run(
                             ["git", "push"],
                             capture_output=True, text=True, timeout=GIT_TIMEOUT,
+                            cwd=PROJECT_ROOT,
                         )
                         if retry.returncode == 0:
                             continue  # Push succeeded on retry

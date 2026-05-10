@@ -318,7 +318,7 @@ class Director:
             media_path=str(audio_path),
             prompt=prompt,
             mime_type="audio/mpeg",
-            model="gemini-2.5-flash",
+            model="gemini-1.5-flash",
             temperature=0.7,
         )
 

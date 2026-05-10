@@ -23,7 +23,7 @@ from pathlib import Path
 
 from core.config import Config, OUTPUT_DIR, TEMP_DIR
 from core.discord_webhook import DiscordNotifier
-from core.memory import initialize_all_memories
+from core.memory import initialize_all_memories, pipeline_memory
 
 logger = logging.getLogger(__name__)
 
@@ -186,6 +186,10 @@ def process_single(audio_path: Path) -> PipelineResult:
 
         result.success = True
         
+        # Mark as processed in memory
+        mem = pipeline_memory()
+        mem.append_to_list("processed_files", audio_path.name)
+        
         # ── Agent 11: YouTube Uploader ───────────────────────
         try:
             if config.youtube_refresh_token:
@@ -248,13 +252,19 @@ def process_batch(audio_dir: Path) -> BatchResult:
     start = time.time()
 
     mp3_files = sorted(audio_dir.glob("*.mp3"), key=lambda f: f.stat().st_mtime, reverse=True)
+    
+    # Filter out already processed files
+    mem = pipeline_memory()
+    processed = mem.get("processed_files", [])
+    mp3_files = [f for f in mp3_files if f.name not in processed]
+
     if not mp3_files:
-        logger.warning("No MP3 files found in %s", audio_dir)
+        logger.info("No new MP3 files found in %s", audio_dir)
         return batch
 
-    # Process only the newest file to avoid timeouts and duplicates
+    # Process only the newest UNPROCESSED file
     newest = mp3_files[0]
-    logger.info("Found %d MP3 files. Processing newest: %s", len(mp3_files), newest.name)
+    logger.info("Found %d new MP3 files. Processing newest: %s", len(mp3_files), newest.name)
 
     result = process_single(newest)
     batch.results.append(result)
