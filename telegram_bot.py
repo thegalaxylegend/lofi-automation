@@ -15,12 +15,6 @@ from pathlib import Path
 
 from core.config import PROJECT_ROOT
 
-from core.config import PROJECT_ROOT
-
-from core.config import PROJECT_ROOT
-
-from core.config import PROJECT_ROOT
-
 from dotenv import load_dotenv
 from telegram import Update, ReplyKeyboardMarkup
 from telegram.ext import (
@@ -42,7 +36,7 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-AUDIO_DIR = Path("audio")
+AUDIO_DIR = PROJECT_ROOT / "audio"
 AUDIO_DIR.mkdir(exist_ok=True)
 
 # Telegram file download timeout (seconds) — large MP3s can take a while
@@ -53,11 +47,13 @@ GIT_TIMEOUT = 120
 
 def sanitize_filename(name: str) -> str:
     """Remove special characters and spaces from filename."""
-    # Keep alphanumeric, dots, and underscores
-    name = re.sub(r"[^a-zA-Z0-9._-]", "_", name)
+    # Split extension
+    base, ext = os.path.splitext(name)
+    # Keep alphanumeric, dots, and underscores in base
+    base = re.sub(r"[^a-zA-Z0-9._-]", "_", base)
     # Prevent multiple underscores
-    name = re.sub(r"_+", "_", name)
-    return name
+    base = re.sub(r"_+", "_", base)
+    return f"{base.strip('_')}{ext}"
 
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
@@ -143,11 +139,13 @@ async def handle_audio(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
         trigger_file.write_text(str(update.message.date.timestamp()))
 
         # Git operations to trigger Actions
+        logger.info(f"Using PROJECT_ROOT for git: {PROJECT_ROOT}")
+
         # Step 1: Pull latest to avoid conflicts (rebase to keep linear history)
         pull_result = subprocess.run(
             ["git", "pull", "--rebase", "--autostash"],
             capture_output=True, text=True, timeout=GIT_TIMEOUT,
-            cwd=PROJECT_ROOT,
+            cwd=str(PROJECT_ROOT),
         )
         if pull_result.returncode != 0:
             logger.warning(f"Git pull warning: {pull_result.stderr}")
@@ -163,7 +161,7 @@ async def handle_audio(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
             try:
                 result = subprocess.run(
                     cmd, capture_output=True, text=True, timeout=GIT_TIMEOUT,
-                    cwd=PROJECT_ROOT,
+                    cwd=str(PROJECT_ROOT),
                 )
                 if result.returncode != 0:
                     error = result.stderr or result.stdout
@@ -244,7 +242,8 @@ def main() -> None:
     ))
 
     # Run the bot until the user presses Ctrl-C
-    logger.info("Starting Telegram Bot... Send an MP3 to trigger the pipeline.")
+    logger.info(f"Starting Telegram Bot with PROJECT_ROOT: {PROJECT_ROOT}")
+    logger.info("Send an MP3 to trigger the pipeline.")
     application.run_polling(allowed_updates=Update.ALL_TYPES)
 
 
