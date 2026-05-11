@@ -1,10 +1,59 @@
 {
   "competitors": [],
-  "trending_keywords": [],
+  "trending_keywords": [
+    "shilohdynasty",
+    "shiloh",
+    "shorts",
+    "loh end ep",
+    "lavender",
+    "whenineeditmost",
+    "evelyn/courtside",
+    "fourth dogma",
+    "solo flavour",
+    "niño"
+  ],
   "color_trends": [],
-  "last_scan": null,
+  "last_scan": "2026-05-11T05:50:20.742763+00:00",
   "_meta": {
-    "last_updated": "2026-05-05T03:38:08.986239+00:00",
+    "last_updated": "2026-05-11T05:50:20.743629+00:00",
     "memory_name": "scout_trends"
+  },
+  "last_report": {
+    "trending_keywords": [
+      "shilohdynasty",
+      "shiloh",
+      "shorts",
+      "loh end ep",
+      "lavender",
+      "whenineeditmost",
+      "evelyn/courtside",
+      "fourth dogma",
+      "solo flavour",
+      "niño"
+    ],
+    "trending_moods": [
+      "Introspective",
+      "Melancholic",
+      "Calm/Soothing"
+    ],
+    "optimal_video_length": "Short-form (YouTube Shorts)",
+    "title_patterns": [
+      "\"[Quote/Lyric Snippet] + [Context/Artist/EP] + #hashtags\"",
+      "\"[Quote/Lyric Snippet] + ... + #hashtags\"",
+      "\"[Song Title] - [Artist(s)]\""
+    ],
+    "thumbnail_observations": "No direct thumbnail data available from the provided text titles. However, given the prevalence of 'shorts', dynamic text overlays, captivating single frames, or stylized quotes are likely trending.",
+    "opportunities": [
+      "Leverage YouTube Shorts for quick engagement and virality, mirroring competitor's recent success with this format.",
+      "Focus on introspective, melancholic, and calm themes, which resonate strongly with the lo-fi audience as indicated by title content.",
+      "Explore artists or sounds similar to Shiloh Dynasty to tap into a proven popular niche, potentially diversifying beyond direct Shiloh Dynasty content."
+    ],
+    "threats": [
+      "High competition and potential saturation around Shiloh Dynasty content, making differentiation challenging if solely relying on this artist.",
+      "The highly competitive nature of YouTube Shorts requires strong hooks and consistent, high-quality content to stand out effectively."
+    ],
+    "recommendation": "Prioritize creating introspective, lyric-driven YouTube Shorts, drawing inspiration from Shiloh Dynasty's mood while exploring diverse artists to avoid saturation and establish a unique channel identity.",
+    "scan_date": "2026-05-11T05:50:20.742763+00:00",
+    "videos_analyzed": 5
   }
 }
