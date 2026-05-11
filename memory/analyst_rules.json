@@ -65,6 +65,24 @@
       "target_agent": "director",
       "confidence": "high",
       "evidence": "Previous directives regarding data logging have not been fulfilled, resulting in no data."
+    },
+    {
+      "rule": "The director must provide a root cause analysis for the persistent lack of analytics data and a firm, actionable timeline (with specific milestones and responsible parties) for its complete resolution, due by end of day today.",
+      "target_agent": "director",
+      "confidence": "high",
+      "evidence": "Persistent 'No analytics data available yet.' despite multiple previous directives and daily checks."
+    },
+    {
+      "rule": "The editor must submit a sample log containing the key attributes (length, mood, instrumentation, visual style, upload time) for the last 5 uploaded videos, demonstrating the implemented standardized process, due by end of day today.",
+      "target_agent": "editor",
+      "confidence": "high",
+      "evidence": "Persistent 'No video attributes logged yet.' despite multiple previous directives."
+    },
+    {
+      "rule": "By 9 AM EST tomorrow, the director must provide a verified report confirming successful ingestion and accessibility of at least 24 hours of analytics data, including total views and new subscribers, for the previous day.",
+      "target_agent": "director",
+      "confidence": "high",
+      "evidence": "Repeated failure to collect any analytics data, hindering all analysis."
     }
   ],
   "daily_reports": [
@@ -236,11 +254,47 @@
       ],
       "insight": "The immediate priority is to rectify the critical data logging failures; without fundamental analytics and video attribute data, no meaningful performance analysis or strategic guidance can be provided for channel growth.",
       "generated_at": "2026-05-10T04:01:40.359964+00:00"
+    },
+    {
+      "daily_summary": {
+        "total_views_24h": 0,
+        "new_subscribers": 0,
+        "best_video": "",
+        "worst_video": "",
+        "avg_ctr": 0.0,
+        "avg_avd_seconds": 0.0
+      },
+      "new_rules": [
+        {
+          "rule": "The director must provide a root cause analysis for the persistent lack of analytics data and a firm, actionable timeline (with specific milestones and responsible parties) for its complete resolution, due by end of day today.",
+          "target_agent": "director",
+          "confidence": "high",
+          "evidence": "Persistent 'No analytics data available yet.' despite multiple previous directives and daily checks."
+        },
+        {
+          "rule": "The editor must submit a sample log containing the key attributes (length, mood, instrumentation, visual style, upload time) for the last 5 uploaded videos, demonstrating the implemented standardized process, due by end of day today.",
+          "target_agent": "editor",
+          "confidence": "high",
+          "evidence": "Persistent 'No video attributes logged yet.' despite multiple previous directives."
+        },
+        {
+          "rule": "By 9 AM EST tomorrow, the director must provide a verified report confirming successful ingestion and accessibility of at least 24 hours of analytics data, including total views and new subscribers, for the previous day.",
+          "target_agent": "director",
+          "confidence": "high",
+          "evidence": "Repeated failure to collect any analytics data, hindering all analysis."
+        }
+      ],
+      "alerts": [
+        "Critical: No analytics data is being collected, rendering all performance analysis and strategic decision-making impossible.",
+        "Critical: Video attributes are not being logged, preventing any correlation between video characteristics and performance."
+      ],
+      "insight": "Without any analytics data or video attributes, it is impossible to provide any strategic insights or make data-driven decisions for channel growth or content optimization.",
+      "generated_at": "2026-05-11T04:12:46.414470+00:00"
     }
   ],
   "weekly_reports": [],
   "_meta": {
-    "last_updated": "2026-05-10T04:01:40.361527+00:00",
+    "last_updated": "2026-05-11T04:12:46.417559+00:00",
     "memory_name": "analyst_rules"
   }
 }
