@@ -101,10 +101,20 @@
       "rule": "The director must immediately provide a verified report confirming successful ingestion and accessibility of at least 24 hours of analytics data, including total views and new subscribers, for the previous day, as per the previous directive.",
       "source": "analyst",
       "date": "2026-05-12T03:56:36.715539+00:00"
+    },
+    {
+      "rule": "The director must immediately provide a verified report confirming successful ingestion and accessibility of at least 24 hours of analytics data, including total views and new subscribers, for the previous day, AND a detailed explanation for the repeated failure to meet this directive.",
+      "source": "analyst",
+      "date": "2026-05-13T04:05:04.776170+00:00"
+    },
+    {
+      "rule": "The director must immediately provide the root cause analysis for the persistent lack of analytics data and a firm, actionable timeline (with specific milestones and responsible parties) for its complete resolution, as previously directed, and escalate to senior management if internal resolution is not possible within 24 hours.",
+      "source": "analyst",
+      "date": "2026-05-13T04:05:04.776668+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-05-12T03:56:36.715634+00:00",
+    "last_updated": "2026-05-13T04:05:04.776727+00:00",
     "memory_name": "director_mood_map"
   }
 }
