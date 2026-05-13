@@ -33,7 +33,10 @@ class ImageFetcher:
 
         if not prompts:
             logger.warning("No image prompts found. Generating default prompts.")
-            prompts = [f"lo-fi aesthetic, {brief.mood} vibe, highly detailed 4k"] * target_count
+            prompts = [f"{brief.visual_style}, {brief.mood} vibe, highly detailed 4k"] * target_count
+
+        # Derive art style suffix from the Director's analysis instead of hardcoding "lo-fi"
+        style_suffix = self._get_style_suffix(brief)
 
         # Ensure we have the right number of prompts
         while len(prompts) < target_count:
@@ -56,7 +59,10 @@ class ImageFetcher:
             safe_name = f"bg_img_{i:02d}.jpg"
             output_path = self.temp_dir / safe_name
             
-            full_prompt = f"{prompt}, anime lo-fi style, masterpiece, 8k resolution, cinematic lighting, ultra detailed, sharp focus, best quality, professional"
+            # Style anchoring: visual_style goes FIRST so Pollinations AI
+            # treats it as the primary style instruction for consistency
+            visual_anchor = brief.visual_style if brief.visual_style else ""
+            full_prompt = f"{visual_anchor} style, {prompt}, {style_suffix}, masterpiece, 8k resolution, cinematic lighting, ultra detailed, sharp focus, best quality, professional, consistent art style throughout"
             encoded_prompt = urllib.parse.quote(full_prompt)
             # Added a random seed to bypass cache and ensure unique images
             seed = random.randint(1, 100000)
@@ -131,3 +137,49 @@ class ImageFetcher:
             raise RuntimeError("Failed to generate any images for the video.")
             
         return final_paths
+
+    @staticmethod
+    def _get_style_suffix(brief: CreativeBrief) -> str:
+        """Derive an art style suffix from the Director's genre/mood analysis.
+        
+        Instead of hardcoding 'anime lo-fi style' for every song, this maps
+        the detected genre and energy to an appropriate visual style.
+        """
+        genre = getattr(brief.song_dna, 'genre', '').lower() if hasattr(brief, 'song_dna') else ''
+        mood = brief.mood.lower()
+        energy = brief.energy.lower()
+        visual = brief.visual_style.lower()
+
+        # Check genre keywords for specific styles
+        if any(kw in genre for kw in ['lo-fi', 'lofi', 'chill', 'ambient']):
+            return "anime lo-fi style, soft pastel tones, cozy aesthetic"
+        elif any(kw in genre for kw in ['party', 'dance', 'edm', 'club', 'pop']):
+            return "vibrant photo-realistic style, neon lights, dynamic energy"
+        elif any(kw in genre for kw in ['devotional', 'spiritual', 'bhajan', 'kirtan']):
+            return "ethereal spiritual art style, warm golden tones, divine atmosphere"
+        elif any(kw in genre for kw in ['festive', 'holi', 'diwali', 'celebration']):
+            return "vibrant festive photo-realistic style, rich saturated colors, joyful energy"
+        elif any(kw in genre for kw in ['romantic', 'love']):
+            return "cinematic romantic style, warm soft lighting, dreamy bokeh"
+        elif any(kw in genre for kw in ['sad', 'melanchol', 'heartbreak', 'breakup']):
+            return "cinematic moody style, desaturated tones, atmospheric fog"
+        elif any(kw in genre for kw in ['rap', 'hip hop', 'hip-hop', 'trap']):
+            return "urban street art style, bold contrasts, gritty cinematic"
+        elif any(kw in genre for kw in ['rock', 'metal', 'punk']):
+            return "dark cinematic concert style, dramatic lighting, high contrast"
+
+        # Fall back to mood/energy if genre doesn't match
+        if energy == 'high':
+            return "vibrant cinematic style, dynamic lighting, bold colors"
+        elif mood in ('melancholic', 'dark', 'anxious'):
+            return "cinematic moody style, desaturated cool tones, atmospheric"
+        elif mood in ('dreamy', 'peaceful'):
+            return "soft dreamy anime style, pastel tones, ethereal glow"
+        elif mood in ('romantic',):
+            return "cinematic romantic style, warm golden hour lighting"
+        elif mood in ('nostalgic',):
+            return "vintage film style, warm faded tones, nostalgic atmosphere"
+
+        # Ultimate fallback: use the Director's visual_style directly
+        return f"{brief.visual_style} style, highly detailed"
+

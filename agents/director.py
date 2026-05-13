@@ -25,7 +25,7 @@ logger = logging.getLogger(__name__)
 # ──────────────────────────────────────────────
 #  The Complete Creative Director Prompt
 # ──────────────────────────────────────────────
-ANALYSIS_PROMPT = """You are the Creative Director for "Mood Wire" — a premium Hindi music YouTube channel targeting Indian students (JEE, NEET, college). Your audience is 16-24 year old Indians who listen to emotional/motivational Hindi songs during late-night study sessions.
+ANALYSIS_PROMPT = """You are the Creative Director for "Mood Wire" — a premium Hindi music YouTube channel. Your audience is 16-24 year old Indians who connect deeply with Hindi music across ALL genres — lo-fi study beats, emotional ballads, party anthems, devotional, romantic, festive (Holi/Diwali), hip-hop, and more.
 
 Listen to this ENTIRE audio track deeply. Feel its emotional journey — not just one mood, but how the emotion EVOLVES from start to finish.
 
@@ -71,7 +71,7 @@ Return ONLY valid JSON with this EXACT structure:
       "emotion": "<specific emotion for THIS section>",
       "musical_elements": "<what instruments/sounds are active here>",
 
-      "image_prompt": "<VERY detailed AI image prompt, minimum 40 words. Include: specific Indian cultural elements (hostel room, chai tapri, railway platform, campus), lighting, color palette, atmosphere, subject/character, camera angle, art style (lo-fi anime/cinematic). The visual_motif MUST appear in this prompt.>",
+      "image_prompt": "<VERY detailed AI image prompt, minimum 40 words. MUST START WITH the exact visual_style declared above (e.g. 'anime lo-fi illustration style, ...' or 'cinematic photo-realistic style, ...'). Include: culturally appropriate Indian elements matching THIS song's genre and mood (e.g. hostel room for study songs, club/stage for party songs, temple for devotional, colors/gulal for Holi, diyas for Diwali, rain/chai for monsoon moods). Include: lighting, color palette, atmosphere, subject/character, camera angle. The visual_motif MUST appear in this prompt. ALL section prompts MUST use the SAME art style.>",
 
       "color_grade": {{
         "brightness": <-0.1 to 0.1>,
@@ -83,7 +83,7 @@ Return ONLY valid JSON with this EXACT structure:
       }},
 
       "zoom": {{
-        "direction": "<zoom_in/zoom_out/pan_left/pan_right/static>",
+        "direction": "<zoom_in/zoom_out/pan_left/pan_right/drift_diagonal/breathing/ken_burns_tl_br/ken_burns_br_tl/drift_up/static — VARY this across sections, never use the same direction for adjacent sections>",
         "speed": "<very_slow/slow/medium/fast>"
       }},
 
@@ -125,7 +125,7 @@ Return ONLY valid JSON with this EXACT structure:
     "text_glow_color": "<hex color for glow>"
   }},
 
-  "visual_style": "<overall visual aesthetic>",
+  "visual_style": "<ONE specific art style that ALL images MUST use. Choose ONE: 'anime lo-fi illustration' OR 'cinematic photo-realistic' OR 'digital painting' OR 'watercolor illustration' OR 'moody film photography'. NEVER mix styles — every image in the video must look like it was drawn by the SAME artist>",
   "color_palette": ["<hex1>", "<hex2>", "<hex3>"],
   "text_overlay_suggestion": "<best single poetic line from the song>",
   "image_prompts": ["<prompt1>", "<prompt2>", "<prompt3>", "<prompt4>", "<prompt5>"],
@@ -143,6 +143,16 @@ CRITICAL RULES:
 - The shorts segment should be the ACTUAL best hook, not always the middle.
 - The "image_prompts" array must have exactly 5 prompts matching the sections (one per section, pick the best 5 if more sections exist).
 - Be SPECIFIC to THIS song. Do not give generic responses.
+- STYLE CONSISTENCY IS CRITICAL: ALL image_prompts across ALL sections MUST use the EXACT SAME art style declared in visual_style. If visual_style is 'anime lo-fi illustration', EVERY section prompt must start with that style. NEVER generate one section as photo-realistic and another as anime — this creates a jarring, amateur slideshow effect.
+- Each section's image_prompt must show a DIFFERENT scene/composition but in the SAME art style. Vary the subject, angle, and lighting — NOT the rendering style.
+- The thumbnail_prompt should match the visual_style used in the video for brand consistency.
+- COMPOSITION VARIETY IS CRITICAL: Each section's image_prompt MUST show a DIFFERENT camera shot type. Cycle through: wide establishing shot → medium shot → close-up detail → bird's eye view → profile silhouette. NEVER repeat the same framing/composition in adjacent sections.
+- NEVER let adjacent sections show the same subject in the same pose. If section 1 has 'person sitting at desk', section 2 MUST show something different (e.g., 'window with rain', 'empty hallway', 'hands on book').
+- EMOTIONAL PROGRESSION: The visual intensity must BUILD across the song. Start with wider, calmer compositions. Build to tighter, more emotionally intense shots at the chorus/climax. End with a wide shot that provides closure.
+- SECTION DURATION: No section should exceed 20 seconds. Break long musical sections into 2-3 visual sub-sections with distinct compositions to prevent visual stagnation.
+- TEXT OVERLAYS: Add text_overlay to only 2-3 key emotional moments, not every section. Make each text evocative and impactful — a poetic Hindi line that viewers will screenshot.
+- ZOOM VARIETY: Use DIFFERENT zoom directions across sections. Never use 'zoom_in' for more than 2 consecutive sections. Use 'breathing' for emotional sections, 'drift_diagonal' or 'ken_burns' for establishing shots, 'pan_left'/'pan_right' for narrative movement.
+- The STRONGEST visual shot should appear near the song's emotional climax (usually chorus), not at the beginning.
 """
 
 
@@ -229,11 +239,11 @@ class CreativeBrief(BaseModel):
     bpm_estimate: int = 90
     energy: str = "low"
     instruments: list[str] = Field(default_factory=list)
-    visual_style: str = "cozy study room"
+    visual_style: str = "cinematic atmospheric"
     color_palette: list[str] = Field(default_factory=lambda: ["#1a1a2e", "#4a3d8f", "#6c3ce1"])
     visualizer_intensity: str = "subtle"
     text_overlay_suggestion: str = ""
-    image_prompts: list[str] = Field(default_factory=lambda: ["lo-fi anime style, cozy rainy window, 4k"] * 5)
+    image_prompts: list[str] = Field(default_factory=lambda: ["cinematic atmospheric scene, detailed, 4k"] * 5)
     thumbnail_prompt: str = ""
     title_keywords: list[str] = Field(default_factory=list)
     source_file: str = ""

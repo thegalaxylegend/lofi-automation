@@ -55,7 +55,7 @@ class VideoMetadata:
         }
 
 
-MARKETER_PROMPT = """You are the Marketing Director for a premium lo-fi YouTube channel called "{channel_name}".
+MARKETER_PROMPT = """You are the Marketing Director for a premium Hindi music YouTube channel called "{channel_name}".
 Tagline: "{tagline}"
 Target Audience: {audience}
 
@@ -135,7 +135,11 @@ class Marketer:
             desc_min_words=channel.seo.description_min_words,
         )
 
-        logger.info("Marketer generating metadata for mood=%s...", mood)
+        logger.info("Marketer generating metadata for mood=%s, energy=%s...", mood, energy)
+
+        # Store mood/energy for fallback use
+        self._last_mood = mood
+        self._last_energy = energy
 
         raw = self.rotator.generate_text(
             prompt,
@@ -203,14 +207,19 @@ class Marketer:
         except json.JSONDecodeError:
             logger.error("Marketer failed to parse LLM response. Using defaults.")
             logger.debug("Raw: %s", raw[:500])
+            # Use mood-aware fallback instead of hardcoded lo-fi
+            mood = getattr(self, '_last_mood', 'chill')
+            energy = getattr(self, '_last_energy', 'low')
+            fallback_title = f"{mood.capitalize()} Vibes 🎶 | {self.config.channel.name}"
+            fallback_tags = [mood, energy, "hindi music", "mood wire", "music"]
             return VideoMetadata(
-                title="Lo-fi Beats for Late Night Study 🌙",
-                description="Relax and focus with these chill beats.",
-                tags=["lofi", "study music", "chill beats"],
+                title=fallback_title,
+                description=f"{mood.capitalize()} music to match your mood.",
+                tags=fallback_tags,
             )
 
         return VideoMetadata(
-            title=data.get("title", "Lo-fi Study Beats")[:100],
+            title=data.get("title", f"Mood Wire 🎶")[:100],
             description=data.get("description", ""),
             tags=data.get("tags", []),
             thumbnail_prompt=data.get("thumbnail_prompt", ""),

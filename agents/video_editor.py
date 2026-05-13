@@ -49,21 +49,84 @@ def _safe_ffmpeg_path(path: Path) -> str:
     return s
 
 
-def _zoom_params(direction: str, speed: str) -> str:
-    """Convert zoom direction + speed into a zoompan expression."""
-    speeds = {"very_slow": 0.00010, "slow": 0.00020, "medium": 0.00035, "fast": 0.00050}
-    spd = speeds.get(speed, 0.00020)
+def _zoom_params(direction: str, speed: str) -> dict[str, str]:
+    """Convert zoom direction + speed into zoompan z/x/y expressions.
+    
+    Returns a dict with 'z', 'x', 'y' expressions for the zoompan filter.
+    Creates organic, cinematic movement instead of static slides.
+    """
+    speeds = {"very_slow": 0.00008, "slow": 0.00015, "medium": 0.00028, "fast": 0.00042}
+    spd = speeds.get(speed, 0.00015)
 
-    if direction == "zoom_out":
-        return f"if(eq(on,1),1.5,zoom-{spd:.5f})"
-    elif direction == "pan_left":
-        return f"zoom+{spd:.5f}"  # combined with x movement via x expression
-    elif direction == "pan_right":
-        return f"zoom+{spd:.5f}"
-    elif direction == "static":
-        return "1.0"
-    else:  # zoom_in (default)
-        return f"zoom+{spd:.5f}"
+    # All motions start slightly zoomed in (1.08x) to allow room for panning
+    # without showing black edges
+    base_zoom = 1.08
+
+    motions = {
+        # Classic zoom in — slow push toward subject
+        "zoom_in": {
+            "z": f"if(eq(on,1),{base_zoom},zoom+{spd:.5f})",
+            "x": "iw/2-(iw/zoom/2)",
+            "y": "ih/2-(ih/zoom/2)",
+        },
+        # Zoom out — reveal the full scene gradually
+        "zoom_out": {
+            "z": f"if(eq(on,1),1.5,zoom-{spd:.5f})",
+            "x": "iw/2-(iw/zoom/2)",
+            "y": "ih/2-(ih/zoom/2)",
+        },
+        # Slow left pan with slight zoom — cinematic tracking shot feel
+        "pan_left": {
+            "z": f"{base_zoom}+{spd*0.3:.5f}*on/{1}",
+            "x": f"iw*0.15-on*{spd*25:.3f}",
+            "y": "ih/2-(ih/zoom/2)",
+        },
+        # Slow right pan with slight zoom
+        "pan_right": {
+            "z": f"{base_zoom}+{spd*0.3:.5f}*on/{1}",
+            "x": f"on*{spd*25:.3f}",
+            "y": "ih/2-(ih/zoom/2)",
+        },
+        # Diagonal drift — top-left to bottom-right (like slow camera float)
+        "drift_diagonal": {
+            "z": f"if(eq(on,1),{base_zoom},zoom+{spd*0.5:.5f})",
+            "x": f"on*{spd*15:.3f}",
+            "y": f"on*{spd*10:.3f}",
+        },
+        # Breathing zoom — subtle oscillating zoom that feels organic/alive
+        "breathing": {
+            "z": f"{base_zoom}+0.02*sin(on*0.015)",
+            "x": "iw/2-(iw/zoom/2)",
+            "y": "ih/2-(ih/zoom/2)",
+        },
+        # Ken Burns top-left to bottom-right corner pan
+        "ken_burns_tl_br": {
+            "z": f"if(eq(on,1),1.3,zoom-{spd*0.5:.5f})",
+            "x": f"on*{spd*20:.3f}",
+            "y": f"on*{spd*12:.3f}",
+        },
+        # Ken Burns bottom-right to top-left
+        "ken_burns_br_tl": {
+            "z": f"if(eq(on,1),{base_zoom},zoom+{spd*0.7:.5f})",
+            "x": f"iw*0.2-on*{spd*15:.3f}",
+            "y": f"ih*0.2-on*{spd*10:.3f}",
+        },
+        # Slow upward drift — like the camera is gently rising
+        "drift_up": {
+            "z": f"{base_zoom}+{spd*0.4:.5f}*on/{1}",
+            "x": "iw/2-(iw/zoom/2)",
+            "y": f"ih*0.2-on*{spd*12:.3f}",
+        },
+        # Static with micro-drift — appears static but has subtle life
+        "static": {
+            "z": f"{base_zoom}+0.008*sin(on*0.01)",
+            "x": f"iw/2-(iw/zoom/2)+3*sin(on*0.008)",
+            "y": f"ih/2-(ih/zoom/2)+2*sin(on*0.012)",
+        },
+    }
+
+    motion = motions.get(direction, motions["zoom_in"])
+    return motion
 
 
 def _check_drawtext_support() -> bool:
@@ -83,12 +146,13 @@ def _burn_text_on_image(
     text: str,
     position: str,
     font_path: Path,
-    font_size: int = 30,
-    opacity: float = 0.85,
+    font_size: int = 44,
+    opacity: float = 0.92,
 ) -> Path:
     """
     Burn text onto an image using Pillow. Returns path to the new image.
     Used as fallback when FFmpeg drawtext is not available.
+    Now includes thick outline for readability on any background.
     """
     from PIL import Image, ImageDraw, ImageFont
 
@@ -117,6 +181,17 @@ def _burn_text_on_image(
     xy = pos_map.get(position, pos_map["center"])
 
     alpha = int(255 * opacity)
+
+    # Draw thick black outline for readability on any background
+    border_w = 3
+    for dx in range(-border_w, border_w + 1):
+        for dy in range(-border_w, border_w + 1):
+            if dx == 0 and dy == 0:
+                continue
+            draw.text((xy[0] + dx, xy[1] + dy), text, font=font,
+                      fill=(0, 0, 0, int(alpha * 0.8)))
+
+    # Main text on top
     draw.text(xy, text, font=font, fill=(255, 255, 255, alpha))
 
     result = Image.alpha_composite(img, overlay).convert("RGB")
@@ -242,18 +317,19 @@ class VideoEditor:
         filters = []
         img_durations = []
 
-        # Step 1: Scale + zoompan each section's image
+        # Step 1: Scale + zoompan each section's image with cinematic motion
         for i, sec in enumerate(sections):
             sec_dur = max(1.0, sec.end_sec - sec.start_sec)
             frames = int(sec_dur * fps)
             img_durations.append(sec_dur)
 
-            z_expr = _zoom_params(sec.zoom.direction, sec.zoom.speed)
+            motion = _zoom_params(sec.zoom.direction, sec.zoom.speed)
 
             filters.append(
                 f"[{i}:v]scale={w}:{h}:force_original_aspect_ratio=increase,"
                 f"crop={w}:{h},"
-                f"zoompan=z='{z_expr}':d={frames}:s={w}x{h}:fps={fps},"
+                f"zoompan=z='{motion['z']}':x='{motion['x']}':y='{motion['y']}':"
+                f"d={frames}:s={w}x{h}:fps={fps},"
                 f"setpts=PTS-STARTPTS,"
                 # Per-section color grading
                 f"eq=brightness={sec.color_grade.brightness}:"
@@ -264,6 +340,8 @@ class VideoEditor:
                 f"rs={sec.color_grade.red_shift}:"
                 f"gs={sec.color_grade.green_shift}:"
                 f"bs={sec.color_grade.blue_shift},"
+                # Subtle cinematic vignette on each section
+                f"vignette=PI/4,"
                 # Per-section grain
                 f"noise=c0s={sec.grain_intensity}:c0f=t+u"
                 f"[v{i}]"
@@ -327,7 +405,8 @@ class VideoEditor:
             ch_txt.write_text(channel_name, encoding="utf-8")
             filters.append(
                 f"[faded]drawtext=textfile='{_safe_ffmpeg_path(ch_txt)}':"
-                f"fontsize=22:fontcolor=white@0.25:"
+                f"fontsize=26:fontcolor=white@0.45:"
+                f"borderw=2:bordercolor=black@0.3:"
                 f"x=w-tw-30:y=h-th-30:"
                 f"fontfile='{safe_font}'[watermarked]"
             )
@@ -350,10 +429,24 @@ class VideoEditor:
                     }
                     pos = pos_map.get(sec.text_overlay.position, pos_map["center"])
 
+                    # Fade-in/out animation: 0.8s fade in, 0.8s fade out
+                    fade_in_dur = 0.8
+                    fade_out_dur = 0.8
+                    # Alpha expression: ramp up during fade_in, full during middle, ramp down during fade_out
+                    alpha_expr = (
+                        f"if(lt(t,{appear+fade_in_dur:.1f}),"
+                        f"(t-{appear:.1f})/{fade_in_dur:.1f},"
+                        f"if(gt(t,{end-fade_out_dur:.1f}),"
+                        f"({end:.1f}-t)/{fade_out_dur:.1f},"
+                        f"1))"
+                    )
+
                     filters.append(
                         f"[{last_label}]drawtext="
                         f"textfile='{_safe_ffmpeg_path(txt_file)}':"
-                        f"fontsize=30:fontcolor=white@0.85:"
+                        f"fontsize=44:fontcolor_expr=white@%{{eif\\:{alpha_expr}\\:d}}:"
+                        f"borderw=3:bordercolor=black@0.7:"
+                        f"shadowcolor=black@0.5:shadowx=3:shadowy=3:"
                         f"{pos}:"
                         f"fontfile='{safe_font}':"
                         f"enable='between(t,{appear:.1f},{end:.1f})'[{new_label}]"
@@ -432,11 +525,16 @@ class VideoEditor:
         for i in range(num_images):
             nf = frames_per + (1 if i < extra else 0)
             img_durs.append(nf / fps)
-            z = f"zoom+{zoom_speed:.6f}" if i % 2 == 0 else f"if(eq(on,1),1.5,zoom-{zoom_speed:.6f})"
+            # Cycle through different motions for variety
+            motion_cycle = ["zoom_in", "drift_diagonal", "breathing", "pan_left", "ken_burns_tl_br", "zoom_out", "drift_up"]
+            direction = motion_cycle[i % len(motion_cycle)]
+            motion = _zoom_params(direction, "slow")
             filters.append(
                 f"[{i}:v]scale={w}:{h}:force_original_aspect_ratio=increase,"
                 f"crop={w}:{h},"
-                f"zoompan=z='{z}':d={nf}:s={w}x{h}:fps={fps},"
+                f"zoompan=z='{motion['z']}':x='{motion['x']}':y='{motion['y']}':"
+                f"d={nf}:s={w}x{h}:fps={fps},"
+                f"vignette=PI/4,"
                 f"setpts=PTS-STARTPTS[v{i}]"
             )
 
@@ -456,7 +554,9 @@ class VideoEditor:
                 cum += img_durs[i] - xfade_dur
 
         filters.append(f"[slideshow]eq=brightness={color['brightness']}:contrast={color['contrast']}:saturation={color['saturation']}[graded]")
-        filters.append(f"[graded]noise=c0s=3:c0f=t+u[grained]")
+        # Dynamic grain: lo-fi/nostalgic moods get more grain, party/energetic get minimal
+        grain = self._mood_grain_intensity(brief)
+        filters.append(f"[graded]noise=c0s={grain}:c0f=t+u[grained]")
 
         fade_out_st = max(0, audio_duration - 3)
         filters.append(f"[grained]fade=t=in:st=0:d=2,fade=t=out:st={fade_out_st:.2f}:d=3[faded]")
@@ -533,6 +633,25 @@ class VideoEditor:
         }
         return grades.get(brief.mood, grades["peaceful"])
 
+    @staticmethod
+    def _mood_grain_intensity(brief: CreativeBrief) -> int:
+        """Dynamic film grain based on mood. Lo-fi/nostalgic = heavy grain, party/energetic = clean."""
+        grain_map = {
+            "melancholic": 4,
+            "nostalgic":   5,
+            "dark":        3,
+            "dreamy":      2,
+            "peaceful":    2,
+            "anxious":     3,
+            "romantic":    2,
+            "energetic":   1,  # Party/dance songs should look clean and vibrant
+        }
+        grain = grain_map.get(brief.mood, 2)
+        # Override: high energy songs always get minimal grain
+        if brief.energy.lower() == "high":
+            grain = min(grain, 1)
+        return grain
+
     def _burn_all_text_into_images(
         self,
         section_images: list[Path],
@@ -556,39 +675,67 @@ class VideoEditor:
     def _ensure_font() -> Path:
         fonts_dir = TEMPLATES_DIR / "fonts"
         fonts_dir.mkdir(parents=True, exist_ok=True)
-        font_path = fonts_dir / "Roboto-Regular.ttf"
 
-        if font_path.exists() and font_path.stat().st_size > 50_000:
-            return font_path
+        # Prefer Noto Sans Devanagari for Hindi text support
+        noto_hindi = fonts_dir / "NotoSansDevanagari-Regular.ttf"
+        roboto_font = fonts_dir / "Roboto-Regular.ttf"
 
-        # Updated URLs — the old google/fonts paths moved to googlefonts org
-        urls = [
-            "https://github.com/googlefonts/roboto/releases/download/v2.138/roboto-unhinted.zip",
+        # Check if we already have a Hindi-compatible font
+        if noto_hindi.exists() and noto_hindi.stat().st_size > 50_000:
+            return noto_hindi
+        if roboto_font.exists() and roboto_font.stat().st_size > 50_000:
+            return roboto_font
+
+        # Try downloading Noto Sans Devanagari (supports Hindi + Latin)
+        hindi_font_urls = [
+            ("NotoSansDevanagari-Regular.ttf",
+             "https://github.com/googlefonts/noto-fonts/raw/main/hinted/ttf/NotoSansDevanagari/NotoSansDevanagari-Regular.ttf"),
+            ("NotoSansDevanagari-Regular.ttf",
+             "https://github.com/google/fonts/raw/main/ofl/notosansdevanagari/NotoSansDevanagari%5Bwdth%2Cwght%5D.ttf"),
+        ]
+
+        for fname, url in hindi_font_urls:
+            target = fonts_dir / fname
+            try:
+                logger.info("Downloading Hindi font: %s", url[:80])
+                urllib.request.urlretrieve(url, target)
+                if target.exists() and target.stat().st_size > 50_000:
+                    logger.info("Hindi font downloaded: %s", fname)
+                    return target
+                target.unlink(missing_ok=True)
+            except Exception as e:
+                logger.warning("Hindi font download failed: %s", e)
+                target.unlink(missing_ok=True)
+
+        # Fallback: try Roboto (Latin only)
+        roboto_urls = [
             "https://github.com/googlefonts/roboto-classic/raw/main/fonts/ttf/Roboto-Regular.ttf",
             "https://github.com/google/fonts/raw/main/apache/roboto/Roboto%5Bwdth%2Cwght%5D.ttf",
         ]
-
-        # Try direct TTF downloads first
-        for url in urls[1:]:
+        for url in roboto_urls:
             try:
                 logger.info("Downloading font: %s", url[:80])
-                urllib.request.urlretrieve(url, font_path)
-                if font_path.exists() and font_path.stat().st_size > 50_000:
-                    return font_path
-                font_path.unlink(missing_ok=True)
+                urllib.request.urlretrieve(url, roboto_font)
+                if roboto_font.exists() and roboto_font.stat().st_size > 50_000:
+                    return roboto_font
+                roboto_font.unlink(missing_ok=True)
             except Exception as e:
                 logger.warning("Font download failed: %s", e)
-                font_path.unlink(missing_ok=True)
+                roboto_font.unlink(missing_ok=True)
 
-        # System font fallbacks (most reliable on CI)
+        # System font fallbacks — prioritize Hindi-capable fonts
         for sys_font in [
-            Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"),
+            # Hindi-compatible system fonts (CI installs fonts-noto)
+            Path("/usr/share/fonts/truetype/noto/NotoSansDevanagari-Regular.ttf"),
             Path("/usr/share/fonts/truetype/noto/NotoSans-Regular.ttf"),
+            Path("/usr/share/fonts/truetype/dejavu/DejaVuSans.ttf"),
             Path("/usr/share/fonts/TTF/DejaVuSans.ttf"),
+            # Windows
+            Path("C:/Windows/Fonts/mangal.ttf"),  # Hindi font on Windows
             Path("C:/Windows/Fonts/arial.ttf"),
         ]:
             if sys_font.exists():
                 logger.info("Using system font: %s", sys_font)
                 return sys_font
 
-        raise RuntimeError("Could not find any font. Install: sudo apt install fonts-dejavu-core")
+        raise RuntimeError("Could not find any font. Install: sudo apt install fonts-noto")

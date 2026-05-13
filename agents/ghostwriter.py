@@ -25,7 +25,7 @@ from core.memory import Memory
 
 logger = logging.getLogger(__name__)
 
-REPLY_PROMPT = """You are the social media manager for "{channel_name}", a lo-fi YouTube channel.
+REPLY_PROMPT = """You are the social media manager for "{channel_name}", a Hindi music YouTube channel.
 Tagline: "{tagline}"
 
 A viewer left this comment on your video "{video_title}":
@@ -34,7 +34,7 @@ A viewer left this comment on your video "{video_title}":
 
 Write a warm, genuine reply that:
 1. Acknowledges their comment specifically
-2. Stays in character (chill, supportive, warm lo-fi vibes)
+2. Stays in character (warm, supportive, genuine vibes matching the video's mood)
 3. Is 1-3 sentences max
 4. Feels human, NOT corporate or AI-generated
 5. Occasionally uses a relevant emoji (don't overdo it)

@@ -38,10 +38,9 @@
       },
       "seo": {
         "default_tags": [
-          "lofi", "study music", "lofi hip hop", "chill beats",
-          "focus music", "study beats", "lofi radio", "jee preparation",
-          "neet study music", "night study", "coding music",
-          "relaxing music", "ambient", "concentration music"
+          "mood wire", "hindi music", "indian music",
+          "music", "hindi songs", "mood",
+          "new song 2026", "trending music"
         ],
         "target_title_length": 60,
         "description_min_words": 100
@@ -85,9 +84,9 @@
       },
       "seo": {
         "default_tags": [
-          "hindi songs", "sad songs", "emotional songs",
-          "new hindi song 2026", "mood wire", "student life",
-          "relatable songs", "indian music", "desi lofi"
+          "hindi songs", "emotional songs", "mood wire",
+          "new hindi song 2026", "indian music",
+          "student life", "relatable songs"
         ],
         "target_title_length": 70,
         "description_min_words": 80

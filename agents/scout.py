@@ -1,7 +1,7 @@
 """
 Agent 9: The Scout — Competitor Intelligence Agent.
 
-Monitors top lo-fi channels weekly to detect:
+Monitors top music channels weekly to detect:
   - Trending keywords in titles
   - Upload frequency patterns
   - Video length trends
@@ -33,7 +33,7 @@ DEFAULT_COMPETITORS = [
     {"name": "College Music", "channel_id": "UCWzZ5TIGoZ6o-KtbGCyhnhg"},
 ]
 
-SCOUT_ANALYSIS_PROMPT = """You are a competitive intelligence analyst for a lo-fi YouTube channel.
+SCOUT_ANALYSIS_PROMPT = """You are a competitive intelligence analyst for a Hindi music YouTube channel.
 
 Here is data about our top competitors' recent uploads:
 

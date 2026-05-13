@@ -28,7 +28,7 @@ from core.memory import (
 
 logger = logging.getLogger(__name__)
 
-ANALYSIS_PROMPT = """You are a YouTube Analytics expert specializing in lo-fi/music channels.
+ANALYSIS_PROMPT = """You are a YouTube Analytics expert specializing in Hindi music/audio channels.
 
 Here is the recent performance data for our channel:
 
