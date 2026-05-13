@@ -149,7 +149,14 @@ CRITICAL RULES:
 - COMPOSITION VARIETY IS CRITICAL: Each section's image_prompt MUST show a DIFFERENT camera shot type. Cycle through: wide establishing shot → medium shot → close-up detail → bird's eye view → profile silhouette. NEVER repeat the same framing/composition in adjacent sections.
 - NEVER let adjacent sections show the same subject in the same pose. If section 1 has 'person sitting at desk', section 2 MUST show something different (e.g., 'window with rain', 'empty hallway', 'hands on book').
 - EMOTIONAL PROGRESSION: The visual intensity must BUILD across the song. Start with wider, calmer compositions. Build to tighter, more emotionally intense shots at the chorus/climax. End with a wide shot that provides closure.
-- SECTION DURATION: No section should exceed 20 seconds. Break long musical sections into 2-3 visual sub-sections with distinct compositions to prevent visual stagnation.
+- SECTION DURATION IS TEMPO-DEPENDENT:
+  * For HIGH energy / fast BPM (party, dance, EDM, hip-hop): sections should be SHORT (5-10 seconds each). Fast songs need rapid visual changes to match the energy. More sections = more visual variety = more engaging.
+  * For MEDIUM energy (pop, romantic, motivational): sections should be 10-15 seconds each.
+  * For LOW energy (sad, lo-fi, ambient, devotional): sections should be 12-20 seconds each. Slow songs need time to breathe — rushing cuts kills the mood.
+  * NEVER exceed 20 seconds for any section regardless of energy.
+- TRANSITION SPEED MUST MATCH ENERGY:
+  * HIGH energy songs: use "fast_dissolve" (0.5s) or "direct_cut" for most transitions. Quick cuts create excitement.
+  * LOW energy songs: use "slow_dissolve" (1.5-2.0s) or "fade_through_black". Gentle transitions preserve the emotional flow.
 - TEXT OVERLAYS: Add text_overlay to only 2-3 key emotional moments, not every section. Make each text evocative and impactful — a poetic Hindi line that viewers will screenshot.
 - ZOOM VARIETY: Use DIFFERENT zoom directions across sections. Never use 'zoom_in' for more than 2 consecutive sections. Use 'breathing' for emotional sections, 'drift_diagonal' or 'ken_burns' for establishing shots, 'pan_left'/'pan_right' for narrative movement.
 - The STRONGEST visual shot should appear near the song's emotional climax (usually chorus), not at the beginning.
