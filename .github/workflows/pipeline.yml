@@ -86,10 +86,10 @@ jobs:
         run: python core/delivery.py
 
       - name: Commit updated memory files
-        if: success()
+        if: always()
         run: |
           git config user.name "Lo-fi Bot"
           git config user.email "bot@moodwire.dev"
           git add memory/*.json
           git diff --cached --quiet || git commit -m "🧠 Update agent memory [skip ci]"
-          git push
+          git push || true

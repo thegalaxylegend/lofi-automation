@@ -225,7 +225,15 @@ class APIRotator:
 
             except Exception as exc:
                 exc_str = str(exc).lower()
-                if "429" in exc_str or "rate" in exc_str or "quota" in exc_str:
+                if "404" in exc_str or "not found" in exc_str:
+                    logger.error(
+                        "Gemini key #%d: MODEL NOT FOUND (404). "
+                        "Check model name is valid. Error: %s",
+                        slot.index, exc,
+                    )
+                    # Don't cooldown — every key will fail the same way
+                    return None
+                elif "429" in exc_str or "rate" in exc_str or "quota" in exc_str:
                     slot.mark_rate_limited(cooldown_sec=60.0)
                 else:
                     logger.error("Gemini key #%d error: %s", slot.index, exc)
@@ -275,7 +283,14 @@ class APIRotator:
 
             except Exception as exc:
                 exc_str = str(exc).lower()
-                if "429" in exc_str or "rate" in exc_str or "quota" in exc_str:
+                if "404" in exc_str or "not found" in exc_str:
+                    logger.error(
+                        "Gemini key #%d: MODEL NOT FOUND (404). "
+                        "Check model name is valid. Error: %s",
+                        slot.index, exc,
+                    )
+                    return None
+                elif "429" in exc_str or "rate" in exc_str or "quota" in exc_str:
                     slot.mark_rate_limited(cooldown_sec=60.0)
                 else:
                     logger.error(

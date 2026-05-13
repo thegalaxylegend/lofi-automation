@@ -56,12 +56,12 @@ class ImageFetcher:
             safe_name = f"bg_img_{i:02d}.jpg"
             output_path = self.temp_dir / safe_name
             
-            full_prompt = f"{prompt}, anime lo-fi style, masterpiece, 8k resolution, cinematic lighting"
+            full_prompt = f"{prompt}, anime lo-fi style, masterpiece, 8k resolution, cinematic lighting, ultra detailed, sharp focus, best quality, professional"
             encoded_prompt = urllib.parse.quote(full_prompt)
             # Added a random seed to bypass cache and ensure unique images
             seed = random.randint(1, 100000)
-            # explicitly ask for flux model which is best for 16:9
-            url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=1920&height=1080&nologo=true&seed={seed}&model=flux"
+            # Use flux-pro for higher quality, request 2K resolution for sharper downscale
+            url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=2560&height=1440&nologo=true&seed={seed}&model=flux-pro&enhance=true&quality=hd"
             
             for attempt in range(5):
                 try:

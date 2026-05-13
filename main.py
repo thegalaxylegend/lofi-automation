@@ -246,6 +246,29 @@ def process_single(audio_path: Path) -> PipelineResult:
     return result
 
 
+def _get_git_processed_files() -> set[str]:
+    """Check git log for files that were already processed (committed via memory)."""
+    import subprocess
+    try:
+        # Check git log for commit messages that mention processed files
+        result = subprocess.run(
+            ["git", "log", "--all", "--format=%s", "-n", "50"],
+            capture_output=True, text=True, timeout=10,
+        )
+        processed = set()
+        for line in result.stdout.splitlines():
+            # Match commit messages like "🎵 Auto-ingest: filename.mp3 from Telegram"
+            if "Auto-ingest:" in line:
+                # Extract the filename between "Auto-ingest: " and " from Telegram"
+                import re
+                match = re.search(r"Auto-ingest:\s*(.+?)\s*from Telegram", line)
+                if match:
+                    processed.add(match.group(1).strip())
+        return processed
+    except Exception:
+        return set()
+
+
 def process_batch(audio_dir: Path) -> BatchResult:
     """Process only the NEWEST MP3 file in a directory (by modification time)."""
     batch = BatchResult()
@@ -253,10 +276,21 @@ def process_batch(audio_dir: Path) -> BatchResult:
 
     mp3_files = sorted(audio_dir.glob("*.mp3"), key=lambda f: f.stat().st_mtime, reverse=True)
     
-    # Filter out already processed files
+    # Filter out already processed files using memory
     mem = pipeline_memory()
-    processed = mem.get("processed_files", [])
-    mp3_files = [f for f in mp3_files if f.name not in processed]
+    processed = set(mem.get("processed_files", []))
+    
+    # Also check git history for files processed in previous runs
+    # (memory may have been lost if a previous run failed before committing)
+    git_processed = _get_git_processed_files()
+    all_processed = processed | git_processed
+    
+    logger.info(
+        "Dedup check: %d in memory, %d in git history, %d total known",
+        len(processed), len(git_processed), len(all_processed),
+    )
+    
+    mp3_files = [f for f in mp3_files if f.name not in all_processed]
 
     if not mp3_files:
         logger.info("No new MP3 files found in %s", audio_dir)

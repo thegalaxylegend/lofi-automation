@@ -22,7 +22,7 @@ from core.config import Config, OUTPUT_DIR, TEMPLATES_DIR
 logger = logging.getLogger(__name__)
 
 # Pollinations.ai is a free, no-auth AI image generation API
-POLLINATIONS_URL = "https://image.pollinations.ai/prompt/{prompt}?width={w}&height={h}&nologo=true&enhance=true"
+POLLINATIONS_URL = "https://image.pollinations.ai/prompt/{prompt}?width={w}&height={h}&nologo=true&enhance=true&model=flux-pro&quality=hd"
 
 
 class ThumbnailCreator:
