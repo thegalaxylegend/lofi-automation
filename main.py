@@ -108,6 +108,11 @@ def process_single(audio_path: Path) -> PipelineResult:
 
         # ── Agent 3: Marketer (SEO Metadata) ────────────────
         from agents.marketer import Marketer
+
+        # Load past titles for anti-repetition
+        mem = pipeline_memory()
+        past_titles = mem.get("generated_titles", [])[-15:]
+
         marketer = Marketer()
         metadata = marketer.generate_metadata(
             mood=brief.mood,
@@ -116,6 +121,8 @@ def process_single(audio_path: Path) -> PipelineResult:
             visual_style=brief.visual_style,
             title_keywords=brief.title_keywords,
             thumbnail_prompt_hint=brief.thumbnail_prompt,
+            song_dna=brief.song_dna.model_dump() if brief.song_dna else None,
+            past_titles=past_titles,
         )
 
         # Save metadata to file
@@ -123,6 +130,10 @@ def process_single(audio_path: Path) -> PipelineResult:
         metadata.to_file(meta_path)
         result.metadata_path = str(meta_path)
         result.title = metadata.title
+
+        # Record title in memory for future anti-repetition
+        mem.append_to_list("generated_titles", metadata.title)
+
         logger.info("Metadata generated: '%s'", metadata.title)
 
         # ── Agent 4: Thumbnail Creator ──────────────────────

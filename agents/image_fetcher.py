@@ -1,6 +1,20 @@
-import urllib.parse
-import urllib.request
+"""
+Agent 2B: The Image Fetcher — AI Image Generation Pipeline.
+
+Downloads AI-generated images based on Director prompts using a
+multi-tier generation system:
+  1. PRIMARY: Gemini Imagen (highest quality, uses existing API keys)
+  2. BACKUP:  Cloudflare Workers AI / FLUX (free, reliable fallback)
+  3. LEGACY:  Pollinations.ai (last resort)
+
+All images are post-processed with PIL for sharpness and color enhancement.
+"""
+
 import logging
+import os
+import random
+import time
+import urllib.parse
 from pathlib import Path
 
 from agents.director import CreativeBrief
@@ -8,123 +22,356 @@ from core.config import TEMP_DIR
 
 logger = logging.getLogger(__name__)
 
+
+# ──────────────────────────────────────────────
+#  Post-Processing Pipeline (applies to ALL images)
+# ──────────────────────────────────────────────
+def _enhance_image(path: Path) -> Path:
+    """Sharpen and color-enhance an image using PIL."""
+    try:
+        from PIL import Image, ImageEnhance, ImageFilter
+
+        img = Image.open(path).convert("RGB")
+
+        # Unsharp mask for sharpening (radius=2, percent=150, threshold=3)
+        img = img.filter(ImageFilter.UnsharpMask(radius=2, percent=150, threshold=3))
+
+        # Boost contrast slightly
+        img = ImageEnhance.Contrast(img).enhance(1.08)
+
+        # Boost color saturation for vibrant lo-fi aesthetics
+        img = ImageEnhance.Color(img).enhance(1.12)
+
+        # Slight brightness boost for dark scenes
+        img = ImageEnhance.Brightness(img).enhance(1.03)
+
+        img.save(path, "JPEG", quality=95)
+        return path
+    except Exception as exc:
+        logger.warning("Image enhancement failed for %s: %s", path.name, exc)
+        return path
+
+
+# ──────────────────────────────────────────────
+#  Tier 1: Gemini Imagen
+# ──────────────────────────────────────────────
+class GeminiImageGenerator:
+    """Generate images using Google Gemini's native image generation."""
+
+    def __init__(self):
+        self._keys = []
+        for i in range(1, 7):
+            key = os.getenv(f"GEMINI_API_KEY_{i}", "")
+            if key:
+                self._keys.append(key)
+        self._key_index = 0
+
+    @property
+    def available(self) -> bool:
+        return len(self._keys) > 0
+
+    def _next_key(self) -> str:
+        key = self._keys[self._key_index % len(self._keys)]
+        self._key_index += 1
+        return key
+
+    def generate(self, prompt: str, output_path: Path, retries: int = 3) -> Path | None:
+        """Generate a single image via Gemini Imagen API using google.genai SDK."""
+        try:
+            import google.genai as genai
+        except ImportError:
+            logger.warning("google-genai not installed. Skipping Gemini Imagen.")
+            return None
+
+        for attempt in range(retries):
+            api_key = self._next_key()
+            try:
+                client = genai.Client(api_key=api_key)
+
+                enhanced_prompt = (
+                    f"{prompt}, masterpiece quality, 8k resolution, "
+                    f"ultra detailed, sharp focus, professional photography, "
+                    f"cinematic lighting, best quality"
+                )
+
+                response = client.models.generate_content(
+                    model="gemini-2.0-flash-preview-image-generation",
+                    contents=enhanced_prompt,
+                    config=genai.types.GenerateContentConfig(
+                        response_modalities=["IMAGE", "TEXT"],
+                    ),
+                )
+
+                # Extract image from response
+                if response.candidates:
+                    for part in response.candidates[0].content.parts:
+                        if hasattr(part, "inline_data") and part.inline_data:
+                            image_data = part.inline_data.data
+                            with open(output_path, "wb") as f:
+                                f.write(image_data)
+
+                            if output_path.exists() and output_path.stat().st_size > 500:
+                                logger.info("Gemini Imagen generated: %s (%d KB)",
+                                            output_path.name,
+                                            output_path.stat().st_size // 1024)
+                                return output_path
+
+                logger.warning("Gemini Imagen returned no image data (attempt %d/%d)",
+                               attempt + 1, retries)
+
+            except Exception as exc:
+                exc_str = str(exc).lower()
+                if "429" in exc_str or "resource_exhausted" in exc_str:
+                    logger.warning("Gemini Imagen rate limited (key %d). Rotating...",
+                                   self._key_index)
+                    time.sleep(2 + random.uniform(0, 2))
+                elif "safety" in exc_str or "block" in exc_str:
+                    logger.warning("Gemini Imagen blocked prompt (safety filter): %s",
+                                   prompt[:80])
+                    return None  # Don't retry safety blocks — go to backup
+                else:
+                    logger.warning("Gemini Imagen error (attempt %d/%d): %s",
+                                   attempt + 1, retries, exc)
+                    time.sleep(1 + attempt * 2)
+
+        return None
+
+
+# ──────────────────────────────────────────────
+#  Tier 2: Cloudflare Workers AI (FLUX)
+# ──────────────────────────────────────────────
+class CloudflareImageGenerator:
+    """Generate images using Cloudflare Workers AI (FLUX model)."""
+
+    def __init__(self):
+        self.account_id = os.getenv("CLOUDFLARE_ACCOUNT_ID", "")
+        self.api_token = os.getenv("CLOUDFLARE_API_TOKEN", "").replace('"', '')
+
+    @property
+    def available(self) -> bool:
+        return bool(self.account_id and self.api_token)
+
+    def generate(self, prompt: str, output_path: Path, retries: int = 3) -> Path | None:
+        """Generate a single image via Cloudflare Workers AI."""
+        import requests
+
+        # Use FLUX model for best quality on Cloudflare
+        model = "@cf/black-forest-labs/flux-1-schnell"
+        url = f"https://api.cloudflare.com/client/v4/accounts/{self.account_id}/ai/run/{model}"
+
+        enhanced_prompt = (
+            f"{prompt}, masterpiece quality, highly detailed, "
+            f"cinematic lighting, sharp focus, professional, 8k"
+        )
+
+        for attempt in range(retries):
+            try:
+                response = requests.post(
+                    url,
+                    headers={
+                        "Authorization": f"Bearer {self.api_token}",
+                        "Content-Type": "application/json",
+                    },
+                    json={
+                        "prompt": enhanced_prompt,
+                        "num_steps": 8,
+                        "width": 1024,
+                        "height": 1024,
+                    },
+                    timeout=120,
+                )
+
+                if response.status_code == 200:
+                    # Cloudflare returns raw image bytes
+                    content_type = response.headers.get("Content-Type", "")
+                    if "image" in content_type or len(response.content) > 1000:
+                        with open(output_path, "wb") as f:
+                            f.write(response.content)
+
+                        if output_path.exists() and output_path.stat().st_size > 500:
+                            logger.info("Cloudflare FLUX generated: %s (%d KB)",
+                                        output_path.name,
+                                        output_path.stat().st_size // 1024)
+                            return output_path
+                    else:
+                        # Response might be JSON with an error
+                        try:
+                            err_data = response.json()
+                            logger.warning("Cloudflare non-image response: %s",
+                                           str(err_data)[:200])
+                        except Exception:
+                            logger.warning("Cloudflare unknown response format")
+
+                elif response.status_code == 429:
+                    logger.warning("Cloudflare rate limited. Sleeping...")
+                    time.sleep(10 + random.uniform(0, 5))
+                else:
+                    logger.warning("Cloudflare error %d (attempt %d/%d): %s",
+                                   response.status_code, attempt + 1, retries,
+                                   response.text[:200])
+
+            except Exception as exc:
+                logger.warning("Cloudflare request failed (attempt %d/%d): %s",
+                               attempt + 1, retries, exc)
+                time.sleep(2 + attempt * 3)
+
+        return None
+
+
+# ──────────────────────────────────────────────
+#  Tier 3: Pollinations.ai (Legacy Fallback)
+# ──────────────────────────────────────────────
+class PollinationsImageGenerator:
+    """Legacy fallback — free Pollinations.ai API."""
+
+    def generate(self, prompt: str, output_path: Path, retries: int = 3) -> Path | None:
+        import requests
+
+        encoded_prompt = urllib.parse.quote(
+            f"{prompt}, masterpiece, 8k resolution, cinematic lighting, "
+            f"ultra detailed, sharp focus, best quality, professional"
+        )
+        seed = random.randint(1, 100000)
+        negative = urllib.parse.quote(
+            "blurry, low quality, distorted, ugly, bad anatomy, watermark, "
+            "text, signature, jpeg artifacts, deformed, extra limbs"
+        )
+        url = (
+            f"https://image.pollinations.ai/prompt/{encoded_prompt}"
+            f"?width=1920&height=1080&nologo=true&seed={seed}"
+            f"&model=flux-pro&enhance=true&quality=hd&negative={negative}"
+        )
+
+        for attempt in range(retries):
+            try:
+                response = requests.get(
+                    url,
+                    headers={"User-Agent": "Mozilla/5.0"},
+                    timeout=120,
+                )
+                response.raise_for_status()
+
+                content_type = response.headers.get("Content-Type", "")
+                if content_type not in ["image/jpeg", "image/png", "image/webp"]:
+                    raise ValueError(f"Non-image content type: {content_type}")
+
+                with open(output_path, "wb") as f:
+                    f.write(response.content)
+
+                if output_path.stat().st_size > 100:
+                    logger.info("Pollinations generated: %s", output_path.name)
+                    return output_path
+
+            except Exception as exc:
+                logger.warning("Pollinations failed (attempt %d/%d): %s",
+                               attempt + 1, retries, exc)
+                time.sleep(5 * (2 ** attempt) + random.uniform(0, 3))
+
+        return None
+
+
+# ──────────────────────────────────────────────
+#  Main Image Fetcher (Multi-Tier Orchestrator)
+# ──────────────────────────────────────────────
 class ImageFetcher:
     """
-    Downloads AI-generated images using the free Pollinations.ai API based on Director prompts.
+    Downloads AI-generated images using a tiered generation system:
+      1. Gemini Imagen (best quality)
+      2. Cloudflare FLUX (reliable backup)
+      3. Pollinations.ai (legacy fallback)
+
+    All images are post-processed with PIL sharpening and color enhancement.
     """
+
     def __init__(self):
         self.temp_dir = TEMP_DIR
         self.temp_dir.mkdir(exist_ok=True)
 
+        self.gemini = GeminiImageGenerator()
+        self.cloudflare = CloudflareImageGenerator()
+        self.pollinations = PollinationsImageGenerator()
+
+        # Log available generators
+        tiers = []
+        if self.gemini.available:
+            tiers.append(f"Gemini ({len(self.gemini._keys)} keys)")
+        if self.cloudflare.available:
+            tiers.append("Cloudflare FLUX")
+        tiers.append("Pollinations (always)")
+        logger.info("Image generators available: %s", " → ".join(tiers))
+
     def fetch_images(self, brief: CreativeBrief) -> list[Path]:
         """
-        Generates and downloads images based on Director's creative brief.
-        Uses section-specific prompts from Creative Engine when available,
-        falls back to generic image_prompts otherwise.
+        Generate and download images based on Director's creative brief.
+        Uses section-specific prompts from Creative Engine when available.
         """
         # Prefer section-specific prompts from Creative Engine
         if brief.has_sections:
             prompts = [sec.image_prompt for sec in brief.sections if sec.image_prompt]
             target_count = len(brief.sections)
-            logger.info("Using %d section-specific image prompts from Creative Engine", len(prompts))
+            logger.info("Using %d section-specific image prompts from Creative Engine",
+                        len(prompts))
         else:
             prompts = brief.image_prompts
             target_count = 5
 
         if not prompts:
             logger.warning("No image prompts found. Generating default prompts.")
-            prompts = [f"{brief.visual_style}, {brief.mood} vibe, highly detailed 4k"] * target_count
+            prompts = [
+                f"{brief.visual_style}, {brief.mood} vibe, highly detailed 4k"
+            ] * target_count
 
-        # Derive art style suffix from the Director's analysis instead of hardcoding "lo-fi"
+        # Derive art style suffix from the Director's analysis
         style_suffix = self._get_style_suffix(brief)
 
-        # Ensure we have the right number of prompts
+        # Ensure correct prompt count
         while len(prompts) < target_count:
             prompts.append(prompts[-1])
         prompts = prompts[:target_count]
 
-        logger.info(f"Generating {len(prompts)} images via Pollinations.ai...")
+        logger.info("Generating %d images (Gemini → Cloudflare → Pollinations)...",
+                     len(prompts))
 
-        image_paths = [None] * len(prompts)
-        
-        import requests
-        import time
-        import random
-        from concurrent.futures import ThreadPoolExecutor, as_completed
+        # Style anchor: prepend visual_style for consistency
+        visual_anchor = brief.visual_style if brief.visual_style else ""
 
-        def download_single(i, prompt):
-            # Stagger startup to prevent hammering the API instantly
-            time.sleep(i * 1.5)
+        image_paths: list[Path | None] = [None] * len(prompts)
 
-            safe_name = f"bg_img_{i:02d}.jpg"
-            output_path = self.temp_dir / safe_name
-            
-            # Style anchoring: visual_style goes FIRST so Pollinations AI
-            # treats it as the primary style instruction for consistency
-            visual_anchor = brief.visual_style if brief.visual_style else ""
-            full_prompt = f"{visual_anchor} style, {prompt}, {style_suffix}, masterpiece, 8k resolution, cinematic lighting, ultra detailed, sharp focus, best quality, professional, consistent art style throughout"
-            encoded_prompt = urllib.parse.quote(full_prompt)
-            # Added a random seed to bypass cache and ensure unique images
-            seed = random.randint(1, 100000)
-            # Use flux-pro for higher quality, request 2K resolution for sharper downscale
-            url = f"https://image.pollinations.ai/prompt/{encoded_prompt}?width=2560&height=1440&nologo=true&seed={seed}&model=flux-pro&enhance=true&quality=hd"
-            
-            for attempt in range(5):
-                try:
-                    logger.info(f"Downloading image {i+1}/{target_count} (Attempt {attempt+1})...")
-                    headers = {
-                        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
-                    }
-                    response = requests.get(url, headers=headers, timeout=120)
-                    response.raise_for_status()
-                    
-                    content_type = response.headers.get("Content-Type", "")
-                    if content_type not in ["image/jpeg", "image/png", "image/webp"]:
-                        raise ValueError(f"Received non-image content type: {content_type}")
+        # Generate images with tiered fallback (sequential to respect rate limits)
+        for i, prompt in enumerate(prompts):
+            output_path = self.temp_dir / f"bg_img_{i:02d}.jpg"
+            full_prompt = f"{visual_anchor} style, {prompt}, {style_suffix}"
 
-                    with open(output_path, "wb") as f:
-                        f.write(response.content)
-                    
-                    if output_path.stat().st_size < 100:
-                        raise ValueError("Downloaded image is too small (likely corrupt).")
-                        
-                    return i, output_path
-                except requests.exceptions.HTTPError as e:
-                    logger.error(f"Failed to generate image {i+1} on attempt {attempt+1}: {e}")
-                    if attempt < 4:
-                        if e.response is not None and e.response.status_code == 429:
-                            retry_after = int(e.response.headers.get("Retry-After", 15))
-                            logger.info(f"Rate limited (429). Sleeping {retry_after}s...")
-                            time.sleep(retry_after)
-                        else:
-                            wait_time = 5 * (2 ** attempt)
-                            time.sleep(wait_time + random.uniform(0, 3))
-                except Exception as e:
-                    logger.error(f"Failed to generate image {i+1} on attempt {attempt+1}: {e}")
-                    if attempt < 4:
-                        wait_time = 5 * (2 ** attempt)
-                        logger.info(f"Sleeping {wait_time}s before retrying slot {i+1}...")
-                        time.sleep(wait_time + random.uniform(0, 3))
-            
-            logger.error(f"Slot {i+1} completely failed.")
-            return i, None
+            # Stagger requests slightly to avoid burst rate limits
+            if i > 0:
+                time.sleep(1.5)
 
-        # Execute in parallel with 2 workers to prevent Pollinations.ai 429 Rate Limits
-        with ThreadPoolExecutor(max_workers=2) as executor:
-            futures = [executor.submit(download_single, i, p) for i, p in enumerate(prompts)]
-            
-            # Iterate through futures in the order they were submitted (preserves narrative order)
-            for i, future in enumerate(futures):
-                try:
-                    idx, path = future.result()
-                    image_paths[idx] = path
-                except Exception as e:
-                    logger.error(f"Catastrophic thread failure for slot {i+1}: {e}")
-                    image_paths[i] = None
+            # Tier 1: Gemini Imagen
+            result = None
+            if self.gemini.available:
+                result = self.gemini.generate(full_prompt, output_path)
 
-        # Fill in any failed slots with the previous successful image
-        final_paths = []
-        last_good = None
+            # Tier 2: Cloudflare FLUX
+            if result is None and self.cloudflare.available:
+                logger.info("Falling back to Cloudflare for image %d/%d",
+                            i + 1, len(prompts))
+                result = self.cloudflare.generate(full_prompt, output_path)
+
+            # Tier 3: Pollinations.ai
+            if result is None:
+                logger.info("Falling back to Pollinations for image %d/%d",
+                            i + 1, len(prompts))
+                result = self.pollinations.generate(full_prompt, output_path)
+
+            # Post-process: sharpen + color enhance
+            if result is not None:
+                result = _enhance_image(result)
+
+            image_paths[i] = result
+
+        # Fill failed slots with previous successful image
+        final_paths: list[Path] = []
+        last_good: Path | None = None
         for path in image_paths:
             if path is not None:
                 final_paths.append(path)
@@ -135,20 +382,24 @@ class ImageFetcher:
 
         if not final_paths:
             raise RuntimeError("Failed to generate any images for the video.")
-            
+
+        # Log generation stats
+        gemini_count = sum(1 for p in image_paths if p is not None)
+        logger.info("Image generation complete: %d/%d successful, all enhanced",
+                     gemini_count, len(prompts))
+
         return final_paths
 
     @staticmethod
     def _get_style_suffix(brief: CreativeBrief) -> str:
         """Derive an art style suffix from the Director's genre/mood analysis.
-        
+
         Instead of hardcoding 'anime lo-fi style' for every song, this maps
         the detected genre and energy to an appropriate visual style.
         """
         genre = getattr(brief.song_dna, 'genre', '').lower() if hasattr(brief, 'song_dna') else ''
         mood = brief.mood.lower()
         energy = brief.energy.lower()
-        visual = brief.visual_style.lower()
 
         # Check genre keywords for specific styles
         if any(kw in genre for kw in ['lo-fi', 'lofi', 'chill', 'ambient']):
@@ -180,6 +431,5 @@ class ImageFetcher:
         elif mood in ('nostalgic',):
             return "vintage film style, warm faded tones, nostalgic atmosphere"
 
-        # Ultimate fallback: use the Director's visual_style directly
+        # Ultimate fallback
         return f"{brief.visual_style} style, highly detailed"
-
