@@ -116,25 +116,27 @@ class GeminiImageGenerator:
 
                 response = client.models.generate_content(
                     model="gemini-2.5-flash-image",
-                    contents=enhanced_prompt,
-                    config=genai.types.GenerateContentConfig(
-                        response_modalities=["IMAGE", "TEXT"],
-                    ),
+                    contents=[enhanced_prompt],
                 )
 
                 # Extract image from response
-                if response.candidates:
-                    for part in response.candidates[0].content.parts:
-                        if hasattr(part, "inline_data") and part.inline_data:
-                            image_data = part.inline_data.data
-                            with open(output_path, "wb") as f:
-                                f.write(image_data)
+                if hasattr(response, "parts"):
+                    parts = response.parts
+                elif response.candidates and response.candidates[0].content.parts:
+                    parts = response.candidates[0].content.parts
+                else:
+                    parts = []
 
-                            if output_path.exists() and output_path.stat().st_size > 500:
-                                logger.info("Gemini Imagen generated: %s (%d KB)",
-                                            output_path.name,
-                                            output_path.stat().st_size // 1024)
-                                return output_path
+                for part in parts:
+                    if getattr(part, "inline_data", None) is not None:
+                        image = part.as_image()
+                        image.save(output_path)
+
+                        if output_path.exists() and output_path.stat().st_size > 500:
+                            logger.info("Gemini Imagen generated: %s (%d KB)",
+                                        output_path.name,
+                                        output_path.stat().st_size // 1024)
+                            return output_path
 
                 logger.warning("Gemini Imagen returned no image data (attempt %d/%d)",
                                attempt + 1, retries)
