@@ -165,8 +165,8 @@ class Config:
         self.telegram_bot_token: str = os.getenv("TELEGRAM_BOT_TOKEN", "")
         self.telegram_chat_id: str = os.getenv("TELEGRAM_CHAT_ID", "")
 
-        self.cloudflare_account_id: str = os.getenv("CLOUDFLARE_ACCOUNT_ID", "")
-        self.cloudflare_api_token: str = os.getenv("CLOUDFLARE_API_TOKEN", "")
+        self.cloudflare_account_ids: list[str] = self._collect_keys("CLOUDFLARE_ACCOUNT_ID_", 10)
+        self.cloudflare_api_tokens: list[str] = self._collect_keys("CLOUDFLARE_API_TOKEN_", 10)
 
         logger.info(
             "API keys loaded: %d Gemini, %d Groq",

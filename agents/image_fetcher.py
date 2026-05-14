@@ -175,20 +175,23 @@ class CloudflareImageGenerator:
     """Generate images using Cloudflare Workers AI (FLUX model)."""
 
     def __init__(self):
-        self.account_id = os.getenv("CLOUDFLARE_ACCOUNT_ID", "")
-        self.api_token = os.getenv("CLOUDFLARE_API_TOKEN", "").replace('"', '')
+        from core.config import Config
+        cfg = Config()
+        self._accounts = list(zip(cfg.cloudflare_account_ids, cfg.cloudflare_api_tokens))
+        self._key_index = 0
 
     @property
     def available(self) -> bool:
-        return bool(self.account_id and self.api_token)
+        return len(self._accounts) > 0
+
+    def _next_account(self) -> tuple[str, str]:
+        account_id, api_token = self._accounts[self._key_index % len(self._accounts)]
+        self._key_index += 1
+        return account_id, api_token.replace('"', '')
 
     def generate(self, prompt: str, output_path: Path, retries: int = 3) -> Path | None:
         """Generate a single image via Cloudflare Workers AI."""
         import requests
-
-        # Use FLUX model for best quality on Cloudflare
-        model = "@cf/black-forest-labs/flux-1-schnell"
-        url = f"https://api.cloudflare.com/client/v4/accounts/{self.account_id}/ai/run/{model}"
 
         enhanced_prompt = (
             f"{prompt}, masterpiece quality, highly detailed, "
@@ -196,11 +199,16 @@ class CloudflareImageGenerator:
         )
 
         for attempt in range(retries):
+            account_id, api_token = self._next_account()
+            # Use FLUX model for best quality on Cloudflare
+            model = "@cf/black-forest-labs/flux-1-schnell"
+            url = f"https://api.cloudflare.com/client/v4/accounts/{account_id}/ai/run/{model}"
+
             try:
                 response = requests.post(
                     url,
                     headers={
-                        "Authorization": f"Bearer {self.api_token}",
+                        "Authorization": f"Bearer {api_token}",
                         "Content-Type": "application/json",
                     },
                     json={
