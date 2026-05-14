@@ -444,7 +444,7 @@ class VideoEditor:
                     filters.append(
                         f"[{last_label}]drawtext="
                         f"textfile='{_safe_ffmpeg_path(txt_file)}':"
-                        f"fontsize=44:fontcolor_expr=white@%{{eif\\:{alpha_expr}\\:d}}:"
+                        f"fontsize=44:fontcolor=white:alpha='{alpha_expr}':"
                         f"borderw=3:bordercolor=black@0.7:"
                         f"shadowcolor=black@0.5:shadowx=3:shadowy=3:"
                         f"{pos}:"
