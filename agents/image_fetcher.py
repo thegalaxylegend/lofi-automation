@@ -115,7 +115,7 @@ class GeminiImageGenerator:
                 )
 
                 response = client.models.generate_content(
-                    model="gemini-2.0-flash-preview-image-generation",
+                    model="gemini-2.5-flash-image",
                     contents=enhanced_prompt,
                     config=genai.types.GenerateContentConfig(
                         response_modalities=["IMAGE", "TEXT"],
@@ -149,6 +149,15 @@ class GeminiImageGenerator:
                     logger.warning("Gemini Imagen blocked prompt (safety filter): %s",
                                    prompt[:80])
                     return None  # Don't retry safety blocks — go to backup
+                elif "404" in exc_str or "not found" in exc_str:
+                    logger.warning("Gemini Imagen error: Model not found. Skipping.")
+                    return None
+                elif "400" in exc_str or "invalid_argument" in exc_str or "paid plan" in exc_str:
+                    logger.warning("Gemini Imagen requires paid plan. Skipping.")
+                    return None
+                elif "limit: 0" in exc_str or "quota exceeded" in exc_str:
+                    logger.warning("Gemini Imagen quota exceeded (free tier?). Skipping.")
+                    return None
                 else:
                     logger.warning("Gemini Imagen error (attempt %d/%d): %s",
                                    attempt + 1, retries, exc)
@@ -204,7 +213,25 @@ class CloudflareImageGenerator:
                 if response.status_code == 200:
                     # Cloudflare returns raw image bytes
                     content_type = response.headers.get("Content-Type", "")
-                    if "image" in content_type or len(response.content) > 1000:
+                    if "application/json" in content_type:
+                        try:
+                            data = response.json()
+                            if data.get("success") and "result" in data and "image" in data["result"]:
+                                import base64
+                                image_data = base64.b64decode(data["result"]["image"])
+                                with open(output_path, "wb") as f:
+                                    f.write(image_data)
+
+                                if output_path.exists() and output_path.stat().st_size > 500:
+                                    logger.info("Cloudflare FLUX generated: %s (%d KB)",
+                                                output_path.name,
+                                                output_path.stat().st_size // 1024)
+                                    return output_path
+                            else:
+                                logger.warning("Cloudflare returned JSON but no image: %s", str(data)[:200])
+                        except Exception as e:
+                            logger.warning("Cloudflare failed to parse JSON: %s", e)
+                    elif "image" in content_type or len(response.content) > 1000:
                         with open(output_path, "wb") as f:
                             f.write(response.content)
 
@@ -213,14 +240,6 @@ class CloudflareImageGenerator:
                                         output_path.name,
                                         output_path.stat().st_size // 1024)
                             return output_path
-                    else:
-                        # Response might be JSON with an error
-                        try:
-                            err_data = response.json()
-                            logger.warning("Cloudflare non-image response: %s",
-                                           str(err_data)[:200])
-                        except Exception:
-                            logger.warning("Cloudflare unknown response format")
 
                 elif response.status_code == 429:
                     logger.warning("Cloudflare rate limited. Sleeping...")
