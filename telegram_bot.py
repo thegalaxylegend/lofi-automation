@@ -134,9 +134,12 @@ async def handle_audio(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
             f"🚀 Pushing to GitHub to trigger pipeline..."
         )
 
-        # Write the filename to .trigger so the pipeline knows which song to process
+        # Write the filename + timestamp to .trigger so the pipeline knows which song to process
+        # The timestamp ensures git always detects a change, even for re-sent songs
+        import datetime
         trigger_file = AUDIO_DIR / ".trigger"
-        trigger_file.write_text(file_name)
+        trigger_content = f"{file_name}\n{datetime.datetime.now(datetime.timezone.utc).isoformat()}"
+        trigger_file.write_text(trigger_content)
 
         # Git operations to trigger Actions
         logger.info(f"Using PROJECT_ROOT for git: {PROJECT_ROOT}")

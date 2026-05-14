@@ -26,23 +26,42 @@ logger = logging.getLogger(__name__)
 # ──────────────────────────────────────────────
 #  Post-Processing Pipeline (applies to ALL images)
 # ──────────────────────────────────────────────
+# Target output resolution for all images (Full HD 1080p)
+TARGET_WIDTH = 1920
+TARGET_HEIGHT = 1080
+
+
 def _enhance_image(path: Path) -> Path:
-    """Sharpen and color-enhance an image using PIL."""
+    """Upscale to 1920x1080, sharpen, and color-enhance an image using PIL."""
     try:
         from PIL import Image, ImageEnhance, ImageFilter
 
         img = Image.open(path).convert("RGB")
 
-        # Unsharp mask for sharpening (radius=2, percent=150, threshold=3)
+        # Step 1: Upscale to exactly 1920x1080 if smaller
+        if img.width < TARGET_WIDTH or img.height < TARGET_HEIGHT:
+            # Scale up maintaining aspect ratio, then crop to exact 16:9
+            scale = max(TARGET_WIDTH / img.width, TARGET_HEIGHT / img.height)
+            new_w = int(img.width * scale)
+            new_h = int(img.height * scale)
+            img = img.resize((new_w, new_h), Image.LANCZOS)
+
+            # Center crop to exact 1920x1080
+            left = (new_w - TARGET_WIDTH) // 2
+            top = (new_h - TARGET_HEIGHT) // 2
+            img = img.crop((left, top, left + TARGET_WIDTH, top + TARGET_HEIGHT))
+            logger.info("Upscaled %s to %dx%d", path.name, TARGET_WIDTH, TARGET_HEIGHT)
+
+        # Step 2: Unsharp mask for sharpening
         img = img.filter(ImageFilter.UnsharpMask(radius=2, percent=150, threshold=3))
 
-        # Boost contrast slightly
+        # Step 3: Boost contrast slightly
         img = ImageEnhance.Contrast(img).enhance(1.08)
 
-        # Boost color saturation for vibrant lo-fi aesthetics
+        # Step 4: Boost color saturation for vibrant aesthetics
         img = ImageEnhance.Color(img).enhance(1.12)
 
-        # Slight brightness boost for dark scenes
+        # Step 5: Slight brightness boost for dark scenes
         img = ImageEnhance.Brightness(img).enhance(1.03)
 
         img.save(path, "JPEG", quality=95)
@@ -89,9 +108,10 @@ class GeminiImageGenerator:
                 client = genai.Client(api_key=api_key)
 
                 enhanced_prompt = (
-                    f"{prompt}, masterpiece quality, 8k resolution, "
+                    f"{prompt}, wide landscape 16:9 aspect ratio, "
+                    f"masterpiece quality, ultra high resolution, "
                     f"ultra detailed, sharp focus, professional photography, "
-                    f"cinematic lighting, best quality"
+                    f"cinematic lighting, best quality, no text no watermark"
                 )
 
                 response = client.models.generate_content(
@@ -124,7 +144,7 @@ class GeminiImageGenerator:
                 if "429" in exc_str or "resource_exhausted" in exc_str:
                     logger.warning("Gemini Imagen rate limited (key %d). Rotating...",
                                    self._key_index)
-                    time.sleep(2 + random.uniform(0, 2))
+                    time.sleep(10 + random.uniform(0, 5))
                 elif "safety" in exc_str or "block" in exc_str:
                     logger.warning("Gemini Imagen blocked prompt (safety filter): %s",
                                    prompt[:80])
@@ -132,7 +152,7 @@ class GeminiImageGenerator:
                 else:
                     logger.warning("Gemini Imagen error (attempt %d/%d): %s",
                                    attempt + 1, retries, exc)
-                    time.sleep(1 + attempt * 2)
+                    time.sleep(5 + attempt * 5)
 
         return None
 
@@ -176,7 +196,7 @@ class CloudflareImageGenerator:
                         "prompt": enhanced_prompt,
                         "num_steps": 8,
                         "width": 1024,
-                        "height": 1024,
+                        "height": 576,
                     },
                     timeout=120,
                 )
@@ -342,9 +362,10 @@ class ImageFetcher:
             output_path = self.temp_dir / f"bg_img_{i:02d}.jpg"
             full_prompt = f"{visual_anchor} style, {prompt}, {style_suffix}"
 
-            # Stagger requests slightly to avoid burst rate limits
+            # Stagger requests to avoid rate limiting (Gemini Imagen needs breathing room)
+            # ~8s between requests × 10 images = ~80s total wait, well within pipeline budget
             if i > 0:
-                time.sleep(1.5)
+                time.sleep(8)
 
             # Tier 1: Gemini Imagen
             result = None

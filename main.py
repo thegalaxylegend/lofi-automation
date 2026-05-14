@@ -273,15 +273,17 @@ def _detect_triggered_file(audio_dir: Path) -> Path | None:
     if trigger_file.exists():
         trigger_content = trigger_file.read_text(encoding="utf-8").strip()
         logger.info("Trigger file contents: '%s'", trigger_content)
-        # The trigger file should contain a filename like "AAJ_KI_RAAT_3.mp3"
-        if trigger_content and not trigger_content.replace(".", "").replace("-", "").isdigit():
+        # The trigger file contains: line1=filename, line2=timestamp
+        # Extract only the first line as the filename
+        trigger_filename = trigger_content.split("\n")[0].strip()
+        if trigger_filename and not trigger_filename.replace(".", "").replace("-", "").isdigit():
             # It's a filename, not a timestamp
-            target = audio_dir / trigger_content
+            target = audio_dir / trigger_filename
             if target.exists():
                 logger.info("Trigger file detected target: %s", target.name)
                 return target
             else:
-                logger.warning("Trigger file says '%s' but file not found in %s", trigger_content, audio_dir)
+                logger.warning("Trigger file says '%s' but file not found in %s", trigger_filename, audio_dir)
 
     # Method 2: Search git log for the most recent Auto-ingest commit
     try:
