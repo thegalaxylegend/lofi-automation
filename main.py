@@ -246,62 +246,124 @@ def process_single(audio_path: Path) -> PipelineResult:
     return result
 
 
-def _get_git_processed_files() -> set[str]:
-    """Check git log for files that were already processed (committed via memory)."""
+def _detect_triggered_file(audio_dir: Path) -> Path | None:
+    """
+    Detect which MP3 was added/changed in the latest git commit.
+
+    On GitHub Actions, git checkout sets all file mtimes to the same value,
+    so we can't rely on st_mtime. Instead, we check:
+      1. git diff HEAD~1 for changed files in the audio/ directory
+      2. The commit message from the Telegram bot's auto-ingest format
+    """
     import subprocess
+
+    # Method 1: Check git diff for the file changed in the triggering commit
     try:
-        # Check git log for commit messages that mention processed files
         result = subprocess.run(
-            ["git", "log", "--all", "--format=%s", "-n", "50"],
+            ["git", "diff", "--name-only", "--diff-filter=A", "HEAD~1", "HEAD", "--", "audio/"],
             capture_output=True, text=True, timeout=10,
         )
-        processed = set()
-        for line in result.stdout.splitlines():
-            # Match commit messages like "🎵 Auto-ingest: filename.mp3 from Telegram"
-            if "Auto-ingest:" in line:
-                # Extract the filename between "Auto-ingest: " and " from Telegram"
+        if result.returncode == 0 and result.stdout.strip():
+            added_files = [
+                line.strip() for line in result.stdout.strip().splitlines()
+                if line.strip().lower().endswith(".mp3")
+            ]
+            if added_files:
+                # Use the last added MP3 (most likely the trigger)
+                target = audio_dir / Path(added_files[-1]).name
+                if target.exists():
+                    logger.info("Git detected triggered file (added): %s", target.name)
+                    return target
+
+        # Also check modified files (re-sent same filename)
+        result = subprocess.run(
+            ["git", "diff", "--name-only", "--diff-filter=AM", "HEAD~1", "HEAD", "--", "audio/"],
+            capture_output=True, text=True, timeout=10,
+        )
+        if result.returncode == 0 and result.stdout.strip():
+            changed_files = [
+                line.strip() for line in result.stdout.strip().splitlines()
+                if line.strip().lower().endswith(".mp3")
+            ]
+            if changed_files:
+                target = audio_dir / Path(changed_files[-1]).name
+                if target.exists():
+                    logger.info("Git detected triggered file (changed): %s", target.name)
+                    return target
+    except (subprocess.TimeoutExpired, FileNotFoundError) as exc:
+        logger.warning("Git diff detection failed: %s", exc)
+
+    # Method 2: Check the commit message for the filename (Telegram bot format)
+    try:
+        result = subprocess.run(
+            ["git", "log", "-1", "--pretty=%s"],
+            capture_output=True, text=True, timeout=10,
+        )
+        if result.returncode == 0:
+            msg = result.stdout.strip()
+            # Telegram bot commits like: "🎵 Auto-ingest: filename.mp3 from Telegram"
+            if "Auto-ingest:" in msg:
                 import re
-                match = re.search(r"Auto-ingest:\s*(.+?)\s*from Telegram", line)
+                match = re.search(r"Auto-ingest:\s*(.+?)\s*from Telegram", msg)
                 if match:
-                    processed.add(match.group(1).strip())
-        return processed
-    except Exception:
-        return set()
+                    fname = match.group(1).strip()
+                    target = audio_dir / fname
+                    if target.exists():
+                        logger.info("Commit message detected file: %s", target.name)
+                        return target
+    except (subprocess.TimeoutExpired, FileNotFoundError) as exc:
+        logger.warning("Commit message detection failed: %s", exc)
+
+    return None
 
 
 def process_batch(audio_dir: Path) -> BatchResult:
-    """Process only the NEWEST MP3 file in a directory (by modification time)."""
+    """Process the MP3 file that triggered the pipeline.
+
+    Detection priority:
+      1. Git diff — which file was added/changed in the latest commit
+      2. Commit message — parse the Telegram bot's auto-ingest commit
+      3. Fallback — newest unprocessed file by mtime (original behavior)
+    """
     batch = BatchResult()
     start = time.time()
 
     mp3_files = sorted(audio_dir.glob("*.mp3"), key=lambda f: f.stat().st_mtime, reverse=True)
-    
-    # Filter out already processed files using memory
-    mem = pipeline_memory()
-    processed = set(mem.get("processed_files", []))
-    
-    # Also check git history for files processed in previous runs
-    # (memory may have been lost if a previous run failed before committing)
-    git_processed = _get_git_processed_files()
-    all_processed = processed | git_processed
-    
-    logger.info(
-        "Dedup check: %d in memory, %d in git history, %d total known",
-        len(processed), len(git_processed), len(all_processed),
-    )
-    
-    mp3_files = [f for f in mp3_files if f.name not in all_processed]
-
     if not mp3_files:
-        logger.info("No new MP3 files found in %s", audio_dir)
+        logger.warning("No MP3 files found in %s", audio_dir)
         return batch
 
-    # Process only the newest UNPROCESSED file
-    newest = mp3_files[0]
-    logger.info("Found %d new MP3 files. Processing newest: %s", len(mp3_files), newest.name)
+    # Try to detect the actual triggered file first (primary mechanism)
+    target = _detect_triggered_file(audio_dir)
 
-    result = process_single(newest)
+    if target is None:
+        # Fallback: use dedup + mtime approach
+        mem = pipeline_memory()
+        processed = set(mem.get("processed_files", []))
+        logger.info("Dedup check: %d files in memory", len(processed))
+
+        unprocessed = [f for f in mp3_files if f.name not in processed]
+        if not unprocessed:
+            logger.info("All %d MP3 files already processed.", len(mp3_files))
+            return batch
+
+        target = unprocessed[0]
+        logger.warning(
+            "Could not detect triggered file via git. "
+            "Falling back to newest unprocessed by mtime: %s",
+            target.name,
+        )
+
+    logger.info("Found %d MP3 files. Processing: %s", len(mp3_files), target.name)
+
+    result = process_single(target)
     batch.results.append(result)
+
+    # Record processed file in memory for dedup
+    if result.success:
+        mem = pipeline_memory()
+        mem.append_to_list("processed_files", target.name)
+        mem.update_key("last_run", time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()))
 
     batch.total_time_sec = time.time() - start
     logger.info(
