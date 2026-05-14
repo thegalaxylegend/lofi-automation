@@ -113,6 +113,24 @@
       "target_agent": "director",
       "confidence": "high",
       "evidence": "Persistent lack of both analytics and video attribute data, indicating a systemic failure to implement and report on logging systems."
+    },
+    {
+      "rule": "The director must immediately provide a verified report confirming successful ingestion and accessibility of at least 24 hours of analytics data, including total views and new subscribers, for the previous day, AND a detailed explanation for the repeated failure to meet this directive.",
+      "target_agent": "director",
+      "confidence": "high",
+      "evidence": "No analytics data available yet, despite multiple previous directives."
+    },
+    {
+      "rule": "The editor must immediately submit the sample log containing key attributes (length, mood, instrumentation, visual style, upload time) for the last 5 uploaded videos, demonstrating the implemented standardized process, AND a detailed explanation for the repeated failure to meet this directive.",
+      "target_agent": "editor",
+      "confidence": "high",
+      "evidence": "No video attributes logged yet, despite multiple previous directives."
+    },
+    {
+      "rule": "The director must immediately provide the root cause analysis for the persistent lack of analytics data and a firm, actionable timeline (with specific milestones and responsible parties) for its complete resolution, as previously directed, and escalate to senior management if internal resolution is not possible within 24 hours.",
+      "target_agent": "director",
+      "confidence": "high",
+      "evidence": "Persistent lack of analytics data and repeated failure to provide a resolution plan."
     }
   ],
   "daily_reports": [
@@ -387,11 +405,48 @@
       ],
       "insight": "Without any analytics or video attribute data, it is impossible to provide strategic insights or make data-driven decisions for channel growth; immediate and comprehensive resolution of data logging is paramount before any other channel optimization can occur.",
       "generated_at": "2026-05-13T04:05:04.775403+00:00"
+    },
+    {
+      "daily_summary": {
+        "total_views_24h": 0,
+        "new_subscribers": 0,
+        "best_video": "N/A - No analytics data available",
+        "worst_video": "N/A - No analytics data available",
+        "avg_ctr": 0.0,
+        "avg_avd_seconds": 0.0
+      },
+      "new_rules": [
+        {
+          "rule": "The director must immediately provide a verified report confirming successful ingestion and accessibility of at least 24 hours of analytics data, including total views and new subscribers, for the previous day, AND a detailed explanation for the repeated failure to meet this directive.",
+          "target_agent": "director",
+          "confidence": "high",
+          "evidence": "No analytics data available yet, despite multiple previous directives."
+        },
+        {
+          "rule": "The editor must immediately submit the sample log containing key attributes (length, mood, instrumentation, visual style, upload time) for the last 5 uploaded videos, demonstrating the implemented standardized process, AND a detailed explanation for the repeated failure to meet this directive.",
+          "target_agent": "editor",
+          "confidence": "high",
+          "evidence": "No video attributes logged yet, despite multiple previous directives."
+        },
+        {
+          "rule": "The director must immediately provide the root cause analysis for the persistent lack of analytics data and a firm, actionable timeline (with specific milestones and responsible parties) for its complete resolution, as previously directed, and escalate to senior management if internal resolution is not possible within 24 hours.",
+          "target_agent": "director",
+          "confidence": "high",
+          "evidence": "Persistent lack of analytics data and repeated failure to provide a resolution plan."
+        }
+      ],
+      "alerts": [
+        "CRITICAL: No analytics data available whatsoever. This is a complete operational failure preventing any performance analysis.",
+        "CRITICAL: No video attributes logged. This prevents understanding content performance drivers.",
+        "Repeated failure to comply with established directives for data ingestion and logging. Immediate action is required from both director and editor."
+      ],
+      "insight": "Critical operational failure: No analytics data or video attributes are being logged, preventing any performance analysis or strategic insights. Immediate action is required to establish data flow and accountability.",
+      "generated_at": "2026-05-14T04:03:40.052839+00:00"
     }
   ],
   "weekly_reports": [],
   "_meta": {
-    "last_updated": "2026-05-13T04:05:04.776991+00:00",
+    "last_updated": "2026-05-14T04:03:40.054771+00:00",
     "memory_name": "analyst_rules"
   }
 }
