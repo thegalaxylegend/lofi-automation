@@ -248,71 +248,74 @@ def process_single(audio_path: Path) -> PipelineResult:
 
 def _detect_triggered_file(audio_dir: Path) -> Path | None:
     """
-    Detect which MP3 was added/changed in the latest git commit.
+    Detect which MP3 the Telegram bot pushed for processing.
 
-    On GitHub Actions, git checkout sets all file mtimes to the same value,
-    so we can't rely on st_mtime. Instead, we check:
-      1. git diff HEAD~1 for changed files in the audio/ directory
-      2. The commit message from the Telegram bot's auto-ingest format
+    Priority:
+      1. Read audio/.trigger — the bot writes the exact filename here
+      2. Search git log for the most recent 'Auto-ingest' commit message
+      3. Check git diff across recent commits for added MP3 files
     """
     import subprocess
 
-    # Method 1: Check git diff for the file changed in the triggering commit
+    # Method 1 (PRIMARY): Read the .trigger file for the filename
+    trigger_file = audio_dir / ".trigger"
+    if trigger_file.exists():
+        trigger_content = trigger_file.read_text(encoding="utf-8").strip()
+        logger.info("Trigger file contents: '%s'", trigger_content)
+        # The trigger file should contain a filename like "AAJ_KI_RAAT_3.mp3"
+        if trigger_content and not trigger_content.replace(".", "").replace("-", "").isdigit():
+            # It's a filename, not a timestamp
+            target = audio_dir / trigger_content
+            if target.exists():
+                logger.info("Trigger file detected target: %s", target.name)
+                return target
+            else:
+                logger.warning("Trigger file says '%s' but file not found in %s", trigger_content, audio_dir)
+
+    # Method 2: Search git log for the most recent Auto-ingest commit
     try:
         result = subprocess.run(
-            ["git", "diff", "--name-only", "--diff-filter=A", "HEAD~1", "HEAD", "--", "audio/"],
-            capture_output=True, text=True, timeout=10,
-        )
-        if result.returncode == 0 and result.stdout.strip():
-            added_files = [
-                line.strip() for line in result.stdout.strip().splitlines()
-                if line.strip().lower().endswith(".mp3")
-            ]
-            if added_files:
-                # Use the last added MP3 (most likely the trigger)
-                target = audio_dir / Path(added_files[-1]).name
-                if target.exists():
-                    logger.info("Git detected triggered file (added): %s", target.name)
-                    return target
-
-        # Also check modified files (re-sent same filename)
-        result = subprocess.run(
-            ["git", "diff", "--name-only", "--diff-filter=AM", "HEAD~1", "HEAD", "--", "audio/"],
-            capture_output=True, text=True, timeout=10,
-        )
-        if result.returncode == 0 and result.stdout.strip():
-            changed_files = [
-                line.strip() for line in result.stdout.strip().splitlines()
-                if line.strip().lower().endswith(".mp3")
-            ]
-            if changed_files:
-                target = audio_dir / Path(changed_files[-1]).name
-                if target.exists():
-                    logger.info("Git detected triggered file (changed): %s", target.name)
-                    return target
-    except (subprocess.TimeoutExpired, FileNotFoundError) as exc:
-        logger.warning("Git diff detection failed: %s", exc)
-
-    # Method 2: Check the commit message for the filename (Telegram bot format)
-    try:
-        result = subprocess.run(
-            ["git", "log", "-1", "--pretty=%s"],
+            ["git", "log", "--all", "--format=%s", "-n", "20"],
             capture_output=True, text=True, timeout=10,
         )
         if result.returncode == 0:
-            msg = result.stdout.strip()
-            # Telegram bot commits like: "🎵 Auto-ingest: filename.mp3 from Telegram"
-            if "Auto-ingest:" in msg:
-                import re
-                match = re.search(r"Auto-ingest:\s*(.+?)\s*from Telegram", msg)
-                if match:
-                    fname = match.group(1).strip()
-                    target = audio_dir / fname
-                    if target.exists():
-                        logger.info("Commit message detected file: %s", target.name)
-                        return target
+            import re
+            for line in result.stdout.splitlines():
+                if "Auto-ingest:" in line:
+                    match = re.search(r"Auto-ingest:\s*(.+?)\s*from Telegram", line)
+                    if match:
+                        fname = match.group(1).strip()
+                        target = audio_dir / fname
+                        if target.exists():
+                            logger.info("Git log detected target: %s", target.name)
+                            return target
+                    break  # Only check the most recent Auto-ingest commit
     except (subprocess.TimeoutExpired, FileNotFoundError) as exc:
-        logger.warning("Commit message detection failed: %s", exc)
+        logger.warning("Git log detection failed: %s", exc)
+
+    # Method 3: Check git diff across multiple commits for added MP3s
+    for depth in range(1, 6):
+        try:
+            result = subprocess.run(
+                ["git", "diff", "--name-only", "--diff-filter=A",
+                 f"HEAD~{depth}", "HEAD", "--", "audio/"],
+                capture_output=True, text=True, timeout=10,
+            )
+            if result.returncode == 0 and result.stdout.strip():
+                added_files = [
+                    line.strip() for line in result.stdout.strip().splitlines()
+                    if line.strip().lower().endswith(".mp3")
+                ]
+                if added_files:
+                    target = audio_dir / Path(added_files[-1]).name
+                    if target.exists():
+                        logger.info(
+                            "Git diff (HEAD~%d) detected target: %s",
+                            depth, target.name,
+                        )
+                        return target
+        except (subprocess.SubprocessError, FileNotFoundError):
+            break
 
     return None
 
