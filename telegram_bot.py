@@ -134,17 +134,10 @@ async def handle_audio(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
             f"🚀 Pushing to GitHub to trigger pipeline..."
         )
 
-        # Write the filename + timestamp to .trigger so the pipeline knows which song to process
-        # The timestamp ensures git always detects a change, even for re-sent songs
-        import datetime
-        trigger_file = AUDIO_DIR / ".trigger"
-        trigger_content = f"{file_name}\n{datetime.datetime.now(datetime.timezone.utc).isoformat()}"
-        trigger_file.write_text(trigger_content)
-
         # Git operations to trigger Actions
         logger.info(f"Using PROJECT_ROOT for git: {PROJECT_ROOT}")
 
-        # Step 1: Pull latest to avoid conflicts (rebase to keep linear history)
+        # Step 1: Pull latest FIRST to avoid conflicts (rebase to keep linear history)
         pull_result = subprocess.run(
             ["git", "pull", "--rebase", "--autostash"],
             capture_output=True, text=True, timeout=GIT_TIMEOUT,
@@ -154,8 +147,19 @@ async def handle_audio(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
             logger.warning(f"Git pull warning: {pull_result.stderr}")
             # Don't fail on pull issues — try to push anyway
 
+        # Step 2: Write .trigger AFTER pull (so rebase doesn't overwrite it)
+        import datetime
+        trigger_file = AUDIO_DIR / ".trigger"
+        trigger_content = (
+            f"{file_name}\n"
+            f"{datetime.datetime.now(datetime.timezone.utc).isoformat()}\n"
+            f"size_bytes={file_path.stat().st_size}"
+        )
+        trigger_file.write_text(trigger_content)
+
+        # Step 3: Stage and commit
         git_cmds = [
-            ["git", "add", f"audio/{file_name}", "audio/.trigger"],
+            ["git", "add", "-f", f"audio/{file_name}", "audio/.trigger"],
             ["git", "commit", "-m", f"🎵 Auto-ingest: {file_name} from Telegram"],
             ["git", "push"],
         ]
@@ -168,6 +172,29 @@ async def handle_audio(update: Update, context: ContextTypes.DEFAULT_TYPE) -> No
                 )
                 if result.returncode != 0:
                     error = result.stderr or result.stdout
+
+                    # If commit fails with "nothing to commit", the .trigger
+                    # change wasn't detected. Force a touch and retry.
+                    if cmd[1] == "commit" and "nothing to commit" in error:
+                        logger.warning("Nothing to commit. Touching .trigger to force change...")
+                        trigger_file.write_text(
+                            f"{file_name}\n"
+                            f"retry-{datetime.datetime.now(datetime.timezone.utc).isoformat()}\n"
+                            f"size_bytes={file_path.stat().st_size}"
+                        )
+                        subprocess.run(
+                            ["git", "add", "-f", "audio/.trigger"],
+                            capture_output=True, text=True, timeout=GIT_TIMEOUT,
+                            cwd=str(PROJECT_ROOT),
+                        )
+                        retry_commit = subprocess.run(
+                            ["git", "commit", "-m", f"🎵 Re-trigger: {file_name} from Telegram"],
+                            capture_output=True, text=True, timeout=GIT_TIMEOUT,
+                            cwd=str(PROJECT_ROOT),
+                        )
+                        if retry_commit.returncode == 0:
+                            continue  # Commit succeeded on retry
+                        error = retry_commit.stderr or retry_commit.stdout
 
                     # If push fails, try pulling and pushing again
                     if cmd[1] == "push":
