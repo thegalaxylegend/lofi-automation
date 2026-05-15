@@ -34,6 +34,8 @@ You must produce a COMPLETE CREATIVE BRIEF. Every editor, thumbnail artist, and 
 Current date: {current_date}
 Season context: {season_context}
 
+CRITICAL JSON RULE: You MUST NOT use double quotation marks (") inside any string values in your output, especially in 'scene_description' or 'reasoning'. If you need to quote something, use single quotes ('). Unescaped double quotes will crash the JSON parser.
+
 Return ONLY valid JSON with this EXACT structure:
 
 {{
@@ -346,6 +348,8 @@ Extract the following:
 3. Key emotional moments with approximate timestamps.
 4. Whether this is an instrumental track (no vocals/lyrics).
 5. The detected language of the vocals.
+
+CRITICAL JSON RULE: You MUST NOT use double quotation marks (") inside any string values in your output. If you need to quote something, use single quotes ('). Unescaped double quotes will crash the JSON parser.
 
 Return ONLY valid JSON with this structure:
 {{
