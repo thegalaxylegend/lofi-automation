@@ -121,10 +121,20 @@
       "rule": "The director must immediately provide the root cause analysis for the persistent lack of analytics data and a firm, actionable timeline (with specific milestones and responsible parties) for its complete resolution, as previously directed, and escalate to senior management if internal resolution is not possible within 24 hours.",
       "source": "analyst",
       "date": "2026-05-14T04:03:40.054345+00:00"
+    },
+    {
+      "rule": "The director must immediately provide the root cause analysis for the persistent lack of analytics data and a firm, actionable timeline (with specific milestones and responsible parties) for its complete resolution, as previously directed, and escalate to senior management if internal resolution is not possible within 24 hours.",
+      "source": "analyst",
+      "date": "2026-05-15T04:09:05.537146+00:00"
+    },
+    {
+      "rule": "Establish a robust and reliable data ingestion pipeline for both analytics and video attributes as the absolute top priority, with daily verification reports from responsible parties.",
+      "source": "analyst",
+      "date": "2026-05-15T04:09:05.537764+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-05-14T04:03:40.054419+00:00",
+    "last_updated": "2026-05-15T04:09:05.537870+00:00",
     "memory_name": "director_mood_map"
   }
 }
