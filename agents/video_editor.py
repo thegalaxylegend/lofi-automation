@@ -432,20 +432,23 @@ class VideoEditor:
             raise ValueError("No valid sections to render.")
 
         # Step 4: Chain transitions — speed matches song tempo
-        # Slow sad song = long dissolves, fast rap = quick hard cuts
+        import random
         def _get_transition_for_energy(energy: str, bpm: float) -> tuple[str, float]:
             """Return (xfade_type, duration) based on section energy + BPM."""
             beat_dur = 60.0 / max(bpm, 60)
             if energy in ("very_high", "high"):
-                # Fast songs: hard cuts, 1-2 beat duration
-                return "wipeleft", max(0.3, beat_dur * 0.5)
+                # Fast songs: aggressive high-level cuts
+                fx = random.choice(["pixelize", "hblur", "slidedown", "distance"])
+                return fx, max(0.4, beat_dur * 0.5)
             elif energy == "medium":
-                # Medium: smooth dissolve, 2-4 beat duration
-                return profile["drop_transition"], min(2.0, beat_dur * 2)
+                # Medium: cinematic organic movements
+                fx = random.choice(["radial", "circlecrop", "smoothup", profile.get("drop_transition", "fade")])
+                return fx, min(1.5, beat_dur * 2)
             elif energy in ("low", "very_low", "fading"):
-                # Slow songs: long soft dissolve, 4-8 beat duration
-                return "dissolve", min(3.0, beat_dur * 4)
-            return profile["drop_transition"], 1.0
+                # Slow songs: emotional, slow pacing
+                fx = random.choice(["fadeblack", "dissolve", "smoothdown"])
+                return fx, min(3.5, beat_dur * 4)
+            return "fade", 1.0
 
         if len(section_labels) == 1:
             filters.append(f"[{section_labels[0][0]}]copy[slideshow]")
@@ -515,9 +518,10 @@ class VideoEditor:
             ch_txt.write_text(channel_name, encoding="utf-8")
             filters.append(
                 f"[faded]drawtext=textfile='{_safe_ffmpeg_path(ch_txt)}':"
-                f"fontsize=26:fontcolor=white@0.45:"
-                f"borderw=2:bordercolor=black@0.3:"
-                f"x=w-tw-30:y=h-th-30:"
+                f"fontsize=52:fontcolor=white:"
+                f"box=1:boxcolor=black@0.6:boxborderw=15:"
+                f"borderw=3:bordercolor=black:"
+                f"x=w-tw-50:y=h-th-50:"
                 f"fontfile='{safe_font}'[final]"
             )
         else:

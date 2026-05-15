@@ -161,8 +161,13 @@ class VideoFetcher:
             if c["id"] not in self._used_clip_ids
             and c["id"] not in self._historical_clip_ids
         ]
+        
+        # Strict anti-repetition: if we must reuse, NEVER use the last two clips (prevents A-A and A-B-A)
         if not fresh:
-            fresh = candidates  # If all are used, allow reuse within this run
+            recently_used = list(self._used_clip_ids)[-2:] if len(self._used_clip_ids) >= 2 else list(self._used_clip_ids)
+            fresh = [c for c in candidates if c["id"] not in recently_used]
+            if not fresh:
+                fresh = candidates  # Extreme fallback
 
         # Step 3: LLM selects the best clip
         chosen = self._llm_select_clip(fresh, section, brief)
@@ -183,17 +188,23 @@ class VideoFetcher:
     # ── Search Methods ────────────────────────
 
     def _search_candidates(self, query: str) -> list[dict]:
-        """Search Pexels + Pixabay and merge into a candidate pool."""
+        """Search multiple platforms and merge into a candidate pool."""
         candidates = []
 
-        # Pexels
-        pexels = self._search_pexels(query)
-        candidates.extend(pexels)
+        # 1. Pexels (Primary)
+        candidates.extend(self._search_pexels(query))
 
-        # Pixabay (if Pexels returned few results)
-        if len(candidates) < 5:
-            pixabay = self._search_pixabay(query)
-            candidates.extend(pixabay)
+        # 2. Coverr (Secondary)
+        if len(candidates) < 8:
+            candidates.extend(self._search_coverr(query))
+
+        # 3. Pixabay (Tertiary)
+        if len(candidates) < 8:
+            candidates.extend(self._search_pixabay(query))
+
+        # 4. Vecteezy (Quaternary)
+        if len(candidates) < 8:
+            candidates.extend(self._search_vecteezy(query))
 
         # Deduplicate by ID
         seen = set()
@@ -202,6 +213,9 @@ class VideoFetcher:
             if c["id"] not in seen:
                 seen.add(c["id"])
                 unique.append(c)
+
+        # Sort by resolution width to prefer 4K/1080p
+        unique.sort(key=lambda x: x.get("width", 0), reverse=True)
 
         return unique[:15]  # Cap at 15 candidates
 
@@ -325,6 +339,86 @@ class VideoFetcher:
 
         except requests.RequestException as exc:
             logger.error("Pixabay search failed: %s", exc)
+            return []
+
+    def _search_coverr(self, query: str) -> list[dict]:
+        """Search Coverr Video API."""
+        api_key = self.config.coverr_api_key
+        if not api_key:
+            return []
+
+        try:
+            resp = requests.get(
+                "https://api.coverr.co/videos",
+                headers={"Authorization": f"Bearer {api_key}"},
+                params={"query": query, "urls": "true"},
+                timeout=15,
+            )
+            if resp.status_code != 200:
+                return []
+
+            data = resp.json()
+            results = []
+            for hit in data.get("hits", []):
+                urls = hit.get("urls", {})
+                url = urls.get("mp4", "")
+                if not url:
+                    continue
+                results.append({
+                    "id": f"coverr_{hit['id']}",
+                    "platform": "coverr",
+                    "url": url,
+                    "thumbnail_url": hit.get("thumbnail", ""),
+                    "duration": hit.get("duration", 0),
+                    "width": 1920,
+                    "height": 1080,
+                    "tags": ", ".join(hit.get("tags", [])),
+                    "description": hit.get("title", ""),
+                })
+            logger.info("Coverr: %d results for '%s'", len(results), query)
+            return results
+        except Exception as exc:
+            logger.error("Coverr search failed: %s", exc)
+            return []
+
+    def _search_vecteezy(self, query: str) -> list[dict]:
+        """Search Vecteezy Video API."""
+        # Simple bearer token auth if they provided the secret key
+        api_key = self.config.vecteezy_secret_key
+        if not api_key:
+            return []
+
+        try:
+            resp = requests.get(
+                "https://api.vecteezy.com/v1/videos/search",
+                headers={"Authorization": f"Bearer {api_key}"},
+                params={"q": query, "page": 1},
+                timeout=15,
+            )
+            if resp.status_code != 200:
+                return []
+
+            data = resp.json()
+            results = []
+            for hit in data.get("data", []):
+                preview = hit.get("attributes", {}).get("preview_url", "")
+                if not preview:
+                    continue
+                results.append({
+                    "id": f"vecteezy_{hit['id']}",
+                    "platform": "vecteezy",
+                    "url": preview,  # Vecteezy provides watermarked previews for free tier, but it's a valid fallback
+                    "thumbnail_url": hit.get("attributes", {}).get("thumbnail_url", ""),
+                    "duration": 10,
+                    "width": 1920,
+                    "height": 1080,
+                    "tags": query,
+                    "description": hit.get("attributes", {}).get("title", ""),
+                })
+            logger.info("Vecteezy: %d results for '%s'", len(results), query)
+            return results
+        except Exception as exc:
+            logger.error("Vecteezy search failed: %s", exc)
             return []
 
     # ── LLM Selection ─────────────────────────

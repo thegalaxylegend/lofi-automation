@@ -170,16 +170,14 @@ class Distributor:
         # Build filter chain
         filters: list[str] = []
 
-        # Scale + vertical center crop with slow zoom for movement
-        zoom_frames = int(segment_dur * 30)
+        # Scale to fit width, pad with black bars on top/bottom
         filters.append(
-            f"[0:v]scale=-2:{h}:force_original_aspect_ratio=increase,"
-            f"crop={w}:{h}:(iw-{w})/2:0,"
-            f"zoompan=z='zoom+0.0001':d={zoom_frames}:s={w}x{h}:fps=30,"
-            f"setpts=PTS-STARTPTS[cropped]"
+            f"[0:v]scale={w}:{h}:force_original_aspect_ratio=decrease,"
+            f"pad={w}:{h}:(ow-iw)/2:(oh-ih)/2:black,"
+            f"setpts=PTS-STARTPTS[padded]"
         )
 
-        last_label = "cropped"
+        last_label = "padded"
 
         # Fade in (but NO fade out — encourages replay)
         filters.append(f"[{last_label}]fade=t=in:st=0:d=0.5[faded]")
@@ -194,10 +192,11 @@ class Distributor:
                 filters.append(
                     f"[{last_label}]drawtext="
                     f"textfile='{safe_hook}':"
-                    f"fontsize=32:fontcolor=white@0.95:"
-                    f"x=(w-tw)/2:y=h*0.35:"
+                    f"fontsize=42:fontcolor=white:"
+                    f"box=1:boxcolor=black@0.7:boxborderw=20:"
+                    f"x=(w-tw)/2:y=h*0.25:"
                     f"fontfile='{safe_font}':"
-                    f"borderw=2:bordercolor=black@0.6:"
+                    f"borderw=3:bordercolor=black:"
                     f"enable='between(t,0.3,4.0)'[hooked]"
                 )
                 last_label = "hooked"
@@ -211,10 +210,11 @@ class Distributor:
                 filters.append(
                     f"[{last_label}]drawtext="
                     f"textfile='{safe_mood}':"
-                    f"fontsize=36:fontcolor=white@0.9:"
-                    f"x=(w-tw)/2:y=h*0.42:"
+                    f"fontsize=46:fontcolor=white:"
+                    f"box=1:boxcolor=black@0.7:boxborderw=20:"
+                    f"x=(w-tw)/2:y=h*0.32:"
                     f"fontfile='{safe_font}':"
-                    f"borderw=2:bordercolor=black@0.5:"
+                    f"borderw=3:bordercolor=black:"
                     f"enable='between(t,{mid_start:.1f},{mid_end:.1f})'[final]"
                 )
                 last_label = "final"

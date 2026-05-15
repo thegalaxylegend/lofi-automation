@@ -153,6 +153,9 @@ class Config:
 
         self.pexels_api_key: str = os.getenv("PEXELS_API_KEY", "")
         self.pixabay_api_key: str = os.getenv("PIXABAY_API_KEY", "")
+        self.coverr_api_key: str = os.getenv("COVERR_API_KEY", "")
+        self.vecteezy_account_id: str = os.getenv("VECTEEZY_ACCOUNT_ID", "")
+        self.vecteezy_secret_key: str = os.getenv("VECTEEZY_SECRET_KEY", "")
 
         self.youtube_client_id: str = os.getenv("YOUTUBE_CLIENT_ID", "")
         self.youtube_client_secret: str = os.getenv("YOUTUBE_CLIENT_SECRET", "")
