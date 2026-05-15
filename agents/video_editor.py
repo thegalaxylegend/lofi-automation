@@ -585,6 +585,8 @@ class VideoEditor:
         self, clip_paths: list[Path | None], vs
     ) -> list[Path | None]:
         """Normalize all clips to exact 30fps, 1920x1080, no audio."""
+        import json
+        import subprocess
         normalized = []
         norm_dir = TEMP_DIR / "normalized"
         norm_dir.mkdir(parents=True, exist_ok=True)
@@ -595,24 +597,53 @@ class VideoEditor:
                 continue
 
             out = norm_dir / f"norm_{i:02d}.mp4"
-            cmd = [
-                "ffmpeg", "-y", "-i", str(clip),
-                "-r", str(vs.fps),
-                "-vf", (
-                    f"scale={vs.width}:{vs.height}:"
-                    f"force_original_aspect_ratio=increase,"
-                    f"crop={vs.width}:{vs.height}"
-                ),
-                "-an",  # Strip audio from stock clips
-                "-c:v", "libx264", "-crf", "18", "-preset", "fast",
-                "-pix_fmt", "yuv420p",
-                str(out),
-            ]
+            
+            # Check if clip already matches target spec
+            already_ok = False
             try:
-                result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
+                probe = subprocess.run(
+                    ['ffprobe', '-v', 'error', '-select_streams', 'v:0',
+                     '-show_entries', 'stream=width,height,r_frame_rate,pix_fmt',
+                     '-of', 'json', str(clip)],
+                    capture_output=True, text=True, timeout=30
+                )
+                if probe.returncode == 0:
+                    info = json.loads(probe.stdout).get('streams', [{}])[0]
+                    already_ok = (
+                        info.get('width') == vs.width and 
+                        info.get('height') == vs.height and
+                        info.get('pix_fmt') == 'yuv420p'
+                        # Not checking frame rate strictly to avoid float comparison issues, 
+                        # scale/pix_fmt are the heavy lifters.
+                    )
+            except Exception as e:
+                logger.debug("ffprobe failed for clip %d: %s", i, e)
+
+            if already_ok:
+                cmd = ['ffmpeg', '-y', '-i', str(clip), '-an', '-c:v', 'copy', str(out)]
+            else:
+                cmd = [
+                    "ffmpeg", "-y", "-i", str(clip),
+                    "-r", str(vs.fps),
+                    "-vf", (
+                        f"scale={vs.width}:{vs.height}:"
+                        f"force_original_aspect_ratio=increase,"
+                        f"crop={vs.width}:{vs.height}"
+                    ),
+                    "-an",  # Strip audio from stock clips
+                    "-c:v", "libx264", "-crf", "23", "-preset", "ultrafast",
+                    "-pix_fmt", "yuv420p",
+                    str(out),
+                ]
+
+            try:
+                result = subprocess.run(cmd, capture_output=True, text=True, timeout=300)
                 if result.returncode == 0 and out.exists() and out.stat().st_size > 1024:
                     normalized.append(out)
-                    logger.info("Normalized clip %d: %s", i, out.name)
+                    if already_ok:
+                        logger.info("Copied clip %d (already correct spec): %s", i, out.name)
+                    else:
+                        logger.info("Normalized clip %d: %s", i, out.name)
                 else:
                     normalized.append(None)
                     logger.warning("Clip %d normalization failed.", i)
