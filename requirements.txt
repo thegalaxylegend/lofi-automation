@@ -7,6 +7,7 @@ requests>=2.32.0
 # Audio Analysis
 librosa>=0.10.2
 soundfile>=0.12.1
+numpy>=1.26.0
 
 # Image / Thumbnail
 Pillow>=10.4.0

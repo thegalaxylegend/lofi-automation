@@ -71,7 +71,11 @@ Return ONLY valid JSON with this EXACT structure:
       "emotion": "<specific emotion for THIS section>",
       "musical_elements": "<what instruments/sounds are active here>",
 
-      "image_prompt": "<VERY detailed AI image prompt, minimum 40 words. MUST START WITH the exact visual_style declared above (e.g. 'anime lo-fi illustration style, ...' or 'cinematic photo-realistic style, ...'). Include: culturally appropriate Indian elements matching THIS song's genre and mood (e.g. hostel room for study songs, club/stage for party songs, temple for devotional, colors/gulal for Holi, diyas for Diwali, rain/chai for monsoon moods). Include: lighting, color palette, atmosphere, subject/character, camera angle. The visual_motif MUST appear in this prompt. ALL section prompts MUST use the SAME art style.>",
+      "image_prompt": "<VERY detailed AI image prompt, minimum 40 words. MUST START WITH the exact visual_style declared above. Include: culturally appropriate Indian elements matching THIS song's genre and mood. Include: lighting, color palette, atmosphere, subject/character, camera angle. The visual_motif MUST appear in this prompt. ALL section prompts MUST use the SAME art style.>",
+
+      "scene_description": "<CRITICAL — DETAILED STORYBOARD. Minimum 30 words. Describe EXACTLY what the viewer should SEE during this timestamp range. Include: WHO is in the scene (a student, an empty desk, a hand), WHAT they are doing (writing, staring, walking), WHERE they are (classroom, corridor, bus stop, rooftop), WHAT THE ENVIRONMENT looks like (rain outside, dim lights, sunset, crowded), CAMERA ANGLE (close-up on face, wide shot of room, overhead view). Think like a MOVIE DIRECTOR describing each shot. Example for 0:15-0:27 of an exam song: 'Close-up of a student sitting alone in a dim classroom. Rain is pouring against the windows. Papers scattered on the desk. The student stares blankly at an empty answer sheet. Camera slowly pulls back to reveal the empty room.' Example for 0:27-0:38: 'A school boy walks alone through heavy rain carrying a worn school bag. His head is down. The street is empty. Puddles reflect streetlights. Wide tracking shot from behind.' NEVER give generic descriptions. NEVER say just 'sad scene'. Be SPECIFIC to what THIS song is about at THIS exact moment.>",
+      "video_search_query": "<SHORT stock video search query (3-5 words) for Pexels/Pixabay. Derived from scene_description. Example: 'student alone classroom rain' or 'boy walking rain street'. MUST be different from adjacent sections.>",
+      "primary_subject": "<The main visual subject of this section, e.g. 'student at desk', 'empty corridor', 'rain on window'. MUST be different from adjacent sections. NEVER default to 'girl' or 'boy' unless the lyrics explicitly describe a specific person.>",
 
       "color_grade": {{
         "brightness": <-0.1 to 0.1>,
@@ -131,7 +135,10 @@ Return ONLY valid JSON with this EXACT structure:
   "image_prompts": ["<prompt1>", "<prompt2>", "<prompt3>", "<prompt4>", "<prompt5>"],
   "thumbnail_prompt": "<detailed thumbnail generation prompt>",
   "title_keywords": ["<keyword1>", "<keyword2>", "<keyword3>"],
-  "visualizer_intensity": "subtle"
+  "visualizer_intensity": "subtle",
+
+  "vfx_profile": "<ONE of: aggressive | vintage_analog | ethereal | cinematic_drama | raw_minimal. Choose based on genre+energy: EDM/rap/phonk/party=aggressive, lofi/chillhop/nostalgic=vintage_analog, acoustic/devotional/ambient=ethereal, romantic/emotional_ballad=cinematic_drama, rock/indie/punk=raw_minimal. If genre unclear, fall back to energy: high=aggressive, medium=cinematic_drama, low=ethereal.>",
+  "video_search_queries": ["<query1 max 5 words>", "<query2>", "<query3>", "<query4>", "<query5>"]
 }}
 
 CRITICAL RULES:
@@ -193,6 +200,9 @@ class SongSection(BaseModel):
     emotion: str = "peaceful"
     musical_elements: str = ""
     image_prompt: str = ""
+    video_search_query: str = ""  # Stock video search query for this section
+    primary_subject: str = ""  # Primary visual subject (for diversity enforcement)
+    scene_description: str = ""  # DETAILED storyboard: exactly what visual should play in this section
     color_grade: SectionColorGrade = Field(default_factory=SectionColorGrade)
     zoom: SectionZoom = Field(default_factory=SectionZoom)
     grain_intensity: int = 3
@@ -227,6 +237,15 @@ class EmotionalJourney(BaseModel):
 class NarrativeThread(BaseModel):
     story_summary: str = ""
     visual_motif: str = "rain"
+
+class SongComprehension(BaseModel):
+    """Phase 1 output: What the song is literally about (before any visual direction)."""
+    literal_subjects: list[str] = Field(default_factory=list)  # e.g. ["exam hall", "clock", "answer sheet"]
+    story_summary: str = ""  # The literal narrative of the song
+    key_moments: list[dict] = Field(default_factory=list)  # [{"timestamp": 45.0, "lyric": "...", "meaning": "..."}]
+    is_instrumental: bool = False
+    detected_language: str = "hindi"
+
 
 class SongDNA(BaseModel):
     detected_title: str = ""
@@ -263,6 +282,11 @@ class CreativeBrief(BaseModel):
     transitions: list[SongTransition] = Field(default_factory=list)
     shorts: ShortsDirective = Field(default_factory=ShortsDirective)
     thumbnail: ThumbnailDirective = Field(default_factory=ThumbnailDirective)
+
+    # Video Pipeline fields (Two-Phase Director + VFX Engine)
+    song_comprehension: SongComprehension = Field(default_factory=SongComprehension)
+    vfx_profile: str = "cinematic_drama"  # aggressive | vintage_analog | ethereal | cinematic_drama | raw_minimal
+    video_search_queries: list[str] = Field(default_factory=list)  # Per-section stock video queries
 
     @field_validator("color_palette", mode="before")
     @classmethod
@@ -310,12 +334,47 @@ def _get_season_context() -> str:
 
 
 # ──────────────────────────────────────────────
+#  Comprehension Prompt (Phase 1 — Understanding)
+# ──────────────────────────────────────────────
+COMPREHENSION_PROMPT = """You are a music analyst. Listen to this ENTIRE audio track deeply.
+
+Your ONLY job is to understand what this song is LITERALLY about. Do NOT generate any visual directions, image prompts, or aesthetic descriptions.
+
+Extract the following:
+1. Every specific OBJECT, PLACE, or SITUATION mentioned or implied in the lyrics (e.g. "exam hall", "ticking clock", "empty road", "temple bells").
+2. The literal STORY being told — who is the subject, what are they doing, what happens to them?
+3. Key emotional moments with approximate timestamps.
+4. Whether this is an instrumental track (no vocals/lyrics).
+5. The detected language of the vocals.
+
+Return ONLY valid JSON with this structure:
+{{
+  "literal_subjects": ["<every concrete noun/object/place mentioned or strongly implied>"],
+  "story_summary": "<2-3 sentences describing the literal narrative of the song>",
+  "key_moments": [
+    {{"timestamp_sec": <float>, "lyric_snippet": "<actual lyric or description>", "meaning": "<what this moment conveys>"}}
+  ],
+  "is_instrumental": <true if no vocals/lyrics, false otherwise>,
+  "detected_language": "<hindi/english/mixed/instrumental>"
+}}
+
+CRITICAL RULES:
+- Return ONLY valid JSON. No markdown. No explanation.
+- Extract REAL objects from the lyrics. If the song says "kitaabon ke pahaad" (mountains of books), list "books" and "study desk", NOT "a beautiful girl".
+- If the song is instrumental, set is_instrumental to true and infer subjects from the MOOD and INSTRUMENTS (e.g. piano + rain sounds = "rainy evening", "piano keys", "window").
+- Be SPECIFIC. "hostel corridor at 2 AM" is better than "night scene".
+- List at least 5 literal_subjects.
+"""
+
+
+# ──────────────────────────────────────────────
 #  Director Agent
 # ──────────────────────────────────────────────
 class Director:
     """
-    Analyzes an audio file and produces a CreativeBrief that drives
-    all downstream agents with song-specific creative decisions.
+    Two-Phase Creative Director:
+      Phase 1 (Comprehension): Understands what the song is literally about.
+      Phase 2 (Direction): Generates visual direction grounded in the comprehension.
     """
 
     def __init__(self) -> None:
@@ -329,7 +388,19 @@ class Director:
 
         logger.info("Director analyzing: %s", audio_path.name)
 
-        prompt = self._build_prompt()
+        # ── Phase 1: Comprehension ──────────────
+        logger.info("Phase 1: Song comprehension...")
+        comprehension = self._run_comprehension(audio_path)
+        logger.info(
+            "Comprehension: instrumental=%s, subjects=%s, story=%s",
+            comprehension.is_instrumental,
+            comprehension.literal_subjects[:5],
+            comprehension.story_summary[:100],
+        )
+
+        # ── Phase 2: Creative Direction ─────────
+        logger.info("Phase 2: Creative direction (grounded in comprehension)...")
+        prompt = self._build_prompt(comprehension)
 
         raw_response = self.rotator.generate_text_with_media(
             media_path=str(audio_path),
@@ -341,19 +412,83 @@ class Director:
 
         brief = self._parse_response(raw_response, str(audio_path))
 
+        # Attach comprehension data to the brief
+        brief.song_comprehension = comprehension
+
+        # Validate subject diversity
+        self._enforce_subject_diversity(brief)
+
         logger.info(
-            "Director brief: mood=%s, energy=%s, sections=%d, arc=%s",
-            brief.mood, brief.energy, len(brief.sections),
-            brief.emotional_journey.arc_type,
+            "Director brief: mood=%s, energy=%s, vfx=%s, sections=%d, arc=%s",
+            brief.mood, brief.energy, brief.vfx_profile,
+            len(brief.sections), brief.emotional_journey.arc_type,
         )
 
         return brief
 
-    def _build_prompt(self) -> str:
+    def _run_comprehension(self, audio_path: Path) -> SongComprehension:
+        """Phase 1: Extract what the song is literally about."""
+        try:
+            raw = self.rotator.generate_text_with_media(
+                media_path=str(audio_path),
+                prompt=COMPREHENSION_PROMPT,
+                mime_type="audio/mpeg",
+                model="gemini-2.5-flash",
+                temperature=0.3,  # Low temp for factual extraction
+            )
+            cleaned = raw.strip()
+            if cleaned.startswith("```"):
+                lines = cleaned.split("\n")
+                lines = [l for l in lines if not l.strip().startswith("```")]
+                cleaned = "\n".join(lines)
+
+            data = json.loads(cleaned)
+            return SongComprehension(**data)
+        except Exception as exc:
+            logger.warning("Comprehension phase failed: %s. Using empty comprehension.", exc)
+            return SongComprehension()
+
+    def _enforce_subject_diversity(self, brief: CreativeBrief) -> None:
+        """Post-check: ensure no primary_subject is repeated in adjacent sections."""
+        if not brief.has_sections:
+            return
+        subjects = [s.primary_subject.lower().strip() for s in brief.sections]
+        for i in range(1, len(subjects)):
+            if subjects[i] and subjects[i] == subjects[i - 1]:
+                logger.warning(
+                    "Adjacent sections %d and %d have same subject '%s'. "
+                    "Downstream agents should vary the visual.",
+                    i - 1, i, subjects[i],
+                )
+
+    def _build_prompt(self, comprehension: SongComprehension | None = None) -> str:
         base = ANALYSIS_PROMPT.format(
             current_date=datetime.now(timezone.utc).strftime("%Y-%m-%d"),
             season_context=_get_season_context(),
         )
+
+        # Inject Phase 1 comprehension as grounding context
+        if comprehension and comprehension.literal_subjects:
+            subjects_str = ", ".join(comprehension.literal_subjects[:15])
+            base += (
+                f"\n\n=== SONG COMPREHENSION REPORT (Phase 1) ===\n"
+                f"The song is about: {comprehension.story_summary}\n"
+                f"Objects/places/situations in the lyrics: [{subjects_str}]\n"
+                f"Language: {comprehension.detected_language}\n"
+                f"Instrumental: {comprehension.is_instrumental}\n\n"
+                f"GROUNDING RULES (CRITICAL):\n"
+                f"- Your video_search_query for each section MUST reference objects from "
+                f"the list above. If the song mentions 'exam hall', search for 'exam hall', "
+                f"NOT 'beautiful girl studying'.\n"
+                f"- Your primary_subject for each section MUST come from the comprehension "
+                f"report's literal_subjects list.\n"
+                f"- NEVER default to aesthetic clichés: 'girl sitting alone', 'boy with "
+                f"headphones', 'couple on beach', 'neon city'. Use the ACTUAL content.\n"
+                f"- If the comprehension says the song is about exam pressure, EVERY visual "
+                f"must relate to exams, studying, pressure, clocks, answer sheets — not "
+                f"random aesthetic imagery.\n"
+                f"===========================================\n"
+            )
 
         mem_data = self.memory.load()
         perf_log = mem_data.get("performance_log", [])

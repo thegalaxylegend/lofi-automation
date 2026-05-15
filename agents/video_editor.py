@@ -24,9 +24,67 @@ import urllib.request
 from pathlib import Path
 
 from agents.director import CreativeBrief, SongSection
+from agents.audio_event_map import AudioEventMap, AudioEvent
 from core.config import Config, OUTPUT_DIR, TEMP_DIR, TEMPLATES_DIR
 
 logger = logging.getLogger(__name__)
+
+
+# ──────────────────────────────────────────────
+#  VFX Profile Definitions (audio event → visual response)
+# ──────────────────────────────────────────────
+VFX_PROFILES = {
+    "aggressive": {
+        "kick_zoom": 1.05,       # Zoom punch intensity on kick
+        "snare_flash": 0.10,     # Brightness spike on snare
+        "drop_transition": "fade",  # xfade type on bass drop
+        "drop_rgb_split": True,  # Chromatic aberration on drops
+        "speed_ramp_slow": 0.5,  # Slow-mo during builds
+        "speed_ramp_fast": 1.5,  # Fast during drops
+        "base_grain": 1,
+        "cooldown": 1.5,         # Min seconds between major VFX
+    },
+    "vintage_analog": {
+        "kick_zoom": 1.02,
+        "snare_flash": 0.04,
+        "drop_transition": "dissolve",
+        "drop_rgb_split": False,
+        "speed_ramp_slow": 1.0,
+        "speed_ramp_fast": 1.0,
+        "base_grain": 5,
+        "cooldown": 3.0,
+    },
+    "ethereal": {
+        "kick_zoom": 1.01,
+        "snare_flash": 0.02,
+        "drop_transition": "smoothup",
+        "drop_rgb_split": False,
+        "speed_ramp_slow": 0.85,
+        "speed_ramp_fast": 1.0,
+        "base_grain": 1,
+        "cooldown": 5.0,
+    },
+    "cinematic_drama": {
+        "kick_zoom": 1.03,
+        "snare_flash": 0.05,
+        "drop_transition": "fadeblack",
+        "drop_rgb_split": False,
+        "speed_ramp_slow": 0.6,
+        "speed_ramp_fast": 1.0,
+        "base_grain": 2,
+        "cooldown": 2.5,
+    },
+    "raw_minimal": {
+        "kick_zoom": 1.0,
+        "snare_flash": 0.0,
+        "drop_transition": "fade",
+        "drop_rgb_split": False,
+        "speed_ramp_slow": 1.0,
+        "speed_ramp_fast": 1.0,
+        "base_grain": 0,
+        "cooldown": 3.0,
+    },
+}
 
 
 def _get_duration(file_path: str | Path) -> float:
@@ -285,6 +343,313 @@ class VideoEditor:
 
         logger.info("✅ Render complete: %s", output_path.name)
         return output_path
+
+    # ──────────────────────────────────────────
+    #  Stock Video Rendering Pipeline
+    # ──────────────────────────────────────────
+    def render_with_video(
+        self,
+        audio_path: str | Path,
+        clip_paths: list[Path | None],
+        brief: CreativeBrief,
+        event_map: AudioEventMap,
+        *,
+        output_name: str | None = None,
+    ) -> Path:
+        """
+        Render a video using stock clips + audio event-driven VFX.
+
+        Args:
+            audio_path: Path to the source MP3.
+            clip_paths: List of clip paths (one per section, None = missing).
+            brief: The Director's CreativeBrief.
+            event_map: Audio event map from AudioAnalyzer.
+            output_name: Optional custom output filename.
+        """
+        audio_path = Path(audio_path)
+        if not audio_path.exists():
+            raise FileNotFoundError(f"Audio not found: {audio_path}")
+
+        audio_duration = _get_duration(audio_path)
+        if audio_duration <= 0:
+            raise ValueError(f"Could not get duration for {audio_path}")
+
+        vs = self.config.channel.video
+        channel_name = self.config.channel.name
+
+        if output_name is None:
+            output_name = f"{audio_path.stem}_final.mp4"
+        output_path = OUTPUT_DIR / output_name
+        output_path.parent.mkdir(parents=True, exist_ok=True)
+
+        # Step 1: Normalize all clips to 30fps, 1920x1080, no audio
+        normalized = self._normalize_clips(clip_paths, vs)
+        if not any(normalized):
+            raise ValueError("No valid video clips after normalization.")
+
+        # Step 2: Get VFX profile
+        profile_name = brief.vfx_profile or "cinematic_drama"
+        profile = VFX_PROFILES.get(profile_name, VFX_PROFILES["cinematic_drama"])
+        logger.info("VFX Profile: %s", profile_name)
+
+        # Step 3: Build the filter graph
+        sections = brief.sections if brief.has_sections else []
+        filters = []
+        input_count = 0
+        section_labels = []
+
+        for i, sec in enumerate(sections):
+            clip = normalized[i] if i < len(normalized) else None
+            if clip is None:
+                continue
+
+            sec_dur = max(1.0, sec.end_sec - sec.start_sec)
+
+            # Input: loop the clip to cover the section duration
+            # (actual -stream_loop is in the command, not filter)
+
+            # Per-section color grading
+            cg = sec.color_grade
+            label = f"v{input_count}"
+            filters.append(
+                f"[{input_count}:v]"
+                f"eq=brightness={cg.brightness}:"
+                f"contrast={cg.contrast}:"
+                f"saturation={cg.saturation},"
+                f"colorbalance="
+                f"rs={cg.red_shift}:"
+                f"gs={cg.green_shift}:"
+                f"bs={cg.blue_shift},"
+                f"vignette=PI/4,"
+                f"noise=c0s={profile['base_grain']}:c0f=t+u,"
+                f"setpts=PTS-STARTPTS"
+                f"[{label}]"
+            )
+            section_labels.append((label, sec_dur, sec))
+            input_count += 1
+
+        if not section_labels:
+            raise ValueError("No valid sections to render.")
+
+        # Step 4: Chain transitions — speed matches song tempo
+        # Slow sad song = long dissolves, fast rap = quick hard cuts
+        def _get_transition_for_energy(energy: str, bpm: float) -> tuple[str, float]:
+            """Return (xfade_type, duration) based on section energy + BPM."""
+            beat_dur = 60.0 / max(bpm, 60)
+            if energy in ("very_high", "high"):
+                # Fast songs: hard cuts, 1-2 beat duration
+                return "wipeleft", max(0.3, beat_dur * 0.5)
+            elif energy == "medium":
+                # Medium: smooth dissolve, 2-4 beat duration
+                return profile["drop_transition"], min(2.0, beat_dur * 2)
+            elif energy in ("low", "very_low", "fading"):
+                # Slow songs: long soft dissolve, 4-8 beat duration
+                return "dissolve", min(3.0, beat_dur * 4)
+            return profile["drop_transition"], 1.0
+
+        if len(section_labels) == 1:
+            filters.append(f"[{section_labels[0][0]}]copy[slideshow]")
+        else:
+            # First pair
+            next_energy = section_labels[1][2].energy if len(section_labels) > 1 else "medium"
+            xfade_type, trans_dur = _get_transition_for_energy(next_energy, event_map.bpm)
+
+            # First pair
+            offset = max(0, section_labels[0][1] - trans_dur)
+            filters.append(
+                f"[{section_labels[0][0]}][{section_labels[1][0]}]"
+                f"xfade=transition={xfade_type}:"
+                f"duration={trans_dur}:offset={offset:.3f}[x0]"
+            )
+            cumulative = section_labels[0][1] + section_labels[1][1] - trans_dur
+
+            for j in range(2, len(section_labels)):
+                prev = f"x{j - 2}"
+                out = "slideshow" if j == len(section_labels) - 1 else f"x{j - 1}"
+
+                # Dynamic: each transition adapts to the INCOMING section's energy
+                incoming_energy = section_labels[j][2].energy
+                xfade_type, trans_dur = _get_transition_for_energy(
+                    incoming_energy, event_map.bpm
+                )
+
+                # Override with Director's explicit transitions if available
+                if j - 1 < len(brief.transitions):
+                    t = brief.transitions[j - 1]
+                    xfade_type = self._map_transition_type(t.type)
+                    trans_dur = t.duration_sec
+
+                offset = max(0, cumulative - trans_dur)
+                filters.append(
+                    f"[{prev}][{section_labels[j][0]}]"
+                    f"xfade=transition={xfade_type}:"
+                    f"duration={trans_dur}:offset={offset:.3f}[{out}]"
+                )
+                cumulative += section_labels[j][1] - trans_dur
+
+        # Step 5: Add audio-reactive VFX using the event map
+        # Apply kick zoom pulses and snare flashes via eq enable expressions
+        vfx_filters = self._build_audio_reactive_vfx(
+            event_map, profile, audio_duration
+        )
+        if vfx_filters:
+            filters.append(f"[slideshow]{','.join(vfx_filters)}[vfxed]")
+            last_video = "vfxed"
+        else:
+            last_video = "slideshow"
+
+        # Step 6: Fade in/out
+        fade_in = 2.0
+        fade_out = 3.0
+        fade_out_start = max(0, audio_duration - fade_out)
+        filters.append(
+            f"[{last_video}]fade=t=in:st=0:d={fade_in},"
+            f"fade=t=out:st={fade_out_start:.2f}:d={fade_out}[faded]"
+        )
+
+        # Step 7: Channel watermark (if drawtext available)
+        if self._has_drawtext:
+            font_path = self._ensure_font()
+            safe_font = _safe_ffmpeg_path(font_path)
+            ch_txt = TEMP_DIR / f"{audio_path.stem}_ch.txt"
+            ch_txt.write_text(channel_name, encoding="utf-8")
+            filters.append(
+                f"[faded]drawtext=textfile='{_safe_ffmpeg_path(ch_txt)}':"
+                f"fontsize=26:fontcolor=white@0.45:"
+                f"borderw=2:bordercolor=black@0.3:"
+                f"x=w-tw-30:y=h-th-30:"
+                f"fontfile='{safe_font}'[final]"
+            )
+        else:
+            filters.append("[faded]copy[final]")
+
+        # Step 8: Audio normalization
+        audio_input_idx = input_count
+        filters.append(f"[{audio_input_idx}:a]loudnorm=I=-16:TP=-1.5:LRA=11[anorm]")
+
+        filter_text = ";\n".join(filters)
+
+        # Step 9: Build FFmpeg command
+        filter_script_path = TEMP_DIR / f"{audio_path.stem}_video_filters.txt"
+        with open(filter_script_path, "w", encoding="utf-8") as f:
+            f.write(filter_text)
+
+        cmd = ["ffmpeg", "-y"]
+        for i, (label, sec_dur, sec) in enumerate(section_labels):
+            clip = normalized[[j for j in range(len(normalized)) if normalized[j]][i]]
+            cmd.extend([
+                "-stream_loop", "-1",
+                "-t", f"{sec_dur:.3f}",
+                "-i", str(clip),
+            ])
+        cmd.extend(["-i", str(audio_path)])
+
+        cmd.extend([
+            "-filter_complex_script", str(filter_script_path),
+            "-map", "[final]",
+            "-map", "[anorm]",
+            "-c:v", vs.codec, "-preset", vs.preset,
+            "-crf", str(vs.crf), "-pix_fmt", vs.pixel_format,
+            "-c:a", "aac", "-b:a", vs.audio_bitrate,
+            "-t", str(audio_duration),
+            "-movflags", "+faststart",
+            str(output_path),
+        ])
+
+        # Execute
+        logger.info("FFmpeg video render executing (%d clips)...", len(section_labels))
+        try:
+            result = subprocess.run(cmd, capture_output=True, text=True, timeout=1800)
+            if result.returncode != 0:
+                err = result.stderr[-2000:] if result.stderr else "Unknown"
+                logger.error("FFmpeg video render failed:\n%s", err)
+                raise RuntimeError(f"FFmpeg video render failed: {err}")
+        except subprocess.TimeoutExpired:
+            logger.error("FFmpeg video render timed out.")
+            raise
+        finally:
+            filter_script_path.unlink(missing_ok=True)
+
+        if not output_path.exists() or output_path.stat().st_size < 1024:
+            raise RuntimeError(f"Video output missing or too small: {output_path}")
+
+        size_mb = output_path.stat().st_size / (1024 * 1024)
+        logger.info("✅ Video render complete: %s (%.1f MB)", output_path.name, size_mb)
+        return output_path
+
+    def _normalize_clips(
+        self, clip_paths: list[Path | None], vs
+    ) -> list[Path | None]:
+        """Normalize all clips to exact 30fps, 1920x1080, no audio."""
+        normalized = []
+        norm_dir = TEMP_DIR / "normalized"
+        norm_dir.mkdir(parents=True, exist_ok=True)
+
+        for i, clip in enumerate(clip_paths):
+            if clip is None or not clip.exists():
+                normalized.append(None)
+                continue
+
+            out = norm_dir / f"norm_{i:02d}.mp4"
+            cmd = [
+                "ffmpeg", "-y", "-i", str(clip),
+                "-r", str(vs.fps),
+                "-vf", (
+                    f"scale={vs.width}:{vs.height}:"
+                    f"force_original_aspect_ratio=increase,"
+                    f"crop={vs.width}:{vs.height}"
+                ),
+                "-an",  # Strip audio from stock clips
+                "-c:v", "libx264", "-crf", "18", "-preset", "fast",
+                "-pix_fmt", "yuv420p",
+                str(out),
+            ]
+            try:
+                result = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
+                if result.returncode == 0 and out.exists() and out.stat().st_size > 1024:
+                    normalized.append(out)
+                    logger.info("Normalized clip %d: %s", i, out.name)
+                else:
+                    normalized.append(None)
+                    logger.warning("Clip %d normalization failed.", i)
+            except Exception as exc:
+                normalized.append(None)
+                logger.error("Clip %d normalization error: %s", i, exc)
+
+        return normalized
+
+    def _build_audio_reactive_vfx(
+        self,
+        event_map: AudioEventMap,
+        profile: dict,
+        duration: float,
+    ) -> list[str]:
+        """Build FFmpeg filter expressions driven by audio events."""
+        vfx = []
+        last_event_time = -999.0
+        cooldown = profile["cooldown"]
+
+        # Collect snare flash timestamps (with cooldown)
+        flash_times = []
+        for event in event_map.events:
+            if event.event_type == "snare" and profile["snare_flash"] > 0:
+                if event.timestamp - last_event_time >= cooldown:
+                    flash_times.append(event.timestamp)
+                    last_event_time = event.timestamp
+
+        # Build brightness flash enable expression for snare hits
+        if flash_times and profile["snare_flash"] > 0:
+            flash_exprs = []
+            for t in flash_times[:30]:  # Cap at 30 to avoid filter explosion
+                flash_exprs.append(f"between(t,{t:.2f},{t + 0.067:.3f})")
+            if flash_exprs:
+                flash_cond = "+".join(flash_exprs)
+                brightness_boost = profile["snare_flash"]
+                vfx.append(
+                    f"eq=brightness='{brightness_boost}*({flash_cond})'"
+                )
+
+        return vfx
 
     # ──────────────────────────────────────────
     #  Creative Engine (per-section rendering)

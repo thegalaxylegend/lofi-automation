@@ -100,6 +100,16 @@ def pipeline_memory() -> Memory:
     return Memory("pipeline_history")
 
 
+def video_fetcher_memory() -> Memory:
+    """Memory for tracking used stock video clip IDs across pipeline runs."""
+    return Memory("video_fetcher_clips")
+
+
+def audio_analyzer_memory() -> Memory:
+    """Memory for caching audio analysis results."""
+    return Memory("audio_analyzer_cache")
+
+
 def initialize_all_memories() -> None:
     """Create default memory files if they don't exist."""
     defaults = {
@@ -144,6 +154,12 @@ def initialize_all_memories() -> None:
         "pipeline_history": {
             "processed_files": [],
             "last_run": None,
+        },
+        "video_fetcher_clips": {
+            "used_clip_ids": [],
+        },
+        "audio_analyzer_cache": {
+            "cached_analyses": {},
         },
     }
     for name, default_data in defaults.items():

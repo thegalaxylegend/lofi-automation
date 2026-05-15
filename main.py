@@ -82,26 +82,70 @@ def process_single(audio_path: Path) -> PipelineResult:
         director = Director()
         brief = director.analyze(audio_path)
 
-        logger.info("Director complete: mood=%s, energy=%s", brief.mood, brief.energy)
+        logger.info(
+            "Director complete: mood=%s, energy=%s, vfx=%s",
+            brief.mood, brief.energy, brief.vfx_profile,
+        )
 
-        # ── Audio Analyzer (Mathematics extraction) ─────────
+        # ── Audio Event Map (Beat/Instrument Detection) ─────
+        from agents.audio_event_map import AudioAnalyzer as EventAnalyzer
+        event_analyzer = EventAnalyzer()
+        event_map = event_analyzer.analyze(audio_path)
+        logger.info(
+            "Audio events: BPM=%.1f, kicks=%d, snares=%d, drops=%d, breaths=%d",
+            event_map.bpm, len(event_map.kick_timestamps),
+            len(event_map.snare_timestamps), len(event_map.bass_drops),
+            len(event_map.breathing_zones),
+        )
+
+        # Legacy audio_math dict (backward compatibility for image pipeline fallback)
         from core.audio_analyzer import AudioAnalyzer
         audio_math = AudioAnalyzer.analyze_audio(audio_path)
 
-        # ── Image Fetcher ──────────────────────────────
-        from agents.image_fetcher import ImageFetcher
-        fetcher = ImageFetcher()
-        image_paths = fetcher.fetch_images(brief)
+        # ── Video Pipeline (Stock Clips + Audio-Reactive VFX) ─
+        video_path = None
+        image_paths = None  # will be set only if we fall back
 
-        if not image_paths:
-            raise RuntimeError("Failed to fetch AI images.")
-
-        logger.info(f"Images generated: {len(image_paths)}")
-
-        # ── Agent 2: Video Editor (FFmpeg Render) ───────────
         from agents.video_editor import VideoEditor
         editor = VideoEditor()
-        video_path = editor.render(audio_path, image_paths, brief, audio_math)
+
+        try:
+            from agents.video_fetcher import VideoFetcher
+            vfetcher = VideoFetcher()
+            clip_paths = vfetcher.fetch_clips(brief)
+
+            # Check if we got enough clips (at least 50% of sections)
+            valid_clips = [p for p in clip_paths if p is not None]
+            if len(valid_clips) >= max(1, len(brief.sections) // 2):
+                logger.info(
+                    "Video pipeline: %d/%d clips fetched. Rendering with video...",
+                    len(valid_clips), len(brief.sections),
+                )
+                video_path = editor.render_with_video(
+                    audio_path, clip_paths, brief, event_map,
+                )
+            else:
+                logger.warning(
+                    "Only %d/%d clips fetched. Falling back to image pipeline.",
+                    len(valid_clips), len(brief.sections),
+                )
+        except Exception as exc:
+            logger.warning(
+                "Video pipeline failed: %s. Falling back to image pipeline.", exc
+            )
+
+        # ── Fallback: Image Pipeline ────────────────────
+        if video_path is None:
+            logger.info("Using image pipeline fallback...")
+            from agents.image_fetcher import ImageFetcher
+            fetcher = ImageFetcher()
+            image_paths = fetcher.fetch_images(brief)
+
+            if not image_paths:
+                raise RuntimeError("Failed to fetch AI images.")
+
+            logger.info("Images generated: %d", len(image_paths))
+            video_path = editor.render(audio_path, image_paths, brief, audio_math)
 
         result.video_path = str(video_path)
         logger.info("Video rendered: %s", video_path.name)
@@ -154,23 +198,44 @@ def process_single(audio_path: Path) -> PipelineResult:
             from agents.distributor import Distributor
             distributor = Distributor()
 
-            # Pick the best image for the Short based on Director's analysis
-            short_img = image_paths[0]  # default
-            if brief.has_sections and brief.shorts.image_section:
-                # Find the section index that matches the AI-selected section
-                for i, sec in enumerate(brief.sections):
-                    if sec.name == brief.shorts.image_section and i < len(image_paths):
-                        short_img = image_paths[i]
-                        break
+            # Pick the best background for the Short
+            short_img = None
+            if image_paths:
+                short_img = image_paths[0]  # default
+                if brief.has_sections and brief.shorts.image_section:
+                    for i, sec in enumerate(brief.sections):
+                        if sec.name == brief.shorts.image_section and i < len(image_paths):
+                            short_img = image_paths[i]
+                            break
 
-            short_path = distributor.create_short(
-                audio_path=audio_path,
-                background_path=short_img,
-                brief=brief,
-                shorts_text=metadata.shorts_text,
-            )
-            result.short_path = str(short_path)
-            logger.info("Short created: %s", short_path.name)
+            # If video pipeline was used (no images), extract a frame from the video
+            if short_img is None and video_path:
+                import subprocess
+                frame_path = TEMP_DIR / f"{audio_path.stem}_short_frame.jpg"
+                # Extract frame at the recommended Short start time
+                start_sec = brief.shorts.recommended_start_sec if brief.has_sections else 10
+                try:
+                    subprocess.run(
+                        ["ffmpeg", "-y", "-ss", str(start_sec), "-i", str(video_path),
+                         "-frames:v", "1", "-q:v", "2", str(frame_path)],
+                        capture_output=True, timeout=30,
+                    )
+                    if frame_path.exists():
+                        short_img = frame_path
+                except Exception:
+                    pass
+
+            if short_img:
+                short_path = distributor.create_short(
+                    audio_path=audio_path,
+                    background_path=short_img,
+                    brief=brief,
+                    shorts_text=metadata.shorts_text,
+                )
+                result.short_path = str(short_path)
+                logger.info("Short created: %s", short_path.name)
+            else:
+                logger.warning("No background available for Short. Skipping.")
 
         # ── Agent 5: QA Tester ──────────────────────────────
         from agents.qa_tester import QATester
