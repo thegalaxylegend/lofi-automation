@@ -55,6 +55,9 @@ jobs:
           GROQ_API_KEY_5: ${{ secrets.GROQ_API_KEY_5 }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
+          COVERR_API_KEY: ${{ secrets.COVERR_API_KEY }}
+          VECTEEZY_ACCOUNT_ID: ${{ secrets.VECTEEZY_ACCOUNT_ID }}
+          VECTEEZY_SECRET_KEY: ${{ secrets.VECTEEZY_SECRET_KEY }}
           DISCORD_WEBHOOK_UPLOADS: ${{ secrets.DISCORD_WEBHOOK_UPLOADS }}
           DISCORD_WEBHOOK_DAILY: ${{ secrets.DISCORD_WEBHOOK_DAILY }}
           DISCORD_WEBHOOK_ALERTS: ${{ secrets.DISCORD_WEBHOOK_ALERTS }}
