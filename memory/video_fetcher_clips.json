@@ -1,7 +1,20 @@
 {
-  "used_clip_ids": [],
+  "used_clip_ids": [
+    "pexels_32727177",
+    "pexels_10350265",
+    "pexels_10396265",
+    "pexels_37591141",
+    "pexels_33644510",
+    "pexels_34373737",
+    "pexels_8142385",
+    "pexels_27773030",
+    "pexels_9586703",
+    "pexels_31655977",
+    "pexels_34744938",
+    "pexels_8143236"
+  ],
   "_meta": {
-    "last_updated": "2026-05-15T04:08:58.116412+00:00",
+    "last_updated": "2026-05-16T03:21:39.853722+00:00",
     "memory_name": "video_fetcher_clips"
   }
 }
