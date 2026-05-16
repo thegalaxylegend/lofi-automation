@@ -800,19 +800,8 @@ class VideoEditor:
 
         # Step 4 & 5: Text overlays (only if drawtext is available)
         if self._has_drawtext:
-            # Channel watermark via drawtext
-            ch_txt = TEMP_DIR / f"{audio_path.stem}_ch.txt"
-            ch_txt.write_text(channel_name, encoding="utf-8")
-            filters.append(
-                f"[faded]drawtext=textfile='{_safe_ffmpeg_path(ch_txt)}':"
-                f"fontsize=26:fontcolor=white@0.45:"
-                f"borderw=2:bordercolor=black@0.3:"
-                f"x=w-tw-30:y=h-th-30:"
-                f"fontfile='{safe_font}'[watermarked]"
-            )
-
             # Section-specific text overlays
-            last_label = "watermarked"
+            last_label = "faded"
             text_idx = 0
             for sec in sections:
                 if sec.text_overlay.text and sec.text_overlay.duration_sec > 0:
@@ -855,10 +844,7 @@ class VideoEditor:
                     text_idx += 1
 
             # Final label
-            if last_label != "watermarked":
-                filters.append(f"[{last_label}]copy[final]")
-            else:
-                filters.append("[watermarked]copy[final]")
+            filters.append(f"[{last_label}]copy[final]")
         else:
             # No drawtext: text was already burned into images via Pillow
             filters.append("[faded]copy[final]")
@@ -912,12 +898,7 @@ class VideoEditor:
         font_path = self._ensure_font()
         safe_font = _safe_ffmpeg_path(font_path)
 
-        # If no drawtext, burn watermark into images via Pillow
-        if not self._has_drawtext:
-            image_paths = [
-                _burn_text_on_image(img, channel_name, "bottom_right", font_path, 22, 0.3)
-                for img in image_paths
-            ]
+        # No watermark needed
 
         filters = []
         img_durs = []
@@ -961,17 +942,7 @@ class VideoEditor:
         fade_out_st = max(0, audio_duration - 3)
         filters.append(f"[grained]fade=t=in:st=0:d=2,fade=t=out:st={fade_out_st:.2f}:d=3[faded]")
 
-        if self._has_drawtext:
-            ch_txt = TEMP_DIR / f"{audio_path.stem}_ch.txt"
-            ch_txt.write_text(channel_name, encoding="utf-8")
-            filters.append(
-                f"[faded]drawtext=textfile='{_safe_ffmpeg_path(ch_txt)}':"
-                f"fontsize=22:fontcolor=white@0.3:x=w-tw-30:y=h-th-30:"
-                f"fontfile='{safe_font}'[final]"
-            )
-        else:
-            # Text already burned into images via Pillow
-            filters.append("[faded]copy[final]")
+        filters.append("[faded]copy[final]")
 
         audio_idx = num_images
         filters.append(f"[{audio_idx}:a]loudnorm=I=-16:TP=-1.5:LRA=11[anorm]")
@@ -1059,11 +1030,10 @@ class VideoEditor:
         channel_name: str,
         font_path: Path,
     ) -> list[Path]:
-        """Burn channel watermark (and text overlays) into section images via Pillow."""
+        """Burn text overlays into section images via Pillow."""
         result = []
         for i, (img_path, sec) in enumerate(zip(section_images, sections)):
-            # Burn watermark
-            out = _burn_text_on_image(img_path, channel_name, "bottom_right", font_path, 22, 0.25)
+            out = img_path
             # Burn section text overlay if present
             if sec.text_overlay.text and sec.text_overlay.duration_sec > 0:
                 pos = sec.text_overlay.position or "center"
