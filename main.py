@@ -225,9 +225,10 @@ def process_single(audio_path: Path) -> PipelineResult:
                 except Exception:
                     pass
 
-            if short_img:
+            if short_img or video_path:
                 short_path = distributor.create_short(
                     audio_path=audio_path,
+                    video_source_path=video_path,
                     background_path=short_img,
                     brief=brief,
                     shorts_text=metadata.shorts_text,
@@ -235,7 +236,7 @@ def process_single(audio_path: Path) -> PipelineResult:
                 result.short_path = str(short_path)
                 logger.info("Short created: %s", short_path.name)
             else:
-                logger.warning("No background available for Short. Skipping.")
+                logger.warning("No background or video available for Short. Skipping.")
 
         # ── Agent 5: QA Tester ──────────────────────────────
         from agents.qa_tester import QATester

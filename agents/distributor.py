@@ -101,21 +101,26 @@ class Distributor:
     def create_short(
         self,
         audio_path: str | Path,
-        background_path: str | Path,
-        brief: CreativeBrief,
+        background_path: str | Path | None = None,
+        brief: CreativeBrief = None,
         shorts_text: str = "",
         *,
+        video_source_path: str | Path | None = None,
         output_name: str | None = None,
     ) -> Path:
+        """
+        Creates a YouTube Short by taking the best segment from the exported video.
+        FITS horizontal video into vertical format via letterboxing (no zoom).
+        Removes all text overlays as per user request.
+        """
         audio_path = Path(audio_path)
-        background_path = Path(background_path)
         sc = self.config.channel.shorts
 
         if output_name is None:
             output_name = f"{audio_path.stem}_short.mp4"
         output_path = OUTPUT_DIR / output_name
 
-        w, h = sc.width, sc.height
+        w, h = sc.width, sc.height  # 1080x1920
         max_dur = sc.max_duration_sec
 
         # Get audio duration
@@ -124,11 +129,9 @@ class Distributor:
             raise ValueError(f"Cannot get duration for {audio_path}")
 
         # AI-selected segment from Director's brief
-        if brief.has_sections and brief.shorts.duration_sec > 0:
+        if brief and brief.has_sections and brief.shorts.duration_sec > 0:
             start_time = brief.shorts.recommended_start_sec
             segment_dur = min(brief.shorts.duration_sec, max_dur)
-            hook_text = brief.shorts.hook_text
-            mood_text = brief.shorts.mood_text
             logger.info(
                 "AI-selected Short segment: %.1fs-%.1fs (%s)",
                 start_time, start_time + segment_dur, brief.shorts.reasoning[:60],
@@ -140,8 +143,6 @@ class Distributor:
                 segment_dur = max_dur
             else:
                 start_time, segment_dur = 0, duration
-            hook_text = ""
-            mood_text = shorts_text or brief.text_overlay_suggestion or ""
 
         # Ensure segment doesn't exceed audio
         if start_time + segment_dur > duration:
@@ -152,100 +153,71 @@ class Distributor:
             start_time, start_time + segment_dur, segment_dur,
         )
 
-        # Get font
-        font_path = self._ensure_font()
-        safe_font = str(font_path.absolute()).replace("\\", "/").replace(":", "\\:")
+        # Decide on source: Prioritize video_source_path (the exported 1080p video)
+        is_video = False
+        if video_source_path and Path(video_source_path).exists():
+            source_path = Path(video_source_path)
+            is_video = True
+            logger.info("Using exported video as Short source: %s", source_path.name)
+        elif background_path and Path(background_path).exists():
+            source_path = Path(background_path)
+            logger.info("Falling back to image as Short source: %s", source_path.name)
+        else:
+            raise ValueError("No valid video or image source provided for Short.")
 
-        # If drawtext not available, burn text into the background image
-        if not self._has_drawtext and (hook_text or mood_text):
-            texts = []
-            if hook_text:
-                texts.append((hook_text, "hook", 32, 0.95))
-            if mood_text:
-                texts.append((mood_text, "mood", 36, 0.9))
-            background_path = _burn_text_on_image_for_short(
-                background_path, texts, font_path, w, h,
-            )
-
-        # Build filter chain
+        # Build filter chain: Letterbox 16:9 into 9:16 (No zoom allowed)
+        # force_original_aspect_ratio=decrease + pad ensures letterboxing
         filters: list[str] = []
-
-        # Scale to fit width, pad with black bars on top/bottom
         filters.append(
             f"[0:v]scale={w}:{h}:force_original_aspect_ratio=decrease,"
             f"pad={w}:{h}:(ow-iw)/2:(oh-ih)/2:black,"
             f"setpts=PTS-STARTPTS[padded]"
         )
 
-        last_label = "padded"
-
-        # Fade in (but NO fade out — encourages replay)
-        filters.append(f"[{last_label}]fade=t=in:st=0:d=0.5[faded]")
-        last_label = "faded"
-
-        # Hook text and mood text only if drawtext is available
-        if self._has_drawtext:
-            if hook_text:
-                hook_file = TEMP_DIR / f"{audio_path.stem}_hook.txt"
-                hook_file.write_text(hook_text, encoding="utf-8")
-                safe_hook = str(hook_file.absolute()).replace("\\", "/").replace(":", "\\:")
-                filters.append(
-                    f"[{last_label}]drawtext="
-                    f"textfile='{safe_hook}':"
-                    f"fontsize=42:fontcolor=white:"
-                    f"box=1:boxcolor=black@0.7:boxborderw=20:"
-                    f"x=(w-tw)/2:y=h*0.25:"
-                    f"fontfile='{safe_font}':"
-                    f"borderw=3:bordercolor=black:"
-                    f"enable='between(t,0.3,4.0)'[hooked]"
-                )
-                last_label = "hooked"
-
-            if mood_text:
-                mood_file = TEMP_DIR / f"{audio_path.stem}_mood.txt"
-                mood_file.write_text(mood_text, encoding="utf-8")
-                safe_mood = str(mood_file.absolute()).replace("\\", "/").replace(":", "\\:")
-                mid_start = segment_dur * 0.35
-                mid_end = segment_dur * 0.70
-                filters.append(
-                    f"[{last_label}]drawtext="
-                    f"textfile='{safe_mood}':"
-                    f"fontsize=46:fontcolor=white:"
-                    f"box=1:boxcolor=black@0.7:boxborderw=20:"
-                    f"x=(w-tw)/2:y=h*0.32:"
-                    f"fontfile='{safe_font}':"
-                    f"borderw=3:bordercolor=black:"
-                    f"enable='between(t,{mid_start:.1f},{mid_end:.1f})'[final]"
-                )
-                last_label = "final"
-
+        # Fade in only (no fade out to encourage loops)
+        filters.append(f"[padded]fade=t=in:st=0:d=0.8[final]")
+        
         filter_complex = ";".join(filters)
 
-        cmd = [
-            "ffmpeg", "-y",
-            "-loop", "1",
-            "-i", str(background_path),
-            "-ss", str(start_time),
+        cmd = ["ffmpeg", "-y"]
+        if not is_video:
+            cmd.extend(["-loop", "1"])
+        
+        # Seek source and audio
+        cmd.extend([
+            "-ss", f"{start_time:.3f}",
+            "-t", f"{segment_dur:.3f}",
+            "-i", str(source_path),
+        ])
+        
+        # If using video source, it already has audio, but we map it explicitly or use audio_path
+        # User requested "song with the exported video clip", so we use audio_path for best quality
+        cmd.extend([
+            "-ss", f"{start_time:.3f}",
+            "-t", f"{segment_dur:.3f}",
             "-i", str(audio_path),
+        ])
+
+        cmd.extend([
             "-filter_complex", filter_complex,
-            "-map", f"[{last_label}]",
-            "-map", "1:a",
+            "-map", "[final]",
+            "-map", "1:a",  # Use the high-quality normalized audio
             "-c:v", "libx264",
-            "-preset", "medium",
-            "-crf", "20",
+            "-preset", "slow", # Better quality for Shorts
+            "-crf", "18",      # High quality
             "-pix_fmt", "yuv420p",
             "-c:a", "aac",
             "-b:a", "192k",
-            "-t", str(segment_dur),
             "-movflags", "+faststart",
             str(output_path),
-        ]
+        ])
 
         try:
-            result = subprocess.run(cmd, capture_output=True, text=True, timeout=300)
+            result = subprocess.run(cmd, capture_output=True, text=True, timeout=600)
             if result.returncode != 0:
-                logger.error("Short render failed: %s", result.stderr[-500:])
-                raise RuntimeError("Short render failed")
+                err = result.stderr[-500:] if result.stderr else "Unknown error"
+                logger.error("Short render failed: %s", err)
+                raise RuntimeError(f"Short render failed: {err}")
         except subprocess.TimeoutExpired:
             raise RuntimeError("Short render timed out")
 
