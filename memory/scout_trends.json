@@ -8,14 +8,14 @@
     "lavender",
     "whenineeditmost",
     "evelyn/courtside",
-    "fourth dogma",
-    "solo flavour",
-    "niño"
+    "Fourth Dogma",
+    "Solo Flavour",
+    "Just Big Hills"
   ],
   "color_trends": [],
-  "last_scan": "2026-05-11T05:50:20.742763+00:00",
+  "last_scan": "2026-05-18T06:03:16.089740+00:00",
   "_meta": {
-    "last_updated": "2026-05-11T05:50:20.743629+00:00",
+    "last_updated": "2026-05-18T06:03:16.090520+00:00",
     "memory_name": "scout_trends"
   },
   "last_report": {
@@ -27,33 +27,33 @@
       "lavender",
       "whenineeditmost",
       "evelyn/courtside",
-      "fourth dogma",
-      "solo flavour",
-      "niño"
+      "Fourth Dogma",
+      "Solo Flavour",
+      "Just Big Hills"
     ],
     "trending_moods": [
       "Introspective",
       "Melancholic",
-      "Calm/Soothing"
+      "Calm/Relaxing"
     ],
-    "optimal_video_length": "Short-form (YouTube Shorts)",
+    "optimal_video_length": "Short-form (under 60 seconds), primarily YouTube Shorts",
     "title_patterns": [
-      "\"[Quote/Lyric Snippet] + [Context/Artist/EP] + #hashtags\"",
-      "\"[Quote/Lyric Snippet] + ... + #hashtags\"",
-      "\"[Song Title] - [Artist(s)]\""
+      "Emotional/Relatable Phrase + Emojis + Artist/Song/Album Reference + #shorts",
+      "Direct Quote/Lyric Snippet + Artist/Song Reference + #shorts",
+      "Song Title - Artist Name (+ featuring/additional artists/album)"
     ],
-    "thumbnail_observations": "No direct thumbnail data available from the provided text titles. However, given the prevalence of 'shorts', dynamic text overlays, captivating single frames, or stylized quotes are likely trending.",
+    "thumbnail_observations": "No data provided to analyze thumbnail styles.",
     "opportunities": [
-      "Leverage YouTube Shorts for quick engagement and virality, mirroring competitor's recent success with this format.",
-      "Focus on introspective, melancholic, and calm themes, which resonate strongly with the lo-fi audience as indicated by title content.",
-      "Explore artists or sounds similar to Shiloh Dynasty to tap into a proven popular niche, potentially diversifying beyond direct Shiloh Dynasty content."
+      "Embrace YouTube Shorts for Hindi Music: The competitor's recent success with Shorts suggests a strong engagement opportunity for short, impactful music clips.",
+      "Leverage Emotional/Relatable Snippets: Craft titles and content around emotionally resonant lyrics or themes from Hindi songs to connect with the audience.",
+      "Explore Niche Moods in Hindi Music: Identify 'chill,' 'introspective,' or 'study/focus' moods within Hindi music that can be packaged similarly to lo-fi."
     ],
     "threats": [
-      "High competition and potential saturation around Shiloh Dynasty content, making differentiation challenging if solely relying on this artist.",
-      "The highly competitive nature of YouTube Shorts requires strong hooks and consistent, high-quality content to stand out effectively."
+      "Dominance in Lo-fi/Indie Niche: College Music has a strong foothold in the lo-fi/indie space, making direct competition in that specific genre difficult.",
+      "Potential Saturation of Short-Form Content: While currently an opportunity, the rapid adoption of Shorts by many channels could lead to increased competition and lower visibility over time."
     ],
-    "recommendation": "Prioritize creating introspective, lyric-driven YouTube Shorts, drawing inspiration from Shiloh Dynasty's mood while exploring diverse artists to avoid saturation and establish a unique channel identity.",
-    "scan_date": "2026-05-11T05:50:20.742763+00:00",
+    "recommendation": "Focus on creating engaging YouTube Shorts featuring emotionally resonant snippets of popular or emerging Hindi songs, using introspective titles to capture attention and drive discovery.",
+    "scan_date": "2026-05-18T06:03:16.089740+00:00",
     "videos_analyzed": 5
   }
 }
