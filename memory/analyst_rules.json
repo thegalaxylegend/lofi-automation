@@ -185,6 +185,24 @@
       "target_agent": "editor",
       "confidence": "high",
       "evidence": "The explicit 'No video attributes logged yet' status indicates a failure to implement or follow the logging process."
+    },
+    {
+      "rule": "The Director must immediately provide a verified report confirming successful ingestion and accessibility of at least 24 hours of analytics data (including total views, new subscribers, average CTR, and average view duration) for the previous day, along with a detailed root cause analysis for the persistent data ingestion failures and a firm, actionable timeline (with specific milestones and responsible parties) for its complete resolution, as previously directed.",
+      "target_agent": "director",
+      "confidence": "high",
+      "evidence": "No analytics data available yet, despite repeated directives."
+    },
+    {
+      "rule": "The Editor must immediately submit a sample log containing key attributes (length, mood, instrumentation, visual style, upload time) for the last 5 uploaded videos, demonstrating the implemented standardized process for attribute logging, and provide a detailed explanation for the repeated failure to meet this directive, as previously directed.",
+      "target_agent": "editor",
+      "confidence": "high",
+      "evidence": "No video attributes logged yet, despite repeated directives."
+    },
+    {
+      "rule": "The Director must confirm the escalation of persistent data ingestion issues to senior management within 24 hours if internal resolution cannot be achieved, providing a clear summary of the problem, the actionable timeline, and proposed solutions, as previously directed.",
+      "target_agent": "director",
+      "confidence": "high",
+      "evidence": "Persistent lack of analytics data indicates internal resolution is not occurring."
     }
   ],
   "daily_reports": [
@@ -603,11 +621,47 @@
       ],
       "insight": "Strategic decision-making for the Hindi music/audio channel is completely paralyzed due to the persistent absence of essential analytics data and video attributes. Establishing a robust and reliable data pipeline is the absolute prerequisite for any future growth or optimization efforts.",
       "generated_at": "2026-05-17T04:09:19.531591+00:00"
+    },
+    {
+      "daily_summary": {
+        "total_views_24h": 0,
+        "new_subscribers": 0,
+        "best_video": "N/A - No data available",
+        "worst_video": "N/A - No data available",
+        "avg_ctr": 0.0,
+        "avg_avd_seconds": 0.0
+      },
+      "new_rules": [
+        {
+          "rule": "The Director must immediately provide a verified report confirming successful ingestion and accessibility of at least 24 hours of analytics data (including total views, new subscribers, average CTR, and average view duration) for the previous day, along with a detailed root cause analysis for the persistent data ingestion failures and a firm, actionable timeline (with specific milestones and responsible parties) for its complete resolution, as previously directed.",
+          "target_agent": "director",
+          "confidence": "high",
+          "evidence": "No analytics data available yet, despite repeated directives."
+        },
+        {
+          "rule": "The Editor must immediately submit a sample log containing key attributes (length, mood, instrumentation, visual style, upload time) for the last 5 uploaded videos, demonstrating the implemented standardized process for attribute logging, and provide a detailed explanation for the repeated failure to meet this directive, as previously directed.",
+          "target_agent": "editor",
+          "confidence": "high",
+          "evidence": "No video attributes logged yet, despite repeated directives."
+        },
+        {
+          "rule": "The Director must confirm the escalation of persistent data ingestion issues to senior management within 24 hours if internal resolution cannot be achieved, providing a clear summary of the problem, the actionable timeline, and proposed solutions, as previously directed.",
+          "target_agent": "director",
+          "confidence": "high",
+          "evidence": "Persistent lack of analytics data indicates internal resolution is not occurring."
+        }
+      ],
+      "alerts": [
+        "Critical: No analytics data available, preventing any performance analysis or strategic decision-making.",
+        "Critical: No video attributes logged, hindering content optimization and understanding of video performance drivers."
+      ],
+      "insight": "Without any analytics data or video attributes, it is impossible to provide any strategic insights or make data-driven decisions for channel growth or content optimization. The immediate priority must be establishing a reliable data ingestion pipeline.",
+      "generated_at": "2026-05-18T04:21:32.282203+00:00"
     }
   ],
   "weekly_reports": [],
   "_meta": {
-    "last_updated": "2026-05-17T04:09:19.533992+00:00",
+    "last_updated": "2026-05-18T04:21:32.284701+00:00",
     "memory_name": "analyst_rules"
   }
 }
