@@ -176,10 +176,15 @@
       "rule": "The Director must confirm the escalation of persistent data ingestion issues to senior management within 24 hours if internal resolution cannot be achieved, providing a clear summary of the problem, the actionable timeline, and proposed solutions, as previously directed. This is a critical step given the ongoing data unavailability.",
       "source": "analyst",
       "date": "2026-05-20T04:18:03.180022+00:00"
+    },
+    {
+      "rule": "The Director must immediately provide a verified report confirming successful ingestion and accessibility of at least 24 hours of analytics data (including total views, new subscribers, average CTR, and average view duration) for the previous day, along with a detailed root cause analysis for the persistent data ingestion failures and a firm, actionable timeline (with specific milestones and responsible parties) for its complete resolution, by end of day today.",
+      "source": "analyst",
+      "date": "2026-05-21T04:25:48.175705+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-05-20T04:18:03.180094+00:00",
+    "last_updated": "2026-05-21T04:25:48.175812+00:00",
     "memory_name": "director_mood_map"
   }
 }
