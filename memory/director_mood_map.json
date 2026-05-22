@@ -181,10 +181,20 @@
       "rule": "The Director must immediately provide a verified report confirming successful ingestion and accessibility of at least 24 hours of analytics data (including total views, new subscribers, average CTR, and average view duration) for the previous day, along with a detailed root cause analysis for the persistent data ingestion failures and a firm, actionable timeline (with specific milestones and responsible parties) for its complete resolution, by end of day today.",
       "source": "analyst",
       "date": "2026-05-21T04:25:48.175705+00:00"
+    },
+    {
+      "rule": "The Director must immediately provide a verified report confirming successful ingestion and accessibility of at least 24 hours of analytics data (including total views, new subscribers, average CTR, and average view duration) for the previous day, along with a detailed root cause analysis for the persistent data ingestion failures and a firm, actionable timeline (with specific milestones and responsible parties) for its complete resolution, by end of day today, as the absence of this data renders all performance analysis impossible.",
+      "source": "analyst",
+      "date": "2026-05-22T04:20:48.231835+00:00"
+    },
+    {
+      "rule": "The Director must provide immediate confirmation of the escalation of the persistent data ingestion failure to senior management, including a summary of the problem, the proposed resolution timeline, and the specific support requested, as the lack of critical performance data is now a severe operational impediment and requires urgent attention.",
+      "source": "analyst",
+      "date": "2026-05-22T04:20:48.232620+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-05-21T04:25:48.175812+00:00",
+    "last_updated": "2026-05-22T04:20:48.232726+00:00",
     "memory_name": "director_mood_map"
   }
 }
