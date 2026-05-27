@@ -226,10 +226,20 @@
       "rule": "The Director must schedule an emergency meeting with all relevant stakeholders (including senior management, data engineering, and content teams) within 2 hours to address the critical data ingestion failures and present the detailed resolution plan and escalation status. This issue is now a severe operational impediment.",
       "source": "analyst",
       "date": "2026-05-26T04:17:04.251057+00:00"
+    },
+    {
+      "rule": "The Director must immediately provide a verified report confirming successful ingestion and accessibility of at least 24 hours of analytics data (including total views, new subscribers, average CTR, and average view duration) for the previous day. This must be accompanied by a comprehensive root cause analysis for the persistent data ingestion failures, a firm, actionable timeline (with specific milestones and responsible parties) for its complete resolution, and immediate confirmation of the escalation of this issue to senior management, including a summary of the problem, proposed resolution timeline, and specific support requested, with an absolute deadline of 1 hour from this report.",
+      "source": "analyst",
+      "date": "2026-05-27T04:39:52.825369+00:00"
+    },
+    {
+      "rule": "The Director must schedule an emergency meeting with all relevant stakeholders (including senior management, data engineering, and content teams) within 2 hours to address the critical data ingestion failures and present the detailed resolution plan and escalation status. This issue is now a severe operational impediment.",
+      "source": "analyst",
+      "date": "2026-05-27T04:39:52.825942+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-05-26T04:17:04.251174+00:00",
+    "last_updated": "2026-05-27T04:39:52.826050+00:00",
     "memory_name": "director_mood_map"
   }
 }
