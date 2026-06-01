@@ -4,18 +4,18 @@
     "shilohdynasty",
     "shiloh",
     "shorts",
-    "lo-fi",
-    "chill",
-    "music",
-    "ep",
-    "new music",
-    "indie",
-    "vibe"
+    "i don't trust nobody",
+    "loh end ep",
+    "lavender",
+    "whenineeditmost",
+    "evelyn",
+    "courtside",
+    "Fourth Dogma"
   ],
   "color_trends": [],
-  "last_scan": "2026-05-25T06:16:11.993104+00:00",
+  "last_scan": "2026-06-01T06:44:52.232215+00:00",
   "_meta": {
-    "last_updated": "2026-05-25T06:16:11.993861+00:00",
+    "last_updated": "2026-06-01T06:44:52.232891+00:00",
     "memory_name": "scout_trends"
   },
   "last_report": {
@@ -23,37 +23,37 @@
       "shilohdynasty",
       "shiloh",
       "shorts",
-      "lo-fi",
-      "chill",
-      "music",
-      "ep",
-      "new music",
-      "indie",
-      "vibe"
+      "i don't trust nobody",
+      "loh end ep",
+      "lavender",
+      "whenineeditmost",
+      "evelyn",
+      "courtside",
+      "Fourth Dogma"
     ],
     "trending_moods": [
-      "Chill/Relaxed",
-      "Introspective/Melancholic",
-      "Atmospheric/Instrumental"
+      "Melancholic",
+      "Chill/Lofi",
+      "Introspective"
     ],
-    "optimal_video_length": "Short-form content (under 60 seconds), particularly YouTube Shorts, is currently performing well for the competitor.",
+    "optimal_video_length": "Short-form (under 60 seconds)",
     "title_patterns": [
-      "[Emotional/Lyrical Snippet] + [Artist/Song/EP Info] + #shorts",
-      "[Artist Name] - [Song Title]",
-      "[Artist Name] - [Song Title], [Collaborator/Feature]"
+      "Emotional/Introspective lyric snippet + emoji + album/EP info + hashtags (e.g., \"i don't trust nobody... 💌 loh end ep out now! #shilohdynasty #shiloh #shorts\")",
+      "Extended lyric snippet + hashtags (e.g., \"You say that you don’t like them but I see you all the time,I peep …. #shorts #shilohdynasty #shiloh\")",
+      "Song Title - Artist(s) (e.g., \"lavender - whenineeditmost + evelyn/courtside\")"
     ],
-    "thumbnail_observations": "No direct thumbnail data provided in the given dataset. However, for this genre, common trends include minimalist aesthetics, abstract art, nature scenes, or stylized text overlays.",
+    "thumbnail_observations": "No data available to analyze thumbnail styles from the provided text titles.",
     "opportunities": [
-      "Adapt short-form strategy for Hindi content, creating engaging Shorts using lyrical snippets or emotional themes from popular Hindi songs.",
-      "Develop lo-fi/chill Hindi music content, producing instrumental or acoustic Hindi tracks/remixes that align with the trending aesthetic.",
-      "Curate mood-based Hindi playlists or longer mixes (e.g., 'Hindi Chill Vibes', 'Hindi Melancholy') to capture audience segments seeking specific emotional experiences."
+      "Adapt the successful short-form video format (YouTube Shorts) to popular or trending Hindi music, focusing on catchy hooks or emotional moments.",
+      "Develop Hindi music content that evokes melancholic or introspective moods, mirroring the competitor's successful emotional lyric-driven titles.",
+      "Explore collaborations with emerging Hindi indie artists or create lofi remixes of classic Hindi songs to tap into the 'chill/lofi' aesthetic."
     ],
     "threats": [
-      "Direct competition in the English lo-fi/indie niche is highly saturated; our Hindi focus is a key differentiator.",
-      "Risk of creating generic short-form content; simply copying the format without unique Hindi cultural or musical context may lead to low engagement."
+      "The competitor's established audience for specific indie/lofi artists (like Shiloh Dynasty) creates a strong niche that might be difficult to penetrate directly.",
+      "The increasing saturation of short-form content platforms means higher competition for viewer attention, requiring unique angles for Hindi music shorts."
     ],
-    "recommendation": "Focus on creating short-form Hindi music content, particularly lyrical snippets with emotional resonance, and explore lo-fi/chill remixes of popular Hindi songs. This strategy allows us to tap into trending formats and moods while leveraging our unique Hindi music niche.",
-    "scan_date": "2026-05-25T06:16:11.993104+00:00",
+    "recommendation": "Capitalize on the competitor's success with short-form, emotionally resonant content by creating similar YouTube Shorts featuring popular Hindi lyrics or hooks to quickly engage viewers.",
+    "scan_date": "2026-06-01T06:44:52.232215+00:00",
     "videos_analyzed": 5
   }
 }
