@@ -286,10 +286,20 @@
       "rule": "The Director must immediately provide confirmation that the emergency meeting with all relevant stakeholders (senior management, data engineering, content teams) has been scheduled and conducted, and provide a summary of the outcomes, resolution plan updates, and escalation status, as previously mandated, with an absolute deadline of 1 hour from this report. Failure to comply will result in immediate further escalation.",
       "source": "analyst",
       "date": "2026-06-01T05:04:36.851206+00:00"
+    },
+    {
+      "rule": "The Director must immediately provide the verified report confirming successful ingestion and accessibility of at least 24 hours of analytics data (including total views, new subscribers, average CTR, and average view duration) for the previous day. This must be accompanied by a comprehensive root cause analysis for the persistent data ingestion failures, a firm, actionable timeline (with specific milestones and responsible parties) for its complete resolution, and immediate confirmation of the escalation of this issue to senior management, including a summary of the problem, proposed resolution timeline, and specific support requested. Failure to comply with this directive within 1 hour will result in immediate, direct escalation to the CEO/Board.",
+      "source": "analyst",
+      "date": "2026-06-02T04:50:32.208406+00:00"
+    },
+    {
+      "rule": "The Director must immediately provide confirmation that the emergency meeting with all relevant stakeholders (senior management, data engineering, content teams) has been scheduled and conducted, and provide a summary of the outcomes, resolution plan updates, and escalation status, as previously mandated. Failure to comply with this directive within 1 hour will result in immediate, direct escalation to the CEO/Board.",
+      "source": "analyst",
+      "date": "2026-06-02T04:50:32.209063+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-06-01T05:04:36.851330+00:00",
+    "last_updated": "2026-06-02T04:50:32.209200+00:00",
     "memory_name": "director_mood_map"
   }
 }
