@@ -1289,11 +1289,16 @@
       ],
       "insight": "The channel is currently operating completely blind due to a catastrophic failure in data ingestion and attribute logging, making it impossible to assess performance or make any data-driven strategic decisions for Hindi music/audio content.",
       "generated_at": "2026-06-02T04:50:32.206094+00:00"
+    },
+    {
+      "raw": "Based on the provided data, there is no analytics data available yet. However, I can provide a sample JSON output based on the rules established:\n\n```json\n{\n  \"daily_summary\": {\n    \"total_views_24h\": 0,\n    \"new_subscribers\": 0,\n    \"best_video\": \"No videos available\",\n    \"worst_video\": \"No videos available\",\n    \"avg_ctr\": 0.0,\n    \"avg_avd_seconds\": 0.0\n  },\n  \"new_rules\": [\n    {\n      \"rule\": \"The Director must schedule an emergency meeting with all relevant stakeholders (including senior ",
+      "parse_error": true,
+      "generated_at": "2026-06-03T05:01:17.518535+00:00"
     }
   ],
   "weekly_reports": [],
   "_meta": {
-    "last_updated": "2026-06-02T04:50:32.210348+00:00",
+    "last_updated": "2026-06-03T05:01:17.518987+00:00",
     "memory_name": "analyst_rules"
   }
 }
