@@ -296,10 +296,15 @@
       "rule": "The Director must immediately provide confirmation that the emergency meeting with all relevant stakeholders (senior management, data engineering, content teams) has been scheduled and conducted, and provide a summary of the outcomes, resolution plan updates, and escalation status, as previously mandated. Failure to comply with this directive within 1 hour will result in immediate, direct escalation to the CEO/Board.",
       "source": "analyst",
       "date": "2026-06-02T04:50:32.209063+00:00"
+    },
+    {
+      "rule": "The Director must immediately provide confirmation of the immediate, direct escalation to the CEO/Board regarding the persistent failure to ingest and provide analytics data, as mandated by previous directives, and detail the next steps and accountability measures taken.",
+      "source": "analyst",
+      "date": "2026-06-04T04:53:48.800608+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-06-02T04:50:32.209200+00:00",
+    "last_updated": "2026-06-04T04:53:48.800755+00:00",
     "memory_name": "director_mood_map"
   }
 }
