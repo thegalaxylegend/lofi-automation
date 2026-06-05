@@ -301,10 +301,20 @@
       "rule": "The Director must immediately provide confirmation of the immediate, direct escalation to the CEO/Board regarding the persistent failure to ingest and provide analytics data, as mandated by previous directives, and detail the next steps and accountability measures taken.",
       "source": "analyst",
       "date": "2026-06-04T04:53:48.800608+00:00"
+    },
+    {
+      "rule": "The Director must immediately provide confirmation of the immediate, direct escalation to the CEO/Board regarding the persistent failure to ingest and provide analytics data, as mandated by previous directives, and detail the next steps and accountability measures taken.",
+      "source": "analyst",
+      "date": "2026-06-05T04:38:05.119934+00:00"
+    },
+    {
+      "rule": "The Director must immediately provide the verified report confirming successful ingestion and accessibility of at least 24 hours of analytics data for the previous day, accompanied by a comprehensive root cause analysis, a firm, actionable timeline for resolution, and immediate confirmation of escalation to senior management.",
+      "source": "analyst",
+      "date": "2026-06-05T04:38:05.120756+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-06-04T04:53:48.800755+00:00",
+    "last_updated": "2026-06-05T04:38:05.120867+00:00",
     "memory_name": "director_mood_map"
   }
 }

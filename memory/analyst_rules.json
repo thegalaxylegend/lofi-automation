@@ -1,30 +1,6 @@
 {
   "rules": [
     {
-      "rule": "The Director must immediately provide a verified report confirming successful ingestion and accessibility of at least 24 hours of analytics data (including total views, new subscribers, average CTR, and average view duration) for the previous day, along with a detailed root cause analysis for the persistent data ingestion failures and a firm, actionable timeline (with specific milestones and responsible parties) for its complete resolution.",
-      "target_agent": "director",
-      "confidence": "high",
-      "evidence": "Persistent lack of any analytics data despite repeated directives and the explicit 'No analytics data available yet' status."
-    },
-    {
-      "rule": "The Director must escalate the persistent data ingestion issues to senior management within 24 hours if internal resolution cannot be achieved, providing a clear summary of the problem, the actionable timeline, and proposed solutions, as previously directed.",
-      "target_agent": "director",
-      "confidence": "high",
-      "evidence": "Continued absence of analytics data indicates internal resolution efforts have been insufficient or ineffective, necessitating immediate escalation."
-    },
-    {
-      "rule": "The Editor must immediately submit a sample log containing key attributes (length, mood, instrumentation, visual style, upload time) for the last 5 uploaded videos, demonstrating the implemented standardized process for attribute logging, and provide a detailed explanation for the repeated failure to meet this directive.",
-      "target_agent": "editor",
-      "confidence": "high",
-      "evidence": "The explicit 'No video attributes logged yet' status indicates a failure to implement or follow the logging process."
-    },
-    {
-      "rule": "The Director must immediately provide a verified report confirming successful ingestion and accessibility of at least 24 hours of analytics data (including total views, new subscribers, average CTR, and average view duration) for the previous day, along with a detailed root cause analysis for the persistent data ingestion failures and a firm, actionable timeline (with specific milestones and responsible parties) for its complete resolution, as previously directed.",
-      "target_agent": "director",
-      "confidence": "high",
-      "evidence": "No analytics data available yet, despite repeated directives."
-    },
-    {
       "rule": "The Editor must immediately submit a sample log containing key attributes (length, mood, instrumentation, visual style, upload time) for the last 5 uploaded videos, demonstrating the implemented standardized process for attribute logging, and provide a detailed explanation for the repeated failure to meet this directive, as previously directed.",
       "target_agent": "editor",
       "confidence": "high",
@@ -299,6 +275,30 @@
       "target_agent": "editor",
       "confidence": "high",
       "evidence": "No video attributes logged yet, despite previous directives explicitly stating 'Failure to comply with this directive within 1 hour will result in immediate, direct escalation to the CEO/Board.'"
+    },
+    {
+      "rule": "The Director must immediately provide confirmation of the immediate, direct escalation to the CEO/Board regarding the persistent failure to ingest and provide analytics data, as mandated by previous directives, and detail the next steps and accountability measures taken.",
+      "target_agent": "director",
+      "confidence": "high",
+      "evidence": "No analytics data available yet."
+    },
+    {
+      "rule": "The Editor must immediately provide confirmation of the immediate, direct escalation to the CEO/Board regarding the persistent failure to submit video attribute logs, as mandated by previous directives, and detail the next steps and accountability measures taken.",
+      "target_agent": "editor",
+      "confidence": "high",
+      "evidence": "No video attributes logged yet."
+    },
+    {
+      "rule": "The Director must immediately provide the verified report confirming successful ingestion and accessibility of at least 24 hours of analytics data for the previous day, accompanied by a comprehensive root cause analysis, a firm, actionable timeline for resolution, and immediate confirmation of escalation to senior management.",
+      "target_agent": "director",
+      "confidence": "high",
+      "evidence": "No analytics data available yet."
+    },
+    {
+      "rule": "The Editor must immediately submit the sample log containing key attributes (length, mood, instrumentation, visual style, upload time) for the last 5 uploaded videos, demonstrating the implemented standardized process, and include a detailed explanation for the repeated failure to meet this directive.",
+      "target_agent": "editor",
+      "confidence": "high",
+      "evidence": "No video attributes logged yet."
     }
   ],
   "daily_reports": [
@@ -1325,11 +1325,54 @@
       ],
       "insight": "The channel is operating completely blind due to critical and persistent data ingestion and logging failures, making any performance assessment or strategic guidance impossible and necessitating immediate, high-level intervention as previously mandated.",
       "generated_at": "2026-06-04T04:53:48.798042+00:00"
+    },
+    {
+      "daily_summary": {
+        "total_views_24h": 0,
+        "new_subscribers": 0,
+        "best_video": "N/A - No analytics data available",
+        "worst_video": "N/A - No analytics data available",
+        "avg_ctr": 0.0,
+        "avg_avd_seconds": 0.0
+      },
+      "new_rules": [
+        {
+          "rule": "The Director must immediately provide confirmation of the immediate, direct escalation to the CEO/Board regarding the persistent failure to ingest and provide analytics data, as mandated by previous directives, and detail the next steps and accountability measures taken.",
+          "target_agent": "director",
+          "confidence": "high",
+          "evidence": "No analytics data available yet."
+        },
+        {
+          "rule": "The Editor must immediately provide confirmation of the immediate, direct escalation to the CEO/Board regarding the persistent failure to submit video attribute logs, as mandated by previous directives, and detail the next steps and accountability measures taken.",
+          "target_agent": "editor",
+          "confidence": "high",
+          "evidence": "No video attributes logged yet."
+        },
+        {
+          "rule": "The Director must immediately provide the verified report confirming successful ingestion and accessibility of at least 24 hours of analytics data for the previous day, accompanied by a comprehensive root cause analysis, a firm, actionable timeline for resolution, and immediate confirmation of escalation to senior management.",
+          "target_agent": "director",
+          "confidence": "high",
+          "evidence": "No analytics data available yet."
+        },
+        {
+          "rule": "The Editor must immediately submit the sample log containing key attributes (length, mood, instrumentation, visual style, upload time) for the last 5 uploaded videos, demonstrating the implemented standardized process, and include a detailed explanation for the repeated failure to meet this directive.",
+          "target_agent": "editor",
+          "confidence": "high",
+          "evidence": "No video attributes logged yet."
+        }
+      ],
+      "alerts": [
+        "CRITICAL: No analytics data available whatsoever. This represents a complete and persistent breakdown in reporting, making any performance analysis or strategic decision-making impossible.",
+        "CRITICAL: No video attribute data logged. Without this fundamental information, content strategy, optimization, and understanding of video performance drivers are entirely halted.",
+        "IMMEDIATE ACTION REQUIRED: All previous directives, including those mandating immediate, direct escalation to the CEO/Board for both analytics data and video attribute logs, remain unfulfilled. This indicates a severe operational failure and lack of accountability."
+      ],
+      "insight": "Without any analytics or video attribute data, strategic decision-making, performance analysis, and content optimization for the Hindi music channel are entirely halted, posing an existential threat to channel growth and management. Immediate and forceful resolution of data ingestion and logging failures is paramount.",
+      "generated_at": "2026-06-05T04:38:05.117922+00:00"
     }
   ],
   "weekly_reports": [],
   "_meta": {
-    "last_updated": "2026-06-04T04:53:48.801920+00:00",
+    "last_updated": "2026-06-05T04:38:05.121776+00:00",
     "memory_name": "analyst_rules"
   }
 }
