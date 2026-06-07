@@ -1399,11 +1399,16 @@
       ],
       "insight": "The channel is currently operating completely blind due to a persistent and critical failure in data ingestion and content logging. No strategic decisions or performance optimizations can be made until this foundational issue is fully and demonstrably resolved.",
       "generated_at": "2026-06-06T04:11:22.975754+00:00"
+    },
+    {
+      "raw": "Based on the provided data, there is no analytics data available yet. However, I can still generate a JSON response with the necessary information and the new rules that need to be addressed.\n\n```json\n{\n  \"daily_summary\": {\n    \"total_views_24h\": 0,\n    \"new_subscribers\": 0,\n    \"best_video\": \"No videos available\",\n    \"worst_video\": \"No videos available\",\n    \"avg_ctr\": 0.0,\n    \"avg_avd_seconds\": 0.0\n  },\n  \"new_rules\": [\n    {\n      \"rule\": \"The Director must immediately provide confirmation ",
+      "parse_error": true,
+      "generated_at": "2026-06-07T04:47:32.000880+00:00"
     }
   ],
   "weekly_reports": [],
   "_meta": {
-    "last_updated": "2026-06-06T04:11:22.978697+00:00",
+    "last_updated": "2026-06-07T04:47:32.001412+00:00",
     "memory_name": "analyst_rules"
   }
 }
