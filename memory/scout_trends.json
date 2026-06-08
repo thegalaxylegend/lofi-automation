@@ -4,18 +4,18 @@
     "shilohdynasty",
     "shiloh",
     "shorts",
-    "i don't trust nobody",
     "loh end ep",
     "lavender",
     "whenineeditmost",
-    "evelyn",
-    "courtside",
-    "Fourth Dogma"
+    "evelyn/courtside",
+    "Fourth Dogma",
+    "Solo Flavour",
+    "Niño"
   ],
   "color_trends": [],
-  "last_scan": "2026-06-01T06:44:52.232215+00:00",
+  "last_scan": "2026-06-08T06:27:31.777835+00:00",
   "_meta": {
-    "last_updated": "2026-06-01T06:44:52.232891+00:00",
+    "last_updated": "2026-06-08T06:27:31.778731+00:00",
     "memory_name": "scout_trends"
   },
   "last_report": {
@@ -23,37 +23,37 @@
       "shilohdynasty",
       "shiloh",
       "shorts",
-      "i don't trust nobody",
       "loh end ep",
       "lavender",
       "whenineeditmost",
-      "evelyn",
-      "courtside",
-      "Fourth Dogma"
+      "evelyn/courtside",
+      "Fourth Dogma",
+      "Solo Flavour",
+      "Niño"
     ],
     "trending_moods": [
-      "Melancholic",
-      "Chill/Lofi",
-      "Introspective"
+      "Lo-fi",
+      "Melancholy",
+      "Chill/Ambient"
     ],
-    "optimal_video_length": "Short-form (under 60 seconds)",
+    "optimal_video_length": "Short-form content (under 60 seconds), specifically YouTube Shorts, is currently performing well.",
     "title_patterns": [
-      "Emotional/Introspective lyric snippet + emoji + album/EP info + hashtags (e.g., \"i don't trust nobody... 💌 loh end ep out now! #shilohdynasty #shiloh #shorts\")",
-      "Extended lyric snippet + hashtags (e.g., \"You say that you don’t like them but I see you all the time,I peep …. #shorts #shilohdynasty #shiloh\")",
-      "Song Title - Artist(s) (e.g., \"lavender - whenineeditmost + evelyn/courtside\")"
+      "Lyrical snippet + Emoji + Project/Artist + #hashtags",
+      "Lyrical snippet + Ellipsis + #hashtags",
+      "Song Title - Artist 1 + Artist 2"
     ],
-    "thumbnail_observations": "No data available to analyze thumbnail styles from the provided text titles.",
+    "thumbnail_observations": "Data not available from the provided text.",
     "opportunities": [
-      "Adapt the successful short-form video format (YouTube Shorts) to popular or trending Hindi music, focusing on catchy hooks or emotional moments.",
-      "Develop Hindi music content that evokes melancholic or introspective moods, mirroring the competitor's successful emotional lyric-driven titles.",
-      "Explore collaborations with emerging Hindi indie artists or create lofi remixes of classic Hindi songs to tap into the 'chill/lofi' aesthetic."
+      "Creating Hindi lo-fi/chill versions or remixes of popular songs, adapting the competitor's successful mood to our language.",
+      "Producing Hindi Shorts featuring emotional lyrical hooks from popular or trending songs, leveraging the short-form trend.",
+      "Highlighting emerging independent Hindi artists in a curated, mood-based format, similar to how the competitor features less known artists."
     ],
     "threats": [
-      "The competitor's established audience for specific indie/lofi artists (like Shiloh Dynasty) creates a strong niche that might be difficult to penetrate directly.",
-      "The increasing saturation of short-form content platforms means higher competition for viewer attention, requiring unique angles for Hindi music shorts."
+      "Direct competition in the saturated English-language lo-fi/chill music market, where College Music is well-established.",
+      "Missing out on audience engagement and discovery by not adapting to the trending short-form video format (YouTube Shorts)."
     ],
-    "recommendation": "Capitalize on the competitor's success with short-form, emotionally resonant content by creating similar YouTube Shorts featuring popular Hindi lyrics or hooks to quickly engage viewers.",
-    "scan_date": "2026-06-01T06:44:52.232215+00:00",
+    "recommendation": "Experiment with creating YouTube Shorts featuring emotional or popular Hindi lyrical snippets, leveraging the competitor's success with short-form, mood-driven content to attract a new audience.",
+    "scan_date": "2026-06-08T06:27:31.777835+00:00",
     "videos_analyzed": 5
   }
 }
