@@ -399,51 +399,96 @@ def _detect_triggered_file(audio_dir: Path) -> Path | None:
     return None
 
 
+def get_git_sorted_mp3s(audio_dir: Path) -> list[Path]:
+    """
+    Sort MP3 files by their Git addition history (newest commit first).
+    Untracked or local-only files are placed at the front (newest).
+    """
+    import subprocess
+    local_mp3s = {f.name: f for f in audio_dir.glob("*.mp3")}
+    if not local_mp3s:
+        return []
+
+    sorted_files = []
+    
+    # 1. Get files sorted by git addition history (newest commit first)
+    try:
+        result = subprocess.run(
+            ["git", "log", "--name-only", "--diff-filter=A", "--format=", "--", "audio/"],
+            capture_output=True, text=True, timeout=15,
+            cwd=str(audio_dir.parent)
+        )
+        if result.returncode == 0:
+            for line in result.stdout.splitlines():
+                line = line.strip()
+                if line.lower().endswith(".mp3"):
+                    fname = Path(line).name
+                    if fname in local_mp3s and local_mp3s[fname] not in sorted_files:
+                        sorted_files.append(local_mp3s[fname])
+    except Exception as e:
+        logger.warning("Failed to get git log sorted files: %s", e)
+
+    # 2. Add any untracked/local files to the front (newest)
+    untracked = []
+    for name, path in local_mp3s.items():
+        if path not in sorted_files:
+            untracked.append(path)
+            
+    untracked.sort(key=lambda f: f.stat().st_mtime, reverse=True)
+    return untracked + sorted_files
+
+
 def process_batch(audio_dir: Path) -> BatchResult:
     """Process the MP3 file that triggered the pipeline.
 
     Detection priority:
       1. Git diff — which file was added/changed in the latest commit
       2. Commit message — parse the Telegram bot's auto-ingest commit
-      3. Fallback — newest unprocessed file by mtime (original behavior)
+      3. Fallback — newest unprocessed file by Git commit history or mtime
     """
     batch = BatchResult()
     start = time.time()
 
-    mp3_files = sorted(audio_dir.glob("*.mp3"), key=lambda f: f.stat().st_mtime, reverse=True)
+    # Sort files by Git history / local mtime (newest first)
+    mp3_files = get_git_sorted_mp3s(audio_dir)
     if not mp3_files:
         logger.warning("No MP3 files found in %s", audio_dir)
+        return batch
+
+    mem = pipeline_memory()
+    processed = set(mem.get("processed_files", []))
+    logger.info("Dedup check: %d files in memory", len(processed))
+
+    unprocessed = [f for f in mp3_files if f.name not in processed]
+    if not unprocessed:
+        logger.info("All %d MP3 files already processed.", len(mp3_files))
         return batch
 
     # Try to detect the actual triggered file first (primary mechanism)
     target = _detect_triggered_file(audio_dir)
 
     if target is None:
-        # Fallback: use dedup + mtime approach
-        mem = pipeline_memory()
-        processed = set(mem.get("processed_files", []))
-        logger.info("Dedup check: %d files in memory", len(processed))
-
-        unprocessed = [f for f in mp3_files if f.name not in processed]
-        if not unprocessed:
-            logger.info("All %d MP3 files already processed.", len(mp3_files))
-            return batch
-
         target = unprocessed[0]
         logger.warning(
             "Could not detect triggered file via git. "
-            "Falling back to newest unprocessed by mtime: %s",
+            "Falling back to newest unprocessed by history: %s",
             target.name,
         )
 
     logger.info("Found %d MP3 files. Processing: %s", len(mp3_files), target.name)
+
+    # Skip/mark all other older unprocessed files as processed
+    to_skip = [f for f in unprocessed if f != target]
+    if to_skip:
+        logger.info("Skipping %d older unprocessed files: %s", len(to_skip), [f.name for f in to_skip])
+        for f in to_skip:
+            mem.append_to_list("processed_files", f.name)
 
     result = process_single(target)
     batch.results.append(result)
 
     # Record processed file in memory for dedup
     if result.success:
-        mem = pipeline_memory()
         mem.append_to_list("processed_files", target.name)
         mem.update_key("last_run", time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()))
 

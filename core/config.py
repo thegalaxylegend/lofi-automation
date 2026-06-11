@@ -148,7 +148,7 @@ class Config:
         llm_keys_found = [k for k in all_env_keys if k.startswith(("GEMINI_API_KEY_", "GROQ_API_KEY_"))]
         logger.info("Environment probe found keys: %s", ", ".join(llm_keys_found) if llm_keys_found else "NONE")
 
-        self.gemini_keys: list[str] = self._collect_keys("GEMINI_API_KEY_", 6)
+        self.gemini_keys: list[str] = self._collect_keys("GEMINI_API_KEY_", 8)
         self.groq_keys: list[str] = self._collect_keys("GROQ_API_KEY_", 8)
 
         self.pexels_api_key: str = os.getenv("PEXELS_API_KEY", "")

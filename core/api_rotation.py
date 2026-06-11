@@ -225,7 +225,7 @@ class APIRotator:
 
             except Exception as exc:
                 exc_str = str(exc).lower()
-                if "404" in exc_str or "not found" in exc_str:
+                if "model" in exc_str and ("404" in exc_str or "not found" in exc_str):
                     logger.error(
                         "Gemini key #%d: MODEL NOT FOUND (404). "
                         "Check model name is valid. Error: %s",
@@ -283,7 +283,7 @@ class APIRotator:
 
             except Exception as exc:
                 exc_str = str(exc).lower()
-                if "404" in exc_str or "not found" in exc_str:
+                if "model" in exc_str and ("404" in exc_str or "not found" in exc_str):
                     logger.error(
                         "Gemini key #%d: MODEL NOT FOUND (404). "
                         "Check model name is valid. Error: %s",
