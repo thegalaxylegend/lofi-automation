@@ -10,6 +10,10 @@ on:
         description: 'Channel key (lofi or hindi)'
         required: false
         default: 'lofi'
+      song_filename:
+        description: 'Exact MP3 filename to process (e.g. my_song.mp3). Leave blank to auto-detect newest.'
+        required: false
+        default: ''
 
 permissions:
   contents: write
@@ -79,7 +83,13 @@ jobs:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
         run: |
           CHANNEL="${{ github.event.inputs.channel || 'lofi' }}"
-          python main.py audio/ --channel "$CHANNEL"
+          TARGET_SONG="${{ github.event.inputs.song_filename }}"
+          if [ -n "$TARGET_SONG" ]; then
+            echo "🎯 Manual target specified: $TARGET_SONG"
+            python main.py "audio/$TARGET_SONG" --channel "$CHANNEL"
+          else
+            python main.py audio/ --channel "$CHANNEL"
+          fi
 
       - name: Upload output artifacts
         if: always()

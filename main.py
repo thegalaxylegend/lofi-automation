@@ -325,20 +325,40 @@ def process_single(audio_path: Path) -> PipelineResult:
 
 def _detect_triggered_file(audio_dir: Path) -> Path | None:
     """
-    Detect which MP3 the Telegram bot pushed for processing.
+    Detect which MP3 the pipeline should process.
 
     Priority:
-      1. Read audio/.trigger — the bot writes the exact filename here
-      2. Search git log for the most recent 'Auto-ingest' commit message
-      3. Check git diff across recent commits for added MP3 files
+      1. Git diff HEAD~1 HEAD — what file was added in the latest commit (most reliable on push)
+      2. Read audio/.trigger — the Telegram bot writes the exact filename here
+      3. Search git log for the most recent 'Auto-ingest' commit message
     """
     import subprocess
 
-    # Method 1 (PRIMARY): Read the .trigger file for the filename
+    # Method 1 (PRIMARY on push): Git diff HEAD~1 → HEAD for added MP3s
+    try:
+        result = subprocess.run(
+            ["git", "diff", "--name-only", "--diff-filter=A", "HEAD~1", "HEAD", "--", "audio/"],
+            capture_output=True, text=True, timeout=10,
+        )
+        if result.returncode == 0 and result.stdout.strip():
+            added_files = [
+                line.strip() for line in result.stdout.strip().splitlines()
+                if line.strip().lower().endswith(".mp3")
+            ]
+            if added_files:
+                # Take the LAST added file (most recently added in the commit)
+                target = audio_dir / Path(added_files[-1]).name
+                if target.exists():
+                    logger.info("Git diff HEAD~1 detected target: %s", target.name)
+                    return target
+    except (subprocess.SubprocessError, FileNotFoundError) as exc:
+        logger.warning("Git diff HEAD~1 detection failed: %s", exc)
+
+    # Method 2: Read the .trigger file for the filename (written by Telegram bot)
     trigger_file = audio_dir / ".trigger"
     if trigger_file.exists():
         trigger_content = trigger_file.read_text(encoding="utf-8").strip()
-        logger.info("Trigger file contents: '%s'", trigger_content)
+        logger.info("Trigger file contents: '%s'", trigger_content[:100])
         # The trigger file contains: line1=filename, line2=timestamp
         # Extract only the first line as the filename
         trigger_filename = trigger_content.split("\n")[0].strip()
@@ -350,8 +370,10 @@ def _detect_triggered_file(audio_dir: Path) -> Path | None:
                 return target
             else:
                 logger.warning("Trigger file says '%s' but file not found in %s", trigger_filename, audio_dir)
+        else:
+            logger.warning("Trigger file contains a timestamp/digit value ('%s'), not a filename — ignoring.", trigger_filename)
 
-    # Method 2: Search git log for the most recent Auto-ingest commit
+    # Method 3: Search git log for the most recent Auto-ingest commit
     try:
         result = subprocess.run(
             ["git", "log", "--all", "--format=%s", "-n", "20"],
@@ -360,41 +382,17 @@ def _detect_triggered_file(audio_dir: Path) -> Path | None:
         if result.returncode == 0:
             import re
             for line in result.stdout.splitlines():
-                if "Auto-ingest:" in line:
-                    match = re.search(r"Auto-ingest:\s*(.+?)\s*from Telegram", line)
+                if "Auto-ingest:" in line or "Re-trigger:" in line:
+                    match = re.search(r"(?:Auto-ingest|Re-trigger):\s*(.+?)\s*from Telegram", line)
                     if match:
                         fname = match.group(1).strip()
                         target = audio_dir / fname
                         if target.exists():
                             logger.info("Git log detected target: %s", target.name)
                             return target
-                    break  # Only check the most recent Auto-ingest commit
+                    break  # Only check the most recent Auto-ingest/Re-trigger commit
     except (subprocess.TimeoutExpired, FileNotFoundError) as exc:
         logger.warning("Git log detection failed: %s", exc)
-
-    # Method 3: Check git diff across multiple commits for added MP3s
-    for depth in range(1, 6):
-        try:
-            result = subprocess.run(
-                ["git", "diff", "--name-only", "--diff-filter=A",
-                 f"HEAD~{depth}", "HEAD", "--", "audio/"],
-                capture_output=True, text=True, timeout=10,
-            )
-            if result.returncode == 0 and result.stdout.strip():
-                added_files = [
-                    line.strip() for line in result.stdout.strip().splitlines()
-                    if line.strip().lower().endswith(".mp3")
-                ]
-                if added_files:
-                    target = audio_dir / Path(added_files[-1]).name
-                    if target.exists():
-                        logger.info(
-                            "Git diff (HEAD~%d) detected target: %s",
-                            depth, target.name,
-                        )
-                        return target
-        except (subprocess.SubprocessError, FileNotFoundError):
-            break
 
     return None
 
