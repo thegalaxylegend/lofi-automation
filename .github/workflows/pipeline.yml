@@ -53,6 +53,13 @@ jobs:
           GROQ_API_KEY_3: ${{ secrets.GROQ_API_KEY_3 }}
           GROQ_API_KEY_4: ${{ secrets.GROQ_API_KEY_4 }}
           GROQ_API_KEY_5: ${{ secrets.GROQ_API_KEY_5 }}
+          GROQ_API_KEY_6: ${{ secrets.GROQ_API_KEY_6 }}
+          GROQ_API_KEY_7: ${{ secrets.GROQ_API_KEY_7 }}
+          GROQ_API_KEY_8: ${{ secrets.GROQ_API_KEY_8 }}
+          HF_API_TOKEN: ${{ secrets.HF_API_TOKEN }}
+          HF_API_TOKEN_2: ${{ secrets.HF_API_TOKEN_2 }}
+          HF_API_TOKEN_3: ${{ secrets.HF_API_TOKEN_3 }}
+          HF_BLOG_IMG_TOKEN: ${{ secrets.HF_BLOG_IMG_TOKEN }}
           PEXELS_API_KEY: ${{ secrets.PEXELS_API_KEY }}
           PIXABAY_API_KEY: ${{ secrets.PIXABAY_API_KEY }}
           COVERR_API_KEY: ${{ secrets.COVERR_API_KEY }}

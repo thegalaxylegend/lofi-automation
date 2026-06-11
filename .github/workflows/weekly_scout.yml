@@ -30,10 +30,11 @@ jobs:
       - name: Run Scout scan
         env:
           GEMINI_API_KEY_1: ${{ secrets.GEMINI_API_KEY_1 }}
-          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}  # Using Data API key, not OAuth
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
           DISCORD_WEBHOOK_ALERTS: ${{ secrets.DISCORD_WEBHOOK_ALERTS }}
         run: |
           python -c "
+          import os
           from core.memory import initialize_all_memories
           from agents.scout import Scout
           from core.discord_webhook import DiscordNotifier
@@ -41,13 +42,13 @@ jobs:
           
           initialize_all_memories()
           scout = Scout()
-          report = scout.scan(youtube_api_key='${{ secrets.YOUTUBE_API_KEY }}')
+          report = scout.scan(youtube_api_key=os.environ.get('YOUTUBE_API_KEY', ''))
           
           if 'error' not in report:
               notifier = DiscordNotifier()
               msg = f'**Trending Keywords:** {\", \".join(report.get(\"trending_keywords\", [])[:5])}\n'
               msg += f'**Recommendation:** {report.get(\"recommendation\", \"N/A\")}'
-              notifier.notify_alert('🕵️ Scout Intelligence Report', msg, level='info')
+              notifier.notify_alert('\u{1F575}\uFE0F Scout Intelligence Report', msg, level='info')
           "
 
       - name: Commit updated memory
