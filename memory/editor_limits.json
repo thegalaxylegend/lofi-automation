@@ -8,7 +8,7 @@
   "risky_effects": [],
   "crash_log": [],
   "_meta": {
-    "last_updated": "2026-06-08T04:52:31.679706+00:00",
+    "last_updated": "2026-06-12T04:51:11.588054+00:00",
     "memory_name": "editor_limits"
   },
   "analyst_feedback": [
@@ -135,6 +135,10 @@
     {
       "rule": "The Editor must immediately provide an updated status on the implementation of the standardized video attribute logging process, specific reasons for the continued absence of attribute logs for ALL videos uploaded in the past 7 days, a confirmed timeline for immediate submission of all missing logs and future compliance, and evidence of the CEO/Board briefing on this continued non-compliance.",
       "date": "2026-06-08T04:52:31.679610+00:00"
+    },
+    {
+      "rule": "The Editor must immediately provide a definitive, actionable timeline for when video attribute logs will be consistently available for all new uploads, as their absence prevents crucial content performance analysis and optimization.",
+      "date": "2026-06-12T04:51:11.587958+00:00"
     }
   ]
 }

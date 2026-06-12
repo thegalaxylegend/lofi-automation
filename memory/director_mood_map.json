@@ -316,10 +316,15 @@
       "rule": "The Director must immediately provide an updated status on the resolution of analytics data ingestion, including specific reasons for continued failure to provide data for the past 72 hours, a confirmed timeline for immediate data availability, and evidence of the CEO/Board briefing on this continued non-compliance.",
       "source": "analyst",
       "date": "2026-06-08T04:52:31.678942+00:00"
+    },
+    {
+      "rule": "The Director must immediately provide a definitive, actionable timeline for when the analytics data will be consistently available, as the current lack of data completely prevents any channel performance analysis or strategic recommendations.",
+      "source": "analyst",
+      "date": "2026-06-12T04:51:11.587288+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-06-08T04:52:31.679082+00:00",
+    "last_updated": "2026-06-12T04:51:11.587426+00:00",
     "memory_name": "director_mood_map"
   }
 }
