@@ -341,10 +341,20 @@
       "rule": "A comprehensive incident report detailing the root causes of the persistent data ingestion and logging failures, including accountability and preventative measures, must be submitted to the CEO/Board immediately.",
       "source": "analyst",
       "date": "2026-06-14T04:57:30.940786+00:00"
+    },
+    {
+      "rule": "The Director must immediately provide a verified, actionable plan and timeline for the consistent ingestion of all analytics data, including root cause analysis for the ongoing failure and confirmation of CEO/Board briefing on the resolution status.",
+      "source": "analyst",
+      "date": "2026-06-15T05:16:13.512904+00:00"
+    },
+    {
+      "rule": "A comprehensive incident report detailing the root causes of the persistent data ingestion and logging failures, including accountability and preventative measures, must be submitted to the CEO/Board immediately.",
+      "source": "analyst",
+      "date": "2026-06-15T05:16:13.514140+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-06-14T04:57:30.940923+00:00",
+    "last_updated": "2026-06-15T05:16:13.514320+00:00",
     "memory_name": "director_mood_map"
   }
 }
