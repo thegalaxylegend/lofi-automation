@@ -371,10 +371,20 @@
       "rule": "The Director must immediately submit a comprehensive incident report detailing the root causes of the persistent data ingestion and logging failures, including accountability and preventative measures, to the CEO/Board, confirming successful briefing on the critical status.",
       "source": "analyst",
       "date": "2026-06-17T05:00:03.556231+00:00"
+    },
+    {
+      "rule": "The Director must immediately provide a verified, raw dump of all available analytics data for the past 7 days, even if incomplete, to enable any preliminary analysis, alongside a confirmed, actionable plan for full data ingestion resolution within 24 hours.",
+      "source": "analyst",
+      "date": "2026-06-18T04:49:40.677243+00:00"
+    },
+    {
+      "rule": "Given the persistent and critical failure to provide any data, the Director must immediately submit the comprehensive incident report to the CEO/Board, as previously mandated, detailing root causes, accountability, preventative measures, and a confirmed resolution timeline, emphasizing the severe impact on business operations.",
+      "source": "analyst",
+      "date": "2026-06-18T04:49:40.678355+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-06-17T05:00:03.556384+00:00",
+    "last_updated": "2026-06-18T04:49:40.678494+00:00",
     "memory_name": "director_mood_map"
   }
 }
