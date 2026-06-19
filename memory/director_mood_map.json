@@ -381,10 +381,20 @@
       "rule": "Given the persistent and critical failure to provide any data, the Director must immediately submit the comprehensive incident report to the CEO/Board, as previously mandated, detailing root causes, accountability, preventative measures, and a confirmed resolution timeline, emphasizing the severe impact on business operations.",
       "source": "analyst",
       "date": "2026-06-18T04:49:40.678355+00:00"
+    },
+    {
+      "rule": "The Director must immediately provide a verified report confirming the successful and consistent ingestion of ALL analytics data for the past 72 hours, demonstrating the complete resolution of the data ingestion failures, along with the final root cause analysis, a confirmed long-term monitoring plan, and confirmation of successful CEO/Board briefing on the resolution. This report must include a detailed explanation for the persistent failure to provide data despite previous mandates.",
+      "source": "analyst",
+      "date": "2026-06-19T05:10:11.168887+00:00"
+    },
+    {
+      "rule": "Given the complete and persistent failure to provide any data, the Director must immediately submit a comprehensive incident report to the CEO/Board, as previously mandated, detailing root causes, accountability, preventative measures, and a confirmed, guaranteed resolution timeline, emphasizing the severe impact on business operations and the inability to make data-driven decisions.",
+      "source": "analyst",
+      "date": "2026-06-19T05:10:11.169818+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-06-18T04:49:40.678494+00:00",
+    "last_updated": "2026-06-19T05:10:11.169922+00:00",
     "memory_name": "director_mood_map"
   }
 }
