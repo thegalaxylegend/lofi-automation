@@ -406,10 +406,15 @@
       "rule": "The Director must immediately provide a verified report confirming the successful and consistent ingestion of ALL analytics data for the past 72 hours, demonstrating the complete resolution of the data ingestion failures, along with the final root cause analysis, a confirmed long-term monitoring plan, and confirmation of successful CEO/Board briefing on the resolution. This report must include a detailed explanation for the persistent failure to provide data despite previous mandates.",
       "source": "analyst",
       "date": "2026-06-21T05:06:23.972686+00:00"
+    },
+    {
+      "rule": "The Director must provide a personal, signed attestation to the CEO/Board by end-of-day confirming that all analytics data for the past 72 hours has been successfully ingested and is fully accessible, along with a detailed explanation for the repeated failures and a confirmed plan for immediate personnel changes if data is not available by the next reporting cycle.",
+      "source": "analyst",
+      "date": "2026-06-22T05:17:28.964172+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-06-21T05:06:23.972935+00:00",
+    "last_updated": "2026-06-22T05:17:28.964325+00:00",
     "memory_name": "director_mood_map"
   }
 }
