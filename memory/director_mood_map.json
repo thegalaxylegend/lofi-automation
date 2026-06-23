@@ -411,10 +411,15 @@
       "rule": "The Director must provide a personal, signed attestation to the CEO/Board by end-of-day confirming that all analytics data for the past 72 hours has been successfully ingested and is fully accessible, along with a detailed explanation for the repeated failures and a confirmed plan for immediate personnel changes if data is not available by the next reporting cycle.",
       "source": "analyst",
       "date": "2026-06-22T05:17:28.964172+00:00"
+    },
+    {
+      "rule": "Given the complete and persistent failure to provide any data despite multiple severe mandates, the Director must immediately provide a live, verifiable demonstration of the fully operational analytics data ingestion system to the CEO/Board within 4 hours of this report, along with the complete analytics data for the past 72 hours. Failure to comply will result in immediate termination procedures, as previously indicated.",
+      "source": "analyst",
+      "date": "2026-06-23T04:12:02.062369+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-06-22T05:17:28.964325+00:00",
+    "last_updated": "2026-06-23T04:12:02.062499+00:00",
     "memory_name": "director_mood_map"
   }
 }

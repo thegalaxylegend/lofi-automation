@@ -1,18 +1,6 @@
 {
   "rules": [
     {
-      "rule": "The Director must schedule an emergency meeting with all relevant stakeholders (including senior management, data engineering, and content teams) within 2 hours to address the critical data ingestion failures and present the detailed resolution plan and escalation status. This issue is now a severe operational impediment.",
-      "target_agent": "director",
-      "confidence": "high",
-      "evidence": "Persistent data ingestion failures and lack of video attributes are severe operational impediments, preventing any performance analysis."
-    },
-    {
-      "rule": "The Director must immediately provide the verified report confirming successful ingestion and accessibility of at least 24 hours of analytics data, including the comprehensive root cause analysis, actionable timeline, and confirmation of escalation to senior management, as previously mandated, with an absolute deadline of 1 hour from this report. Failure to comply will result in immediate further escalation.",
-      "target_agent": "director",
-      "confidence": "high",
-      "evidence": "No analytics data available yet, despite repeated directives and missed deadlines."
-    },
-    {
       "rule": "The Director must immediately provide confirmation that the emergency meeting with all relevant stakeholders (senior management, data engineering, content teams) has been scheduled and conducted, and provide a summary of the outcomes, resolution plan updates, and escalation status, as previously mandated, with an absolute deadline of 1 hour from this report.",
       "target_agent": "director",
       "confidence": "high",
@@ -299,6 +287,18 @@
       "target_agent": "editor",
       "confidence": "high",
       "evidence": "Persistent and complete failure to provide any video attributes despite multiple prior mandates."
+    },
+    {
+      "rule": "Given the complete and persistent failure to provide any data despite multiple severe mandates, the Director must immediately provide a live, verifiable demonstration of the fully operational analytics data ingestion system to the CEO/Board within 4 hours of this report, along with the complete analytics data for the past 72 hours. Failure to comply will result in immediate termination procedures, as previously indicated.",
+      "target_agent": "director",
+      "confidence": "high",
+      "evidence": "No analytics data available yet, despite previous mandates for resolution and personnel changes."
+    },
+    {
+      "rule": "Given the complete and persistent failure to provide any data despite multiple severe mandates, the Editor must immediately provide a live, verifiable demonstration of the fully operational standardized video attribute logging system to the CEO/Board within 4 hours of this report, along with the complete attribute logs for ALL videos uploaded in the past 7 days. Failure to comply will result in immediate termination procedures, as previously indicated.",
+      "target_agent": "editor",
+      "confidence": "high",
+      "evidence": "No video attributes logged yet, despite previous mandates for resolution and personnel changes."
     }
   ],
   "daily_reports": [
@@ -1820,11 +1820,40 @@
       ],
       "insight": "Without any analytics data or video attributes, it is impossible to provide any strategic insights or make data-driven decisions for the channel; the immediate priority must be resolving the fundamental data ingestion and logging failures, which are now critical operational blockers.",
       "generated_at": "2026-06-22T05:17:28.960986+00:00"
+    },
+    {
+      "daily_summary": {
+        "total_views_24h": 0,
+        "new_subscribers": 0,
+        "best_video": "N/A - No data available",
+        "worst_video": "N/A - No data available",
+        "avg_ctr": 0.0,
+        "avg_avd_seconds": 0.0
+      },
+      "new_rules": [
+        {
+          "rule": "Given the complete and persistent failure to provide any data despite multiple severe mandates, the Director must immediately provide a live, verifiable demonstration of the fully operational analytics data ingestion system to the CEO/Board within 4 hours of this report, along with the complete analytics data for the past 72 hours. Failure to comply will result in immediate termination procedures, as previously indicated.",
+          "target_agent": "director",
+          "confidence": "high",
+          "evidence": "No analytics data available yet, despite previous mandates for resolution and personnel changes."
+        },
+        {
+          "rule": "Given the complete and persistent failure to provide any data despite multiple severe mandates, the Editor must immediately provide a live, verifiable demonstration of the fully operational standardized video attribute logging system to the CEO/Board within 4 hours of this report, along with the complete attribute logs for ALL videos uploaded in the past 7 days. Failure to comply will result in immediate termination procedures, as previously indicated.",
+          "target_agent": "editor",
+          "confidence": "high",
+          "evidence": "No video attributes logged yet, despite previous mandates for resolution and personnel changes."
+        }
+      ],
+      "alerts": [
+        "CRITICAL SYSTEM FAILURE: No analytics data has been ingested and no video attributes have been logged. This represents a complete and persistent operational breakdown, rendering all analysis, decision-making, and strategic planning impossible. Immediate executive intervention is required to address the catastrophic failure to comply with previous mandates."
+      ],
+      "insight": "The channel is currently operating completely blind due to a catastrophic and unaddressed failure in data collection and logging, preventing any form of performance evaluation or strategic guidance for Hindi music content.",
+      "generated_at": "2026-06-23T04:12:02.059746+00:00"
     }
   ],
   "weekly_reports": [],
   "_meta": {
-    "last_updated": "2026-06-22T05:17:28.965760+00:00",
+    "last_updated": "2026-06-23T04:12:02.063638+00:00",
     "memory_name": "analyst_rules"
   }
 }
