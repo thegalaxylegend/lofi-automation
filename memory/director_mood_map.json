@@ -416,10 +416,20 @@
       "rule": "Given the complete and persistent failure to provide any data despite multiple severe mandates, the Director must immediately provide a live, verifiable demonstration of the fully operational analytics data ingestion system to the CEO/Board within 4 hours of this report, along with the complete analytics data for the past 72 hours. Failure to comply will result in immediate termination procedures, as previously indicated.",
       "source": "analyst",
       "date": "2026-06-23T04:12:02.062369+00:00"
+    },
+    {
+      "rule": "Immediately initiate termination procedures for the current Director, as mandated by the persistent and complete failure to provide any analytics data despite multiple severe warnings and explicit ultimatums.",
+      "source": "analyst",
+      "date": "2026-06-24T04:15:10.368627+00:00"
+    },
+    {
+      "rule": "Convene an emergency task force, reporting directly to the CEO/Board, to immediately establish and verify a robust, redundant, and monitored data ingestion and attribute logging pipeline within 24 hours. This task force must include external experts if internal capabilities are proven insufficient.",
+      "source": "analyst",
+      "date": "2026-06-24T04:15:10.369958+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-06-23T04:12:02.062499+00:00",
+    "last_updated": "2026-06-24T04:15:10.370095+00:00",
     "memory_name": "director_mood_map"
   }
 }
