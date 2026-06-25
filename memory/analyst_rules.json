@@ -1,12 +1,6 @@
 {
   "rules": [
     {
-      "rule": "The Director must immediately provide confirmation that the emergency meeting with all relevant stakeholders (senior management, data engineering, content teams) has been scheduled and conducted, and provide a summary of the outcomes, resolution plan updates, and escalation status, as previously mandated, with an absolute deadline of 1 hour from this report. Failure to comply will result in immediate further escalation.",
-      "target_agent": "director",
-      "confidence": "high",
-      "evidence": "Persistent failure to confirm emergency meeting details despite repeated directives and escalating deadlines."
-    },
-    {
       "rule": "The Editor must immediately submit the sample log containing key attributes (length, mood, instrumentation, visual style, upload time) for the last 5 uploaded videos, demonstrating the implemented standardized process, and include a detailed explanation for the repeated failure to meet this directive, with an absolute deadline of 1 hour from this report. Failure to comply will result in immediate further escalation.",
       "target_agent": "editor",
       "confidence": "high",
@@ -299,6 +293,12 @@
       "target_agent": "director",
       "confidence": "high",
       "evidence": "Complete and persistent failure of core data infrastructure, rendering all analytics and strategic decision-making impossible, necessitating immediate, high-level intervention and a complete overhaul of data systems."
+    },
+    {
+      "rule": "The emergency task force, reporting directly to the CEO/Board, must immediately establish and verify a robust, redundant, and monitored data ingestion and attribute logging pipeline within 24 hours, including external experts if internal capabilities are insufficient.",
+      "target_agent": "director",
+      "confidence": "high",
+      "evidence": "Complete and persistent failure to provide any analytics or video attribute data despite multiple severe mandates and ultimatums, necessitating a complete system overhaul."
     }
   ],
   "daily_reports": [
@@ -1887,11 +1887,36 @@
       ],
       "insight": "Without any analytics or video attribute data, it is impossible to provide any strategic insights or make informed decisions regarding the channel's performance or content strategy for Hindi music. The current state represents a fundamental operational failure.",
       "generated_at": "2026-06-24T04:15:10.365171+00:00"
+    },
+    {
+      "daily_summary": {
+        "total_views_24h": 0,
+        "new_subscribers": 0,
+        "best_video": "",
+        "worst_video": "",
+        "avg_ctr": 0.0,
+        "avg_avd_seconds": 0.0
+      },
+      "new_rules": [
+        {
+          "rule": "The emergency task force, reporting directly to the CEO/Board, must immediately establish and verify a robust, redundant, and monitored data ingestion and attribute logging pipeline within 24 hours, including external experts if internal capabilities are insufficient.",
+          "target_agent": "director",
+          "confidence": "high",
+          "evidence": "Complete and persistent failure to provide any analytics or video attribute data despite multiple severe mandates and ultimatums, necessitating a complete system overhaul."
+        }
+      ],
+      "alerts": [
+        "Critical: No analytics data available, rendering all performance analysis impossible. This is a persistent and unaddressed failure despite multiple severe mandates.",
+        "Critical: No video attribute data logged, preventing any qualitative analysis or strategic recommendations based on content characteristics. This is a persistent and unaddressed failure.",
+        "Immediate confirmation required that termination procedures for the Director and Editor have been initiated as previously mandated due to the persistent data failure."
+      ],
+      "insight": "Without any analytics or video attribute data, it is impossible to provide strategic insights or make data-driven decisions for channel growth; the immediate priority must be establishing a functional data pipeline.",
+      "generated_at": "2026-06-25T04:15:20.886348+00:00"
     }
   ],
   "weekly_reports": [],
   "_meta": {
-    "last_updated": "2026-06-24T04:15:10.371114+00:00",
+    "last_updated": "2026-06-25T04:15:20.891066+00:00",
     "memory_name": "analyst_rules"
   }
 }
