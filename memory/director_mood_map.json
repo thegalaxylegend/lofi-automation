@@ -431,10 +431,15 @@
       "rule": "The emergency task force, reporting directly to the CEO/Board, must immediately establish and verify a robust, redundant, and monitored data ingestion and attribute logging pipeline within 24 hours, including external experts if internal capabilities are insufficient.",
       "source": "analyst",
       "date": "2026-06-25T04:15:20.889876+00:00"
+    },
+    {
+      "rule": "The emergency task force must provide a preliminary report on the status of the data ingestion and attribute logging pipeline within 6 hours, including a confirmed timeline for full data availability and a plan for backfilling all missing historical data.",
+      "source": "analyst",
+      "date": "2026-06-26T04:22:01.849579+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-06-25T04:15:20.890038+00:00",
+    "last_updated": "2026-06-26T04:22:01.849743+00:00",
     "memory_name": "director_mood_map"
   }
 }
