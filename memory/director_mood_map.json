@@ -436,10 +436,25 @@
       "rule": "The emergency task force must provide a preliminary report on the status of the data ingestion and attribute logging pipeline within 6 hours, including a confirmed timeline for full data availability and a plan for backfilling all missing historical data.",
       "source": "analyst",
       "date": "2026-06-26T04:22:01.849579+00:00"
+    },
+    {
+      "rule": "The emergency task force must immediately provide the preliminary report on the status of the data ingestion and attribute logging pipeline, including a confirmed timeline for full data availability and a plan for backfilling all missing historical data, as previously mandated, and provide a detailed explanation for the continued absence of any data.",
+      "source": "analyst",
+      "date": "2026-06-27T04:08:19.912295+00:00"
+    },
+    {
+      "rule": "The emergency task force must provide a live, verifiable demonstration of the fully operational analytics data ingestion and attribute logging systems to the CEO/Board within 2 hours, confirming immediate data flow and accessibility for all new uploads.",
+      "source": "analyst",
+      "date": "2026-06-27T04:08:19.913088+00:00"
+    },
+    {
+      "rule": "Upon successful verification of the data pipeline, the emergency task force must immediately commence the backfilling of all missing historical analytics and attribute data, with daily progress reports on the backfill status provided to the CEO/Board.",
+      "source": "analyst",
+      "date": "2026-06-27T04:08:19.913920+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-06-26T04:22:01.849743+00:00",
+    "last_updated": "2026-06-27T04:08:19.914053+00:00",
     "memory_name": "director_mood_map"
   }
 }
