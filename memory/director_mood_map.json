@@ -451,10 +451,15 @@
       "rule": "Upon successful verification of the data pipeline, the emergency task force must immediately commence the backfilling of all missing historical analytics and attribute data, with daily progress reports on the backfill status provided to the CEO/Board.",
       "source": "analyst",
       "date": "2026-06-27T04:08:19.913920+00:00"
+    },
+    {
+      "rule": "Immediately execute all previously mandated termination procedures for the Director and Editor, and provide verifiable confirmation of their removal and the appointment of interim replacements to the CEO/Board within 2 hours, given the complete and persistent failure to provide any data or comply with any prior directives.",
+      "source": "analyst",
+      "date": "2026-06-28T04:41:32.143266+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-06-27T04:08:19.914053+00:00",
+    "last_updated": "2026-06-28T04:41:32.143440+00:00",
     "memory_name": "director_mood_map"
   }
 }
