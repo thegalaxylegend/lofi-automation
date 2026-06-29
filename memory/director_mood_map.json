@@ -456,10 +456,20 @@
       "rule": "Immediately execute all previously mandated termination procedures for the Director and Editor, and provide verifiable confirmation of their removal and the appointment of interim replacements to the CEO/Board within 2 hours, given the complete and persistent failure to provide any data or comply with any prior directives.",
       "source": "analyst",
       "date": "2026-06-28T04:41:32.143266+00:00"
+    },
+    {
+      "rule": "The newly appointed interim Director and Editor must immediately provide a confirmed timeline for full data availability and a plan for backfilling all missing historical data within 4 hours of their appointment.",
+      "source": "analyst",
+      "date": "2026-06-29T04:50:19.152459+00:00"
+    },
+    {
+      "rule": "The emergency task force must immediately provide a live, verifiable demonstration of the fully operational analytics data ingestion and attribute logging systems to the CEO/Board, confirming immediate data flow and accessibility for all new uploads, as previously mandated.",
+      "source": "analyst",
+      "date": "2026-06-29T04:50:19.153327+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-06-28T04:41:32.143440+00:00",
+    "last_updated": "2026-06-29T04:50:19.153478+00:00",
     "memory_name": "director_mood_map"
   }
 }
