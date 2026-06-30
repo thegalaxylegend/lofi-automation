@@ -466,10 +466,25 @@
       "rule": "The emergency task force must immediately provide a live, verifiable demonstration of the fully operational analytics data ingestion and attribute logging systems to the CEO/Board, confirming immediate data flow and accessibility for all new uploads, as previously mandated.",
       "source": "analyst",
       "date": "2026-06-29T04:50:19.153327+00:00"
+    },
+    {
+      "rule": "The CEO/Board must immediately verify the execution of all previously mandated termination procedures for the Director and Editor, and confirm the appointment of interim replacements with verifiable evidence within 1 hour.",
+      "source": "analyst",
+      "date": "2026-06-30T04:16:25.708542+00:00"
+    },
+    {
+      "rule": "The newly appointed interim Director and Editor must immediately provide a confirmed timeline for full data availability and a plan for backfilling all missing historical data within 2 hours of this report, as previously mandated.",
+      "source": "analyst",
+      "date": "2026-06-30T04:16:25.709524+00:00"
+    },
+    {
+      "rule": "The emergency task force (or responsible interim team) must immediately provide a live, verifiable demonstration of the fully operational analytics data ingestion and attribute logging systems to the CEO/Board within 2 hours, confirming immediate data flow and accessibility for all new uploads, as previously mandated.",
+      "source": "analyst",
+      "date": "2026-06-30T04:16:25.710426+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-06-29T04:50:19.153478+00:00",
+    "last_updated": "2026-06-30T04:16:25.710615+00:00",
     "memory_name": "director_mood_map"
   }
 }
