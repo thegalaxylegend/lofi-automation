@@ -2061,11 +2061,29 @@
       ],
       "insight": "The complete and persistent absence of all analytics and video attribute data renders the channel entirely blind to its performance, making strategic decision-making impossible and posing an existential threat to its operations.",
       "generated_at": "2026-06-30T04:16:25.705006+00:00"
+    },
+    {
+      "daily_summary": {
+        "total_views_24h": 0,
+        "new_subscribers": 0,
+        "best_video": "N/A",
+        "worst_video": "N/A",
+        "avg_ctr": 0.0,
+        "avg_avd_seconds": 0.0
+      },
+      "new_rules": [],
+      "alerts": [
+        "Critical: No analytics data or video attributes are available, making any performance analysis impossible.",
+        "Urgent: The data ingestion and attribute logging pipeline remains non-operational, preventing any assessment or optimization of channel performance.",
+        "Immediate action is required to resolve the data pipeline issues as per previously established directives to enable any form of channel analytics."
+      ],
+      "insight": "Without any analytics data or video attributes, it is impossible to provide strategic insights or performance recommendations for the channel. Resolving the data ingestion issue is the absolute priority before any analysis can commence.",
+      "generated_at": "2026-07-01T04:44:49.182028+00:00"
     }
   ],
   "weekly_reports": [],
   "_meta": {
-    "last_updated": "2026-06-30T04:16:25.711745+00:00",
+    "last_updated": "2026-07-01T04:44:49.182780+00:00",
     "memory_name": "analyst_rules"
   }
 }
