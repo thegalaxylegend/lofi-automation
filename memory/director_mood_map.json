@@ -481,10 +481,15 @@
       "rule": "The emergency task force (or responsible interim team) must immediately provide a live, verifiable demonstration of the fully operational analytics data ingestion and attribute logging systems to the CEO/Board within 2 hours, confirming immediate data flow and accessibility for all new uploads, as previously mandated.",
       "source": "analyst",
       "date": "2026-06-30T04:16:25.710426+00:00"
+    },
+    {
+      "rule": "The responsible interim team must immediately provide a live, verifiable demonstration of the fully operational analytics data ingestion and attribute logging systems to the CEO/Board within 1 hour, confirming immediate data flow and accessibility for all new uploads, and provide a confirmed timeline for backfilling all missing historical data.",
+      "source": "analyst",
+      "date": "2026-07-02T04:11:56.742689+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-06-30T04:16:25.710615+00:00",
+    "last_updated": "2026-07-02T04:11:56.742871+00:00",
     "memory_name": "director_mood_map"
   }
 }
