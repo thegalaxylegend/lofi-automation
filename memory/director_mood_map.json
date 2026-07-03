@@ -486,10 +486,20 @@
       "rule": "The responsible interim team must immediately provide a live, verifiable demonstration of the fully operational analytics data ingestion and attribute logging systems to the CEO/Board within 1 hour, confirming immediate data flow and accessibility for all new uploads, and provide a confirmed timeline for backfilling all missing historical data.",
       "source": "analyst",
       "date": "2026-07-02T04:11:56.742689+00:00"
+    },
+    {
+      "rule": "Ensure immediate and verifiable availability of real-time YouTube Analytics data and video attributes for all new uploads to enable performance analysis.",
+      "source": "analyst",
+      "date": "2026-07-03T03:58:30.680527+00:00"
+    },
+    {
+      "rule": "Confirm the successful backfilling of all missing historical analytics and attribute data to enable comprehensive trend analysis and strategic planning.",
+      "source": "analyst",
+      "date": "2026-07-03T03:58:30.681403+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-07-02T04:11:56.742871+00:00",
+    "last_updated": "2026-07-03T03:58:30.681550+00:00",
     "memory_name": "director_mood_map"
   }
 }
