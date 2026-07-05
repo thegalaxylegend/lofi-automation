@@ -496,10 +496,15 @@
       "rule": "Confirm the successful backfilling of all missing historical analytics and attribute data to enable comprehensive trend analysis and strategic planning.",
       "source": "analyst",
       "date": "2026-07-03T03:58:30.681403+00:00"
+    },
+    {
+      "rule": "Immediately resolve all technical issues preventing the ingestion and logging of YouTube Analytics data and video attributes, providing a live demonstration of data flow within 24 hours.",
+      "source": "analyst",
+      "date": "2026-07-05T04:10:55.168930+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-07-03T03:58:30.681550+00:00",
+    "last_updated": "2026-07-05T04:10:55.169101+00:00",
     "memory_name": "director_mood_map"
   }
 }
