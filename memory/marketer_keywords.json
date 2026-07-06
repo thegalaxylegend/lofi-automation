@@ -6,10 +6,15 @@
     "when you need to focus"
   ],
   "avoid_words": [],
-  "title_performance": [],
+  "title_performance": [
+    {
+      "rule": "The marketing and editorial teams must immediately develop a 'zero-data' content strategy and promotional plan, focusing on qualitative assessments and industry trends for Hindi music, to maintain channel activity until data-driven insights become available.",
+      "source": "analyst"
+    }
+  ],
   "thumbnail_performance": [],
   "_meta": {
-    "last_updated": "2026-06-11T07:34:11.452340+00:00",
+    "last_updated": "2026-07-06T04:18:03.198828+00:00",
     "memory_name": "marketer_keywords"
   },
   "last_title_format": "One-Word Punch: Lead with ONE bold emotional word, e.g. HEARTBREAK. | The Playlist You Need Tonight"

@@ -501,10 +501,20 @@
       "rule": "Immediately resolve all technical issues preventing the ingestion and logging of YouTube Analytics data and video attributes, providing a live demonstration of data flow within 24 hours.",
       "source": "analyst",
       "date": "2026-07-05T04:10:55.168930+00:00"
+    },
+    {
+      "rule": "The interim Director must provide an immediate, verifiable status report to the CEO/Board on the execution of all previously mandated termination procedures, interim appointments, and the current operational status of the analytics data ingestion and attribute logging systems, explaining the continued absence of data.",
+      "source": "analyst",
+      "date": "2026-07-06T04:18:03.197772+00:00"
+    },
+    {
+      "rule": "A daily, mandatory data availability check and reporting protocol must be established immediately, requiring the interim Director to confirm the presence and integrity of new analytics data and video attributes for all uploads by 9 AM daily, until full system stability is confirmed.",
+      "source": "analyst",
+      "date": "2026-07-06T04:18:03.198984+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-07-05T04:10:55.169101+00:00",
+    "last_updated": "2026-07-06T04:18:03.199191+00:00",
     "memory_name": "director_mood_map"
   }
 }
