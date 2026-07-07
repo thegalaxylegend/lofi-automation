@@ -511,10 +511,15 @@
       "rule": "A daily, mandatory data availability check and reporting protocol must be established immediately, requiring the interim Director to confirm the presence and integrity of new analytics data and video attributes for all uploads by 9 AM daily, until full system stability is confirmed.",
       "source": "analyst",
       "date": "2026-07-06T04:18:03.198984+00:00"
+    },
+    {
+      "rule": "The interim Director must immediately provide a direct, verifiable explanation to the CEO/Board for the persistent failure to ingest and log any analytics data or video attributes, despite multiple prior mandates, and present a revised, guaranteed timeline for full data availability, including a compensation plan for lost insights.",
+      "source": "analyst",
+      "date": "2026-07-07T04:07:26.944340+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-07-06T04:18:03.199191+00:00",
+    "last_updated": "2026-07-07T04:07:26.944522+00:00",
     "memory_name": "director_mood_map"
   }
 }
