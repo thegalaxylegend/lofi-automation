@@ -546,10 +546,20 @@
       "rule": "The CEO/Board must initiate an independent, external forensic audit of the analytics data ingestion and logging systems, with a direct reporting line to the Board, to identify root causes of persistent failure and recommend personnel and technical changes within 48 hours.",
       "source": "analyst",
       "date": "2026-07-10T04:01:23.333617+00:00"
+    },
+    {
+      "rule": "The interim Director must provide an immediate, verifiable report to the CEO/Board detailing the specific actions taken since the last mandate to resolve the analytics data ingestion failure, explaining why the system remains non-functional, and outlining immediate next steps with revised personnel accountability.",
+      "source": "analyst",
+      "date": "2026-07-11T03:28:31.645941+00:00"
+    },
+    {
+      "rule": "The CEO/Board must immediately convene an emergency session to review the findings (or lack thereof) from the previously mandated independent forensic audit and take decisive action regarding the persistent failure to establish basic data infrastructure.",
+      "source": "analyst",
+      "date": "2026-07-11T03:28:31.646952+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-07-10T04:01:23.333770+00:00",
+    "last_updated": "2026-07-11T03:28:31.647118+00:00",
     "memory_name": "director_mood_map"
   }
 }
