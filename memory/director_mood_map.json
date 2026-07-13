@@ -566,10 +566,20 @@
       "rule": "Upon any reported resolution of the data ingestion and logging systems, the Director must ensure a mandatory, independent third-party validation of data accuracy and completeness for all new uploads over a 72-hour period before any content uploads resume or data is used for strategic decision-making.",
       "source": "analyst",
       "date": "2026-07-12T03:40:35.143111+00:00"
+    },
+    {
+      "rule": "The interim Director must provide an immediate, detailed update to the CEO/Board on the progress and preliminary findings of the independent forensic audit, specifically addressing why data ingestion remains non-functional despite previous mandates.",
+      "source": "analyst",
+      "date": "2026-07-13T03:42:27.879573+00:00"
+    },
+    {
+      "rule": "The Director must establish a clear, company-wide communication protocol for daily updates on the data recovery status, ensuring all relevant teams (marketing, editorial, finance, legal) are informed of progress, roadblocks, and the estimated timeline for resolution.",
+      "source": "analyst",
+      "date": "2026-07-13T03:42:27.880884+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-07-12T03:40:35.143295+00:00",
+    "last_updated": "2026-07-13T03:42:27.881047+00:00",
     "memory_name": "director_mood_map"
   }
 }
