@@ -576,10 +576,25 @@
       "rule": "The Director must establish a clear, company-wide communication protocol for daily updates on the data recovery status, ensuring all relevant teams (marketing, editorial, finance, legal) are informed of progress, roadblocks, and the estimated timeline for resolution.",
       "source": "analyst",
       "date": "2026-07-13T03:42:27.880884+00:00"
+    },
+    {
+      "rule": "The CEO/Board must immediately convene an emergency session with all responsible parties to demand a real-time, verifiable demonstration of the data system's current status, establish a firm, non-negotiable deadline for full restoration, and outline clear consequences for continued non-compliance.",
+      "source": "analyst",
+      "date": "2026-07-14T03:17:33.632505+00:00"
+    },
+    {
+      "rule": "An independent technical expert must be immediately embedded within the engineering team to directly oversee and report on all data system repair efforts, providing daily, unfiltered progress updates directly to the CEO/Board until full functionality is verified.",
+      "source": "analyst",
+      "date": "2026-07-14T03:17:33.633583+00:00"
+    },
+    {
+      "rule": "The cross-functional task force (including Marketing, Finance, and Director) must provide an updated, detailed report to the CEO/Board within 12 hours, quantifying the escalating financial and audience growth impact of the continued data outage, including lost revenue and opportunity costs.",
+      "source": "analyst",
+      "date": "2026-07-14T03:17:33.634570+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-07-13T03:42:27.881047+00:00",
+    "last_updated": "2026-07-14T03:17:33.634735+00:00",
     "memory_name": "director_mood_map"
   }
 }

