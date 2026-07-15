@@ -591,10 +591,20 @@
       "rule": "The cross-functional task force (including Marketing, Finance, and Director) must provide an updated, detailed report to the CEO/Board within 12 hours, quantifying the escalating financial and audience growth impact of the continued data outage, including lost revenue and opportunity costs.",
       "source": "analyst",
       "date": "2026-07-14T03:17:33.634570+00:00"
+    },
+    {
+      "rule": "The CEO/Board must immediately convene an emergency session to demand a real-time, verifiable demonstration of the data system's current status, establish a firm, non-negotiable deadline for full restoration, and outline clear consequences for continued non-compliance.",
+      "source": "analyst",
+      "date": "2026-07-15T03:16:59.689787+00:00"
+    },
+    {
+      "rule": "The Director must immediately initiate a cross-functional task force (including Marketing and Finance) to quantify the estimated financial and audience growth impact of the prolonged data outage, presenting a detailed report to the CEO/Board within 24 hours.",
+      "source": "analyst",
+      "date": "2026-07-15T03:16:59.690958+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-07-14T03:17:33.634735+00:00",
+    "last_updated": "2026-07-15T03:16:59.691170+00:00",
     "memory_name": "director_mood_map"
   }
 }
