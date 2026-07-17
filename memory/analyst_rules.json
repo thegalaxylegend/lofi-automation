@@ -1,24 +1,6 @@
 {
   "rules": [
     {
-      "rule": "The emergency task force, reporting directly to the CEO/Board, must immediately establish and verify a robust, redundant, and monitored data ingestion and attribute logging pipeline within 24 hours, including external experts if internal capabilities are insufficient.",
-      "target_agent": "director",
-      "confidence": "high",
-      "evidence": "Complete and persistent failure to provide any analytics or video attribute data despite multiple severe mandates and ultimatums, necessitating a complete system overhaul."
-    },
-    {
-      "rule": "The emergency task force must provide a preliminary report on the status of the data ingestion and attribute logging pipeline within 6 hours, including a confirmed timeline for full data availability and a plan for backfilling all missing historical data.",
-      "target_agent": "director",
-      "confidence": "high",
-      "evidence": "Persistent failure to provide any analytics or video attribute data despite multiple severe mandates and personnel changes, necessitating immediate oversight from the emergency task force."
-    },
-    {
-      "rule": "The emergency task force must immediately provide the preliminary report on the status of the data ingestion and attribute logging pipeline, including a confirmed timeline for full data availability and a plan for backfilling all missing historical data, as previously mandated, and provide a detailed explanation for the continued absence of any data.",
-      "target_agent": "director",
-      "confidence": "high",
-      "evidence": "Persistent absence of any analytics or video attribute data, indicating non-compliance with the 6-hour preliminary report deadline for the emergency task force."
-    },
-    {
       "rule": "The emergency task force must provide a live, verifiable demonstration of the fully operational analytics data ingestion and attribute logging systems to the CEO/Board within 2 hours, confirming immediate data flow and accessibility for all new uploads.",
       "target_agent": "director",
       "confidence": "high",
@@ -299,6 +281,24 @@
       "target_agent": "marketer",
       "confidence": "high",
       "evidence": "No analytics data is available to track audience engagement or content performance, making direct communication crucial for audience retention and content relevance."
+    },
+    {
+      "rule": "The CEO/Board must demand an immediate, independent third-party audit of the data system's architecture and recovery efforts if full functionality is not restored within the established deadline, to identify root causes and accelerate resolution.",
+      "target_agent": "director",
+      "confidence": "high",
+      "evidence": "Continued absence of analytics data despite previous directives and established deadlines."
+    },
+    {
+      "rule": "The marketing and editorial teams must establish a mandatory daily 'Zero-Data Content Strategy Huddle' to synthesize qualitative insights (sentiment, social engagement, direct feedback) into immediate content adjustments and report these actions to the CEO/Board.",
+      "target_agent": "marketer",
+      "confidence": "high",
+      "evidence": "Complete absence of quantitative data necessitates robust, agile qualitative strategy and reporting."
+    },
+    {
+      "rule": "The cross-functional task force must provide daily, updated projections of the financial and audience growth impact, including a 'worst-case scenario' analysis for each additional week the data outage persists, to the CEO/Board.",
+      "target_agent": "director",
+      "confidence": "high",
+      "evidence": "Continued data outage implies escalating financial and audience opportunity costs that require ongoing quantification."
     }
   ],
   "daily_reports": [
@@ -2565,11 +2565,47 @@
       ],
       "insight": "The channel is currently operating without any performance visibility, making data-driven decisions impossible. The immediate and sole priority must be the full restoration of analytics data systems to prevent further operational and strategic paralysis and to regain control over content strategy for Hindi music/audio.",
       "generated_at": "2026-07-16T03:23:51.090242+00:00"
+    },
+    {
+      "daily_summary": {
+        "total_views_24h": 0,
+        "new_subscribers": 0,
+        "best_video": "N/A - No data available",
+        "worst_video": "N/A - No data available",
+        "avg_ctr": 0.0,
+        "avg_avd_seconds": 0.0
+      },
+      "new_rules": [
+        {
+          "rule": "The CEO/Board must demand an immediate, independent third-party audit of the data system's architecture and recovery efforts if full functionality is not restored within the established deadline, to identify root causes and accelerate resolution.",
+          "target_agent": "director",
+          "confidence": "high",
+          "evidence": "Continued absence of analytics data despite previous directives and established deadlines."
+        },
+        {
+          "rule": "The marketing and editorial teams must establish a mandatory daily 'Zero-Data Content Strategy Huddle' to synthesize qualitative insights (sentiment, social engagement, direct feedback) into immediate content adjustments and report these actions to the CEO/Board.",
+          "target_agent": "marketer",
+          "confidence": "high",
+          "evidence": "Complete absence of quantitative data necessitates robust, agile qualitative strategy and reporting."
+        },
+        {
+          "rule": "The cross-functional task force must provide daily, updated projections of the financial and audience growth impact, including a 'worst-case scenario' analysis for each additional week the data outage persists, to the CEO/Board.",
+          "target_agent": "director",
+          "confidence": "high",
+          "evidence": "Continued data outage implies escalating financial and audience opportunity costs that require ongoing quantification."
+        }
+      ],
+      "alerts": [
+        "Critical: Analytics data system remains completely offline, preventing any performance tracking or strategic decision-making based on quantitative metrics.",
+        "Urgent: The channel is operating blind, risking significant long-term damage to audience growth, revenue, and brand trust due to prolonged data absence."
+      ],
+      "insight": "The persistent lack of analytics data is an escalating crisis, demanding immediate, aggressive intervention to restore systems and mitigate the severe, unquantifiable impact on channel growth and financial stability.",
+      "generated_at": "2026-07-17T03:26:39.376264+00:00"
     }
   ],
   "weekly_reports": [],
   "_meta": {
-    "last_updated": "2026-07-16T03:23:51.097939+00:00",
+    "last_updated": "2026-07-17T03:26:39.382017+00:00",
     "memory_name": "analyst_rules"
   }
 }
