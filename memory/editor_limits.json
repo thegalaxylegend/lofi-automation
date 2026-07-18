@@ -8,7 +8,7 @@
   "risky_effects": [],
   "crash_log": [],
   "_meta": {
-    "last_updated": "2026-07-16T03:23:51.094838+00:00",
+    "last_updated": "2026-07-18T03:15:44.585207+00:00",
     "memory_name": "editor_limits"
   },
   "analyst_feedback": [
@@ -203,6 +203,10 @@
     {
       "rule": "The editorial team must actively use qualitative feedback (sentiment, social engagement, anecdotal comments) to inform immediate content adjustments and future content planning, especially for Hindi music/audio, in the complete absence of quantitative performance data.",
       "date": "2026-07-16T03:23:51.094690+00:00"
+    },
+    {
+      "rule": "The editorial and marketing teams must conduct daily competitive analysis and trend spotting across other Hindi music platforms (e.g., Spotify, Instagram Reels, local radio charts) to identify emerging artists, popular genres, or trending themes, using this external data as a primary input for content ideation in the absence of internal performance metrics.",
+      "date": "2026-07-18T03:15:44.585065+00:00"
     }
   ]
 }

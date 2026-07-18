@@ -50,11 +50,15 @@
     {
       "rule": "The marketing and editorial teams must establish a mandatory daily 'Zero-Data Content Strategy Huddle' to synthesize qualitative insights (sentiment, social engagement, direct feedback) into immediate content adjustments and report these actions to the CEO/Board.",
       "source": "analyst"
+    },
+    {
+      "rule": "The marketing team must implement a 'Content Request Hotline' via a dedicated email or social media direct message channel, actively promoting it to the audience to solicit specific Hindi music/audio content requests and feedback, providing a direct pipeline for audience-driven content strategy.",
+      "source": "analyst"
     }
   ],
   "thumbnail_performance": [],
   "_meta": {
-    "last_updated": "2026-07-17T03:26:39.380180+00:00",
+    "last_updated": "2026-07-18T03:15:44.586515+00:00",
     "memory_name": "marketer_keywords"
   },
   "last_title_format": "One-Word Punch: Lead with ONE bold emotional word, e.g. HEARTBREAK. | The Playlist You Need Tonight"

@@ -1,24 +1,6 @@
 {
   "rules": [
     {
-      "rule": "The emergency task force must provide a live, verifiable demonstration of the fully operational analytics data ingestion and attribute logging systems to the CEO/Board within 2 hours, confirming immediate data flow and accessibility for all new uploads.",
-      "target_agent": "director",
-      "confidence": "high",
-      "evidence": "Complete and persistent failure to provide any data despite multiple severe mandates and the establishment of an emergency task force."
-    },
-    {
-      "rule": "Upon successful verification of the data pipeline, the emergency task force must immediately commence the backfilling of all missing historical analytics and attribute data, with daily progress reports on the backfill status provided to the CEO/Board.",
-      "target_agent": "director",
-      "confidence": "high",
-      "evidence": "The channel has no historical analytics or video attribute data logged, which is critical for any meaningful analysis."
-    },
-    {
-      "rule": "Immediately execute all previously mandated termination procedures for the Director and Editor, and provide verifiable confirmation of their removal and the appointment of interim replacements to the CEO/Board within 2 hours, given the complete and persistent failure to provide any data or comply with any prior directives.",
-      "target_agent": "director",
-      "confidence": "high",
-      "evidence": "No analytics data available yet. No video attributes logged yet, despite multiple severe mandates and ultimatums."
-    },
-    {
       "rule": "The newly appointed interim Director and Editor must immediately provide a confirmed timeline for full data availability and a plan for backfilling all missing historical data within 4 hours of their appointment.",
       "target_agent": "director",
       "confidence": "high",
@@ -299,6 +281,24 @@
       "target_agent": "director",
       "confidence": "high",
       "evidence": "Continued data outage implies escalating financial and audience opportunity costs that require ongoing quantification."
+    },
+    {
+      "rule": "The editorial and marketing teams must conduct daily competitive analysis and trend spotting across other Hindi music platforms (e.g., Spotify, Instagram Reels, local radio charts) to identify emerging artists, popular genres, or trending themes, using this external data as a primary input for content ideation in the absence of internal performance metrics.",
+      "target_agent": "editor",
+      "confidence": "high",
+      "evidence": "Complete absence of internal quantitative data necessitates proactive external market research and trend analysis to inform content strategy for Hindi music/audio."
+    },
+    {
+      "rule": "The Director must establish a dedicated, daily stand-up meeting with the engineering team responsible for analytics, requiring a detailed, real-time update on the root cause analysis, current restoration efforts, and a revised, granular timeline for each stage of data system recovery.",
+      "target_agent": "director",
+      "confidence": "high",
+      "evidence": "The critical data outage demands constant, transparent, and detailed communication regarding restoration progress to enable informed decision-making and accountability."
+    },
+    {
+      "rule": "The marketing team must implement a 'Content Request Hotline' via a dedicated email or social media direct message channel, actively promoting it to the audience to solicit specific Hindi music/audio content requests and feedback, providing a direct pipeline for audience-driven content strategy.",
+      "target_agent": "marketer",
+      "confidence": "high",
+      "evidence": "Direct, solicited audience feedback is paramount for guiding content creation and maintaining engagement when performance metrics are unavailable, especially for niche content like Hindi music."
     }
   ],
   "daily_reports": [
@@ -2601,11 +2601,47 @@
       ],
       "insight": "The persistent lack of analytics data is an escalating crisis, demanding immediate, aggressive intervention to restore systems and mitigate the severe, unquantifiable impact on channel growth and financial stability.",
       "generated_at": "2026-07-17T03:26:39.376264+00:00"
+    },
+    {
+      "daily_summary": {
+        "total_views_24h": 0,
+        "new_subscribers": 0,
+        "best_video": "N/A - No analytics data available",
+        "worst_video": "N/A - No analytics data available",
+        "avg_ctr": 0.0,
+        "avg_avd_seconds": 0.0
+      },
+      "new_rules": [
+        {
+          "rule": "The editorial and marketing teams must conduct daily competitive analysis and trend spotting across other Hindi music platforms (e.g., Spotify, Instagram Reels, local radio charts) to identify emerging artists, popular genres, or trending themes, using this external data as a primary input for content ideation in the absence of internal performance metrics.",
+          "target_agent": "editor",
+          "confidence": "high",
+          "evidence": "Complete absence of internal quantitative data necessitates proactive external market research and trend analysis to inform content strategy for Hindi music/audio."
+        },
+        {
+          "rule": "The Director must establish a dedicated, daily stand-up meeting with the engineering team responsible for analytics, requiring a detailed, real-time update on the root cause analysis, current restoration efforts, and a revised, granular timeline for each stage of data system recovery.",
+          "target_agent": "director",
+          "confidence": "high",
+          "evidence": "The critical data outage demands constant, transparent, and detailed communication regarding restoration progress to enable informed decision-making and accountability."
+        },
+        {
+          "rule": "The marketing team must implement a 'Content Request Hotline' via a dedicated email or social media direct message channel, actively promoting it to the audience to solicit specific Hindi music/audio content requests and feedback, providing a direct pipeline for audience-driven content strategy.",
+          "target_agent": "marketer",
+          "confidence": "high",
+          "evidence": "Direct, solicited audience feedback is paramount for guiding content creation and maintaining engagement when performance metrics are unavailable, especially for niche content like Hindi music."
+        }
+      ],
+      "alerts": [
+        "CRITICAL: No analytics data available. All performance metrics for the channel are currently unknown, severely impacting strategic decision-making.",
+        "URGENT: The ongoing data system outage requires immediate, sustained, and high-priority action to restore functionality and prevent further financial and audience growth impact."
+      ],
+      "insight": "The complete absence of quantitative analytics data mandates an immediate and intensified reliance on qualitative insights, direct audience engagement, and external market trend analysis to guide all content and marketing strategies for Hindi music/audio.",
+      "generated_at": "2026-07-18T03:15:44.581064+00:00"
     }
   ],
   "weekly_reports": [],
   "_meta": {
-    "last_updated": "2026-07-17T03:26:39.382017+00:00",
+    "last_updated": "2026-07-18T03:15:44.587851+00:00",
     "memory_name": "analyst_rules"
   }
 }

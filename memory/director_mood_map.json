@@ -616,10 +616,15 @@
       "rule": "The cross-functional task force must provide daily, updated projections of the financial and audience growth impact, including a 'worst-case scenario' analysis for each additional week the data outage persists, to the CEO/Board.",
       "source": "analyst",
       "date": "2026-07-17T03:26:39.380297+00:00"
+    },
+    {
+      "rule": "The Director must establish a dedicated, daily stand-up meeting with the engineering team responsible for analytics, requiring a detailed, real-time update on the root cause analysis, current restoration efforts, and a revised, granular timeline for each stage of data system recovery.",
+      "source": "analyst",
+      "date": "2026-07-18T03:15:44.585548+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-07-17T03:26:39.380410+00:00",
+    "last_updated": "2026-07-18T03:15:44.585754+00:00",
     "memory_name": "director_mood_map"
   }
 }
