@@ -8,7 +8,7 @@
   "risky_effects": [],
   "crash_log": [],
   "_meta": {
-    "last_updated": "2026-07-19T03:36:29.308563+00:00",
+    "last_updated": "2026-07-20T03:55:00.566139+00:00",
     "memory_name": "editor_limits"
   },
   "analyst_feedback": [
@@ -211,6 +211,10 @@
     {
       "rule": "The editorial team must dedicate a portion of content production (e.g., 20%) to experimental Hindi music formats or niche sub-genres identified through competitive analysis and direct audience feedback, specifically to test qualitative engagement and diversify content in the absence of quantitative metrics.",
       "date": "2026-07-19T03:36:29.308447+00:00"
+    },
+    {
+      "rule": "The editorial team must implement a mandatory internal tagging system for all new content published during the data outage, categorizing videos by genre, artist, experimental format, and source of inspiration (e.g., 'audience request', 'competitive trend'), to enable comprehensive retrospective performance analysis once analytics are restored.",
+      "date": "2026-07-20T03:55:00.565984+00:00"
     }
   ]
 }
