@@ -1,24 +1,6 @@
 {
   "rules": [
     {
-      "rule": "The responsible interim team must immediately provide a live, verifiable demonstration of the fully operational analytics data ingestion and attribute logging systems to the CEO/Board within 1 hour, confirming immediate data flow and accessibility for all new uploads, and provide a confirmed timeline for backfilling all missing historical data.",
-      "target_agent": "director",
-      "confidence": "high",
-      "evidence": "No analytics data or video attributes are available, despite numerous previous directives and personnel changes, indicating a critical and persistent system failure."
-    },
-    {
-      "rule": "Ensure immediate and verifiable availability of real-time YouTube Analytics data and video attributes for all new uploads to enable performance analysis.",
-      "target_agent": "director",
-      "confidence": "high",
-      "evidence": "No analytics data available yet, preventing any current performance tracking."
-    },
-    {
-      "rule": "Confirm the successful backfilling of all missing historical analytics and attribute data to enable comprehensive trend analysis and strategic planning.",
-      "target_agent": "director",
-      "confidence": "high",
-      "evidence": "No video attributes logged yet and no historical data available, hindering long-term strategic planning."
-    },
-    {
       "rule": "Immediately resolve all technical issues preventing the ingestion and logging of YouTube Analytics data and video attributes, providing a live demonstration of data flow within 24 hours.",
       "target_agent": "director",
       "confidence": "high",
@@ -299,6 +281,24 @@
       "target_agent": "editor",
       "confidence": "high",
       "evidence": "No analytics data available yet, necessitating preparation for retrospective analysis and learning once systems are online."
+    },
+    {
+      "rule": "The editorial team must conduct a daily internal audit of all new content published to ensure strict adherence to the mandatory tagging system (genre, artist, experimental format, source of inspiration) to guarantee comprehensive retrospective analysis once analytics are restored.",
+      "target_agent": "editor",
+      "confidence": "high",
+      "evidence": "No analytics data available, making internal tagging the only current method for future performance correlation."
+    },
+    {
+      "rule": "The Director must mandate a daily report from the 'Zero-Data Content Strategy Huddle' detailing specific content adjustments made based on qualitative insights (sentiment, requests, competitive trends) and the expected qualitative outcome of these adjustments.",
+      "target_agent": "director",
+      "confidence": "high",
+      "evidence": "No analytics data available, making qualitative insights the sole basis for content strategy, requiring rigorous tracking of actions."
+    },
+    {
+      "rule": "The marketing team must establish qualitative metrics (e.g., number of positive comments on community posts, direct messages expressing appreciation for transparency) to gauge the effectiveness of the audience retention campaign and report these in the daily 'Zero-Data Content Strategy Huddle'.",
+      "target_agent": "marketer",
+      "confidence": "medium",
+      "evidence": "No analytics data available to measure campaign effectiveness, necessitating qualitative proxies."
     }
   ],
   "daily_reports": [
@@ -2702,11 +2702,46 @@
       ],
       "insight": "The continued absence of analytics data necessitates an unwavering focus on system restoration and robust qualitative data collection, as current content strategy operates entirely without performance feedback, posing significant long-term risks to audience growth and content optimization.",
       "generated_at": "2026-07-20T03:55:00.559868+00:00"
+    },
+    {
+      "daily_summary": {
+        "total_views_24h": 0,
+        "new_subscribers": 0,
+        "best_video": "N/A (No data available)",
+        "worst_video": "N/A (No data available)",
+        "avg_ctr": 0.0,
+        "avg_avd_seconds": 0.0
+      },
+      "new_rules": [
+        {
+          "rule": "The editorial team must conduct a daily internal audit of all new content published to ensure strict adherence to the mandatory tagging system (genre, artist, experimental format, source of inspiration) to guarantee comprehensive retrospective analysis once analytics are restored.",
+          "target_agent": "editor",
+          "confidence": "high",
+          "evidence": "No analytics data available, making internal tagging the only current method for future performance correlation."
+        },
+        {
+          "rule": "The Director must mandate a daily report from the 'Zero-Data Content Strategy Huddle' detailing specific content adjustments made based on qualitative insights (sentiment, requests, competitive trends) and the expected qualitative outcome of these adjustments.",
+          "target_agent": "director",
+          "confidence": "high",
+          "evidence": "No analytics data available, making qualitative insights the sole basis for content strategy, requiring rigorous tracking of actions."
+        },
+        {
+          "rule": "The marketing team must establish qualitative metrics (e.g., number of positive comments on community posts, direct messages expressing appreciation for transparency) to gauge the effectiveness of the audience retention campaign and report these in the daily 'Zero-Data Content Strategy Huddle'.",
+          "target_agent": "marketer",
+          "confidence": "medium",
+          "evidence": "No analytics data available to measure campaign effectiveness, necessitating qualitative proxies."
+        }
+      ],
+      "alerts": [
+        "Critical: No analytics data available. All content strategy and operational decisions are currently being made without quantitative performance metrics. Urgent restoration of analytics systems is paramount."
+      ],
+      "insight": "With no analytics data available, the channel's immediate strategy must entirely rely on robust qualitative data gathering, competitive analysis, and transparent audience communication to maintain engagement and inform content decisions until quantitative metrics are restored.",
+      "generated_at": "2026-07-21T03:30:36.878764+00:00"
     }
   ],
   "weekly_reports": [],
   "_meta": {
-    "last_updated": "2026-07-20T03:55:00.567951+00:00",
+    "last_updated": "2026-07-21T03:30:36.885562+00:00",
     "memory_name": "analyst_rules"
   }
 }
