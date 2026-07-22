@@ -62,11 +62,19 @@
     {
       "rule": "The marketing team must establish qualitative metrics (e.g., number of positive comments on community posts, direct messages expressing appreciation for transparency) to gauge the effectiveness of the audience retention campaign and report these in the daily 'Zero-Data Content Strategy Huddle'.",
       "source": "analyst"
+    },
+    {
+      "rule": "The marketing team must develop a structured feedback loop for the 'Content Request Hotline,' categorizing requests by genre, artist, and theme, and regularly sharing a summary of top requests with the editorial team in the 'Zero-Data Content Strategy Huddle.'",
+      "source": "analyst"
+    },
+    {
+      "rule": "The marketing team must actively cross-promote successful experimental content (identified qualitatively) across all social media platforms, highlighting audience positive feedback to build momentum and further test engagement beyond YouTube.",
+      "source": "analyst"
     }
   ],
   "thumbnail_performance": [],
   "_meta": {
-    "last_updated": "2026-07-21T03:30:36.884182+00:00",
+    "last_updated": "2026-07-22T03:29:06.346417+00:00",
     "memory_name": "marketer_keywords"
   },
   "last_title_format": "One-Word Punch: Lead with ONE bold emotional word, e.g. HEARTBREAK. | The Playlist You Need Tonight"

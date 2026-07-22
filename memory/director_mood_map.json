@@ -636,10 +636,20 @@
       "rule": "The Director must mandate a daily report from the 'Zero-Data Content Strategy Huddle' detailing specific content adjustments made based on qualitative insights (sentiment, requests, competitive trends) and the expected qualitative outcome of these adjustments.",
       "source": "analyst",
       "date": "2026-07-21T03:30:36.883188+00:00"
+    },
+    {
+      "rule": "The Director must establish a clear protocol for validating the integrity and accuracy of restored analytics data, including a phased rollout and comparison with historical benchmarks (if available) before full system reliance.",
+      "source": "analyst",
+      "date": "2026-07-22T03:29:06.343025+00:00"
+    },
+    {
+      "rule": "The Director must ensure that the daily 'Zero-Data Content Strategy Huddle' includes a mandatory agenda item for reviewing the progress and qualitative outcomes of the audience retention campaign, based on the metrics established by the marketing team.",
+      "source": "analyst",
+      "date": "2026-07-22T03:29:06.345203+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-07-21T03:30:36.883437+00:00",
+    "last_updated": "2026-07-22T03:29:06.345429+00:00",
     "memory_name": "director_mood_map"
   }
 }

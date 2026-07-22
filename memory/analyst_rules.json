@@ -1,36 +1,6 @@
 {
   "rules": [
     {
-      "rule": "Immediately resolve all technical issues preventing the ingestion and logging of YouTube Analytics data and video attributes, providing a live demonstration of data flow within 24 hours.",
-      "target_agent": "director",
-      "confidence": "high",
-      "evidence": "Persistent 'No analytics data available yet' and 'No video attributes logged yet' despite multiple prior directives, indicating a fundamental data pipeline failure."
-    },
-    {
-      "rule": "The interim Director must provide an immediate, verifiable status report to the CEO/Board on the execution of all previously mandated termination procedures, interim appointments, and the current operational status of the analytics data ingestion and attribute logging systems, explaining the continued absence of data.",
-      "target_agent": "director",
-      "confidence": "high",
-      "evidence": "No analytics data available yet; persistent failure to comply with previous directives."
-    },
-    {
-      "rule": "The marketing and editorial teams must immediately develop a 'zero-data' content strategy and promotional plan, focusing on qualitative assessments and industry trends for Hindi music, to maintain channel activity until data-driven insights become available.",
-      "target_agent": "marketer",
-      "confidence": "high",
-      "evidence": "No analytics data available yet; inability to make data-driven decisions."
-    },
-    {
-      "rule": "A daily, mandatory data availability check and reporting protocol must be established immediately, requiring the interim Director to confirm the presence and integrity of new analytics data and video attributes for all uploads by 9 AM daily, until full system stability is confirmed.",
-      "target_agent": "director",
-      "confidence": "high",
-      "evidence": "No analytics data available yet; critical need for immediate data flow confirmation."
-    },
-    {
-      "rule": "The interim Director must immediately provide a direct, verifiable explanation to the CEO/Board for the persistent failure to ingest and log any analytics data or video attributes, despite multiple prior mandates, and present a revised, guaranteed timeline for full data availability, including a compensation plan for lost insights.",
-      "target_agent": "director",
-      "confidence": "high",
-      "evidence": "No analytics data available yet. No video attributes logged yet. Multiple previous rules demanding data availability have not been met."
-    },
-    {
       "rule": "The marketing and editorial teams must immediately present their 'zero-data' content strategy and promotional plan to the CEO/Board, demonstrating how channel activity and audience engagement for Hindi music will be maintained and qualitatively assessed until data-driven insights are fully restored.",
       "target_agent": "marketer",
       "confidence": "high",
@@ -299,6 +269,36 @@
       "target_agent": "marketer",
       "confidence": "medium",
       "evidence": "No analytics data available to measure campaign effectiveness, necessitating qualitative proxies."
+    },
+    {
+      "rule": "The Director must establish a clear protocol for validating the integrity and accuracy of restored analytics data, including a phased rollout and comparison with historical benchmarks (if available) before full system reliance.",
+      "target_agent": "director",
+      "confidence": "high",
+      "evidence": "No analytics data available, making data integrity validation crucial upon restoration."
+    },
+    {
+      "rule": "The marketing team must develop a structured feedback loop for the 'Content Request Hotline,' categorizing requests by genre, artist, and theme, and regularly sharing a summary of top requests with the editorial team in the 'Zero-Data Content Strategy Huddle.'",
+      "target_agent": "marketer",
+      "confidence": "high",
+      "evidence": "Existing 'Content Request Hotline' needs structured processing to inform content strategy effectively in absence of quantitative data."
+    },
+    {
+      "rule": "The editorial team must implement a qualitative feedback collection mechanism for experimental content, such as specific prompts in community posts or video descriptions, to gather audience sentiment and engagement indicators for these new formats.",
+      "target_agent": "editor",
+      "confidence": "high",
+      "evidence": "Existing rule mandates experimental content; qualitative feedback is essential to assess its performance without quantitative metrics."
+    },
+    {
+      "rule": "The Director must ensure that the daily 'Zero-Data Content Strategy Huddle' includes a mandatory agenda item for reviewing the progress and qualitative outcomes of the audience retention campaign, based on the metrics established by the marketing team.",
+      "target_agent": "director",
+      "confidence": "high",
+      "evidence": "Existing rules mandate an audience retention campaign and qualitative metrics; director needs to ensure consistent review."
+    },
+    {
+      "rule": "The marketing team must actively cross-promote successful experimental content (identified qualitatively) across all social media platforms, highlighting audience positive feedback to build momentum and further test engagement beyond YouTube.",
+      "target_agent": "marketer",
+      "confidence": "medium",
+      "evidence": "Need to leverage qualitative successes and diversify promotion channels during data outage to maintain engagement."
     }
   ],
   "daily_reports": [
@@ -2737,11 +2737,59 @@
       ],
       "insight": "With no analytics data available, the channel's immediate strategy must entirely rely on robust qualitative data gathering, competitive analysis, and transparent audience communication to maintain engagement and inform content decisions until quantitative metrics are restored.",
       "generated_at": "2026-07-21T03:30:36.878764+00:00"
+    },
+    {
+      "daily_summary": {
+        "total_views_24h": null,
+        "new_subscribers": null,
+        "best_video": null,
+        "worst_video": null,
+        "avg_ctr": null,
+        "avg_avd_seconds": null
+      },
+      "new_rules": [
+        {
+          "rule": "The Director must establish a clear protocol for validating the integrity and accuracy of restored analytics data, including a phased rollout and comparison with historical benchmarks (if available) before full system reliance.",
+          "target_agent": "director",
+          "confidence": "high",
+          "evidence": "No analytics data available, making data integrity validation crucial upon restoration."
+        },
+        {
+          "rule": "The marketing team must develop a structured feedback loop for the 'Content Request Hotline,' categorizing requests by genre, artist, and theme, and regularly sharing a summary of top requests with the editorial team in the 'Zero-Data Content Strategy Huddle.'",
+          "target_agent": "marketer",
+          "confidence": "high",
+          "evidence": "Existing 'Content Request Hotline' needs structured processing to inform content strategy effectively in absence of quantitative data."
+        },
+        {
+          "rule": "The editorial team must implement a qualitative feedback collection mechanism for experimental content, such as specific prompts in community posts or video descriptions, to gather audience sentiment and engagement indicators for these new formats.",
+          "target_agent": "editor",
+          "confidence": "high",
+          "evidence": "Existing rule mandates experimental content; qualitative feedback is essential to assess its performance without quantitative metrics."
+        },
+        {
+          "rule": "The Director must ensure that the daily 'Zero-Data Content Strategy Huddle' includes a mandatory agenda item for reviewing the progress and qualitative outcomes of the audience retention campaign, based on the metrics established by the marketing team.",
+          "target_agent": "director",
+          "confidence": "high",
+          "evidence": "Existing rules mandate an audience retention campaign and qualitative metrics; director needs to ensure consistent review."
+        },
+        {
+          "rule": "The marketing team must actively cross-promote successful experimental content (identified qualitatively) across all social media platforms, highlighting audience positive feedback to build momentum and further test engagement beyond YouTube.",
+          "target_agent": "marketer",
+          "confidence": "medium",
+          "evidence": "Need to leverage qualitative successes and diversify promotion channels during data outage to maintain engagement."
+        }
+      ],
+      "alerts": [
+        "Critical: No analytics data available, severely impacting performance analysis and strategic decision-making. Immediate focus on analytics system recovery is paramount.",
+        "Critical: Absence of video attributes prevents any data-driven content analysis or optimization."
+      ],
+      "insight": "With analytics data completely unavailable, the channel's immediate strategic focus must be on rigorous qualitative data collection, robust analytics system recovery, and maintaining audience engagement through transparent communication and experimental content.",
+      "generated_at": "2026-07-22T03:29:06.338318+00:00"
     }
   ],
   "weekly_reports": [],
   "_meta": {
-    "last_updated": "2026-07-21T03:30:36.885562+00:00",
+    "last_updated": "2026-07-22T03:29:06.348042+00:00",
     "memory_name": "analyst_rules"
   }
 }
