@@ -8,7 +8,7 @@
   "risky_effects": [],
   "crash_log": [],
   "_meta": {
-    "last_updated": "2026-07-22T03:29:06.344772+00:00",
+    "last_updated": "2026-07-23T03:34:11.733964+00:00",
     "memory_name": "editor_limits"
   },
   "analyst_feedback": [
@@ -223,6 +223,10 @@
     {
       "rule": "The editorial team must implement a qualitative feedback collection mechanism for experimental content, such as specific prompts in community posts or video descriptions, to gather audience sentiment and engagement indicators for these new formats.",
       "date": "2026-07-22T03:29:06.344637+00:00"
+    },
+    {
+      "rule": "The editorial team must conduct a weekly mock data analysis exercise using the internally tagged content and qualitative feedback collected during the outage, to ensure readiness for comprehensive retrospective analysis once analytics are restored.",
+      "date": "2026-07-23T03:34:11.733831+00:00"
     }
   ]
 }
