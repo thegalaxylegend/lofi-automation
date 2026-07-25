@@ -651,10 +651,15 @@
       "rule": "The Director must provide a daily internal update to all teams regarding the status of analytics data restoration, including any estimated timelines or technical challenges, to maintain transparency and alignment across all departments.",
       "source": "analyst",
       "date": "2026-07-23T03:34:11.732663+00:00"
+    },
+    {
+      "rule": "The Director must facilitate a dedicated planning session this week to outline the channel's immediate content and promotional strategy for the first 72 hours *after* analytics data is restored, ensuring a clear, data-informed re-engagement plan.",
+      "source": "analyst",
+      "date": "2026-07-25T03:27:40.984492+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-07-23T03:34:11.732915+00:00",
+    "last_updated": "2026-07-25T03:27:40.984640+00:00",
     "memory_name": "director_mood_map"
   }
 }

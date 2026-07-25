@@ -74,11 +74,15 @@
     {
       "rule": "The marketing team must conduct a weekly internal review of the 'Content Request Hotline' and experimental content feedback mechanisms to identify any bottlenecks or areas for improvement in qualitative data collection during the outage.",
       "source": "analyst"
+    },
+    {
+      "rule": "The marketing team must draft promotional copy and visual assets for at least two upcoming content pieces identified from the 'Content Request Hotline' and experimental content feedback, ready for immediate deployment upon video release.",
+      "source": "analyst"
     }
   ],
   "thumbnail_performance": [],
   "_meta": {
-    "last_updated": "2026-07-23T03:34:11.734510+00:00",
+    "last_updated": "2026-07-25T03:27:40.984320+00:00",
     "memory_name": "marketer_keywords"
   },
   "last_title_format": "One-Word Punch: Lead with ONE bold emotional word, e.g. HEARTBREAK. | The Playlist You Need Tonight"
