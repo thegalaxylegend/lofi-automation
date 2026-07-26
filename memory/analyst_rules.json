@@ -2880,11 +2880,27 @@
       ],
       "insight": "With analytics data still unavailable, the channel's strategic focus must remain on robust qualitative data collection, proactive content planning, and preparing for a data-driven re-engagement to maintain momentum and audience connection.",
       "generated_at": "2026-07-25T03:27:40.979109+00:00"
+    },
+    {
+      "daily_summary": {
+        "total_views_24h": 0,
+        "new_subscribers": 0,
+        "best_video": "N/A",
+        "worst_video": "N/A",
+        "avg_ctr": 0.0,
+        "avg_avd_seconds": 0.0
+      },
+      "new_rules": [],
+      "alerts": [
+        "Critical: Analytics data is currently unavailable, preventing any performance analysis or data-driven decision making. All teams must continue to prioritize qualitative data collection and data restoration efforts as per existing directives."
+      ],
+      "insight": "With no analytics data available, the channel's strategic focus must remain entirely on executing the established qualitative feedback mechanisms and preparing for a data-informed re-engagement post-restoration.",
+      "generated_at": "2026-07-26T03:41:00.723009+00:00"
     }
   ],
   "weekly_reports": [],
   "_meta": {
-    "last_updated": "2026-07-25T03:27:40.985772+00:00",
+    "last_updated": "2026-07-26T03:41:00.723925+00:00",
     "memory_name": "analyst_rules"
   }
 }
