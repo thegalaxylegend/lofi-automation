@@ -656,10 +656,15 @@
       "rule": "The Director must facilitate a dedicated planning session this week to outline the channel's immediate content and promotional strategy for the first 72 hours *after* analytics data is restored, ensuring a clear, data-informed re-engagement plan.",
       "source": "analyst",
       "date": "2026-07-25T03:27:40.984492+00:00"
+    },
+    {
+      "rule": "The Director must facilitate a cross-functional workshop this week to define a prioritized list of key performance indicators (KPIs) that will be immediately tracked and reported on once analytics data is restored, ensuring all teams are aligned on post-outage success metrics.",
+      "source": "analyst",
+      "date": "2026-07-27T03:50:54.713605+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-07-25T03:27:40.984640+00:00",
+    "last_updated": "2026-07-27T03:50:54.713801+00:00",
     "memory_name": "director_mood_map"
   }
 }

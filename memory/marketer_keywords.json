@@ -78,11 +78,15 @@
     {
       "rule": "The marketing team must draft promotional copy and visual assets for at least two upcoming content pieces identified from the 'Content Request Hotline' and experimental content feedback, ready for immediate deployment upon video release.",
       "source": "analyst"
+    },
+    {
+      "rule": "The marketing team must draft 3-5 distinct promotional hooks and calls-to-action for the channel's general content, ready to be tested across social platforms immediately upon the restoration of YouTube analytics, to quickly identify optimal messaging.",
+      "source": "analyst"
     }
   ],
   "thumbnail_performance": [],
   "_meta": {
-    "last_updated": "2026-07-25T03:27:40.984320+00:00",
+    "last_updated": "2026-07-27T03:50:54.714792+00:00",
     "memory_name": "marketer_keywords"
   },
   "last_title_format": "One-Word Punch: Lead with ONE bold emotional word, e.g. HEARTBREAK. | The Playlist You Need Tonight"

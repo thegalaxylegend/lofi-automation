@@ -8,7 +8,7 @@
   "risky_effects": [],
   "crash_log": [],
   "_meta": {
-    "last_updated": "2026-07-25T03:27:40.983903+00:00",
+    "last_updated": "2026-07-27T03:50:54.713171+00:00",
     "memory_name": "editor_limits"
   },
   "analyst_feedback": [
@@ -235,6 +235,10 @@
     {
       "rule": "The editorial team must develop a detailed content production schedule for the next two weeks, explicitly incorporating the top-priority content ideas derived from the weekly qualitative feedback synthesis, to ensure a responsive and audience-driven content pipeline.",
       "date": "2026-07-25T03:27:40.983773+00:00"
+    },
+    {
+      "rule": "The editorial team must establish a clear tagging system for all new content pieces, linking them directly to the specific qualitative feedback (e.g., community requests, experimental content sentiment) that inspired their creation, for post-restoration performance correlation.",
+      "date": "2026-07-27T03:50:54.713041+00:00"
     }
   ]
 }
