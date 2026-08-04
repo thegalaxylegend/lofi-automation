@@ -306,20 +306,6 @@
       "daily_summary": {
         "total_views_24h": 0,
         "new_subscribers": 0,
-        "best_video": "N/A - No data available yet",
-        "worst_video": "N/A - No data available yet",
-        "avg_ctr": 0.0,
-        "avg_avd_seconds": 0.0
-      },
-      "new_rules": [],
-      "alerts": [],
-      "insight": "The channel is in its nascent stage; consistent content creation and initial audience engagement strategies are paramount to gather foundational performance data.",
-      "generated_at": "2026-05-05T03:38:13.508075+00:00"
-    },
-    {
-      "daily_summary": {
-        "total_views_24h": 0,
-        "new_subscribers": 0,
         "best_video": "N/A - No video data available",
         "worst_video": "N/A - No video data available",
         "avg_ctr": 0.0,
@@ -3090,11 +3076,28 @@
       ],
       "insight": "With no analytics data available, the channel's immediate focus must remain on robust qualitative feedback collection and consistent content production based on audience requests to maintain engagement and prepare for data-informed re-engagement.",
       "generated_at": "2026-08-03T03:40:46.153774+00:00"
+    },
+    {
+      "daily_summary": {
+        "total_views_24h": null,
+        "new_subscribers": null,
+        "best_video": null,
+        "worst_video": null,
+        "avg_ctr": null,
+        "avg_avd_seconds": null
+      },
+      "new_rules": [],
+      "alerts": [
+        "YouTube analytics data remains unavailable, hindering performance tracking and data-driven decision making.",
+        "The 'Zero-Data Content Strategy' is critical; ensure all established rules related to qualitative feedback and content production are being rigorously followed."
+      ],
+      "insight": "With analytics data still unavailable, the channel's immediate focus must remain on diligently executing the 'Zero-Data Content Strategy' by leveraging qualitative feedback and maintaining consistent communication with YouTube support to prepare for data restoration.",
+      "generated_at": "2026-08-04T03:24:47.367943+00:00"
     }
   ],
   "weekly_reports": [],
   "_meta": {
-    "last_updated": "2026-08-03T03:40:46.162841+00:00",
+    "last_updated": "2026-08-04T03:24:47.369510+00:00",
     "memory_name": "analyst_rules"
   }
 }
