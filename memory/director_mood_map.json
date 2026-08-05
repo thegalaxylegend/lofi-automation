@@ -676,10 +676,15 @@
       "rule": "The Director must communicate with YouTube support daily to get updates on the analytics data restoration timeline and relay critical information to the cross-functional team, ensuring preparedness for data re-engagement.",
       "source": "analyst",
       "date": "2026-08-03T03:40:46.161057+00:00"
+    },
+    {
+      "rule": "The Director must ensure all teams have access to and are trained on the new KPIs and reporting dashboards *before* analytics data is restored, to enable immediate data interpretation and action without delay.",
+      "source": "analyst",
+      "date": "2026-08-05T03:20:06.641629+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-08-03T03:40:46.161263+00:00",
+    "last_updated": "2026-08-05T03:20:06.641826+00:00",
     "memory_name": "director_mood_map"
   }
 }

@@ -82,11 +82,15 @@
     {
       "rule": "The marketing team must draft 3-5 distinct promotional hooks and calls-to-action for the channel's general content, ready to be tested across social platforms immediately upon the restoration of YouTube analytics, to quickly identify optimal messaging.",
       "source": "analyst"
+    },
+    {
+      "rule": "The marketing team must prepare a detailed A/B testing plan for the drafted promotional hooks, outlining specific metrics to track and a phased schedule for implementation immediately upon analytics restoration, to quickly optimize messaging.",
+      "source": "analyst"
     }
   ],
   "thumbnail_performance": [],
   "_meta": {
-    "last_updated": "2026-07-27T03:50:54.714792+00:00",
+    "last_updated": "2026-08-05T03:20:06.641404+00:00",
     "memory_name": "marketer_keywords"
   },
   "last_title_format": "One-Word Punch: Lead with ONE bold emotional word, e.g. HEARTBREAK. | The Playlist You Need Tonight"
