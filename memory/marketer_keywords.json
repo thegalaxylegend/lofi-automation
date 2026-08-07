@@ -90,11 +90,15 @@
     {
       "rule": "The marketing team must conduct internal qualitative reviews or small-scale community polls on drafted promotional hooks and titles this week, gathering feedback on clarity and appeal, to refine messaging before A/B testing can commence upon analytics restoration.",
       "source": "analyst"
+    },
+    {
+      "rule": "The marketing team must finalize and share the 'Analytics Restoration Action Plan' for promotional activities, including specific A/B test setups and reporting templates, with the Director for final approval this week.",
+      "source": "analyst"
     }
   ],
   "thumbnail_performance": [],
   "_meta": {
-    "last_updated": "2026-08-06T03:22:51.528846+00:00",
+    "last_updated": "2026-08-07T03:10:13.792107+00:00",
     "memory_name": "marketer_keywords"
   },
   "last_title_format": "One-Word Punch: Lead with ONE bold emotional word, e.g. HEARTBREAK. | The Playlist You Need Tonight"
