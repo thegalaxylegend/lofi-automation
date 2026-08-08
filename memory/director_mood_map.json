@@ -691,10 +691,15 @@
       "rule": "The Director must conduct a daily stand-up with team leads to review progress on all 'Zero-Data Content Strategy' tasks and 'Analytics Restoration Action Plan' readiness, ensuring no critical steps are missed.",
       "source": "analyst",
       "date": "2026-08-07T03:10:13.790236+00:00"
+    },
+    {
+      "rule": "The Director must establish a clear internal communication protocol for *how* analytics updates (even partial ones) will be disseminated immediately upon restoration, to prevent information silos and ensure all teams are aligned.",
+      "source": "analyst",
+      "date": "2026-08-08T02:06:38.161533+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-08-07T03:10:13.790472+00:00",
+    "last_updated": "2026-08-08T02:06:38.161731+00:00",
     "memory_name": "director_mood_map"
   }
 }
