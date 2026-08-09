@@ -696,10 +696,15 @@
       "rule": "The Director must establish a clear internal communication protocol for *how* analytics updates (even partial ones) will be disseminated immediately upon restoration, to prevent information silos and ensure all teams are aligned.",
       "source": "analyst",
       "date": "2026-08-08T02:06:38.161533+00:00"
+    },
+    {
+      "rule": "The Director must obtain an estimated timeline for analytics data restoration and communicate it to all teams, along with any interim reporting solutions available.",
+      "source": "analyst",
+      "date": "2026-08-09T02:18:17.560744+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-08-08T02:06:38.161731+00:00",
+    "last_updated": "2026-08-09T02:18:17.560956+00:00",
     "memory_name": "director_mood_map"
   }
 }
