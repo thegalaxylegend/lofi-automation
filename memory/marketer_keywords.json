@@ -102,11 +102,15 @@
     {
       "rule": "The marketing team must finalize and test (qualitatively) alternative thumbnail designs and title variations for upcoming 'Zero-Data Content', leveraging community feedback to optimize for engagement upon data restoration.",
       "source": "analyst"
+    },
+    {
+      "rule": "The marketing team must conduct a final technical check of all tracking pixels, UTM parameters, and A/B testing setups across all promotional platforms, ensuring they are fully operational for immediate and accurate data capture upon analytics restoration.",
+      "source": "analyst"
     }
   ],
   "thumbnail_performance": [],
   "_meta": {
-    "last_updated": "2026-08-09T02:18:17.562272+00:00",
+    "last_updated": "2026-08-10T02:23:33.170008+00:00",
     "memory_name": "marketer_keywords"
   },
   "last_title_format": "One-Word Punch: Lead with ONE bold emotional word, e.g. HEARTBREAK. | The Playlist You Need Tonight"
