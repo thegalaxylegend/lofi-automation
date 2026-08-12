@@ -711,10 +711,15 @@
       "rule": "The Director must establish a weekly 'Qualitative Insights Sync' meeting for all teams (editorial, marketing) to review audience feedback and 'Zero-Data Content' performance, ensuring shared understanding and agile adaptation in the absence of quantitative analytics.",
       "source": "analyst",
       "date": "2026-08-11T02:14:45.424328+00:00"
+    },
+    {
+      "rule": "The Director must lead a session to define the top 3-5 critical KPIs for immediate analysis upon data restoration, ensuring all teams are aligned on reporting priorities and quick interpretation.",
+      "source": "analyst",
+      "date": "2026-08-12T02:31:45.256310+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-08-11T02:14:45.424560+00:00",
+    "last_updated": "2026-08-12T02:31:45.256547+00:00",
     "memory_name": "director_mood_map"
   }
 }
