@@ -721,10 +721,15 @@
       "rule": "The Director must provide an immediate update on the estimated timeline for analytics data restoration and any progress made on interim reporting solutions, as per the established rule.",
       "source": "analyst",
       "date": "2026-08-13T02:33:26.418860+00:00"
+    },
+    {
+      "rule": "The Director must establish a daily 'Data Restoration Status Briefing' with key team leads to ensure transparent communication, identify immediate blockers, and maintain momentum towards analytics data availability.",
+      "source": "analyst",
+      "date": "2026-08-14T02:31:47.676776+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-08-13T02:33:26.419098+00:00",
+    "last_updated": "2026-08-14T02:31:47.676957+00:00",
     "memory_name": "director_mood_map"
   }
 }
