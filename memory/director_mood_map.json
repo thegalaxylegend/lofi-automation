@@ -736,10 +736,15 @@
       "rule": "The Director must ensure that a post-restoration data analysis plan is in place, outlining immediate steps and responsibilities for interpreting the first batch of restored analytics data to quickly identify critical trends and anomalies.",
       "source": "analyst",
       "date": "2026-08-16T01:48:46.092403+00:00"
+    },
+    {
+      "rule": "The Director must ensure that the 'Post-Restoration Data Analysis Plan' includes a dedicated session within 24 hours of data restoration to prioritize immediate content adjustments and promotional pivots based on the first batch of performance metrics.",
+      "source": "analyst",
+      "date": "2026-08-17T01:46:45.717737+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-08-16T01:48:46.092633+00:00",
+    "last_updated": "2026-08-17T01:46:45.717975+00:00",
     "memory_name": "director_mood_map"
   }
 }

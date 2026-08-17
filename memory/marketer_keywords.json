@@ -118,11 +118,15 @@
     {
       "rule": "The marketing team must develop and test multiple distinct promotional messaging angles (e.g., emotional, educational, entertaining) for 'Zero-Data Content' using qualitative feedback channels (e.g., community polls, direct surveys), to identify which resonates best in the absence of CTR data.",
       "source": "analyst"
+    },
+    {
+      "rule": "The marketing team must develop a preliminary 'Qualitative Brand Messaging Guide' based on the most resonant promotional messaging angles identified through qualitative testing, to inform all external communications and future campaign strategies.",
+      "source": "analyst"
     }
   ],
   "thumbnail_performance": [],
   "_meta": {
-    "last_updated": "2026-08-15T01:41:28.708233+00:00",
+    "last_updated": "2026-08-17T01:46:45.717453+00:00",
     "memory_name": "marketer_keywords"
   },
   "last_title_format": "One-Word Punch: Lead with ONE bold emotional word, e.g. HEARTBREAK. | The Playlist You Need Tonight"
