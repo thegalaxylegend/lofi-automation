@@ -746,10 +746,15 @@
       "rule": "The Director must ensure that a cross-functional 'Qualitative Learnings Synthesis' meeting is held weekly, bringing together editorial and marketing leads to consolidate insights from content performance and promotional testing, informing agile adjustments to content and communication strategies.",
       "source": "analyst",
       "date": "2026-08-18T01:41:46.988980+00:00"
+    },
+    {
+      "rule": "The Director must ensure that the 'Qualitative Content Hypothesis' framework and 'Qualitative Brand Messaging Guide' are integrated into standard operating procedures, even after analytics restoration, to foster a continuous audience-centric approach.",
+      "source": "analyst",
+      "date": "2026-08-19T01:43:30.118412+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-08-18T01:41:46.989252+00:00",
+    "last_updated": "2026-08-19T01:43:30.118642+00:00",
     "memory_name": "director_mood_map"
   }
 }

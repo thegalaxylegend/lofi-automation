@@ -126,11 +126,15 @@
     {
       "rule": "The marketing team must develop a 'Qualitative A/B Test Readiness Plan' outlining specific thumbnail and title variations, derived from current qualitative feedback and messaging tests, to be immediately deployed for A/B testing upon analytics data restoration.",
       "source": "analyst"
+    },
+    {
+      "rule": "The marketing team must establish a system to monitor and synthesize qualitative engagement data from external platforms (e.g., Instagram comments, Spotify listener feedback, fan forums) related to our music, to identify broader audience sentiment and emerging trends.",
+      "source": "analyst"
     }
   ],
   "thumbnail_performance": [],
   "_meta": {
-    "last_updated": "2026-08-18T01:41:46.988521+00:00",
+    "last_updated": "2026-08-19T01:43:30.118122+00:00",
     "memory_name": "marketer_keywords"
   },
   "last_title_format": "One-Word Punch: Lead with ONE bold emotional word, e.g. HEARTBREAK. | The Playlist You Need Tonight"
