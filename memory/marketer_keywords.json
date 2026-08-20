@@ -130,11 +130,15 @@
     {
       "rule": "The marketing team must establish a system to monitor and synthesize qualitative engagement data from external platforms (e.g., Instagram comments, Spotify listener feedback, fan forums) related to our music, to identify broader audience sentiment and emerging trends.",
       "source": "analyst"
+    },
+    {
+      "rule": "The marketing team must finalize and internally circulate the 'Qualitative A/B Test Readiness Plan', including all necessary assets and deployment protocols, to ensure instantaneous launch of A/B tests the moment analytics data is restored.",
+      "source": "analyst"
     }
   ],
   "thumbnail_performance": [],
   "_meta": {
-    "last_updated": "2026-08-19T01:43:30.118122+00:00",
+    "last_updated": "2026-08-20T01:42:05.358336+00:00",
     "memory_name": "marketer_keywords"
   },
   "last_title_format": "One-Word Punch: Lead with ONE bold emotional word, e.g. HEARTBREAK. | The Playlist You Need Tonight"

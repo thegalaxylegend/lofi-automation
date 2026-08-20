@@ -751,10 +751,15 @@
       "rule": "The Director must ensure that the 'Qualitative Content Hypothesis' framework and 'Qualitative Brand Messaging Guide' are integrated into standard operating procedures, even after analytics restoration, to foster a continuous audience-centric approach.",
       "source": "analyst",
       "date": "2026-08-19T01:43:30.118412+00:00"
+    },
+    {
+      "rule": "The Director must conduct a mandatory 'Data Restoration Readiness' meeting within 24 hours, ensuring all teams are fully briefed on their immediate responsibilities and action plans for the moment analytics data becomes available.",
+      "source": "analyst",
+      "date": "2026-08-20T01:42:05.356289+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-08-19T01:43:30.118642+00:00",
+    "last_updated": "2026-08-20T01:42:05.356534+00:00",
     "memory_name": "director_mood_map"
   }
 }
