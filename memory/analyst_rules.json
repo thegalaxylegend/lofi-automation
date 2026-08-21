@@ -1,12 +1,6 @@
 {
   "rules": [
     {
-      "rule": "The marketing team must draft 3-5 distinct promotional hooks and calls-to-action for the channel's general content, ready to be tested across social platforms immediately upon the restoration of YouTube analytics, to quickly identify optimal messaging.",
-      "target_agent": "marketer",
-      "confidence": "high",
-      "evidence": "No analytics data available yet, requiring proactive preparation for rapid optimization once data-driven decisions are possible again."
-    },
-    {
       "rule": "The editorial team must present a bi-weekly internal report detailing how specific qualitative feedback (e.g., community requests, experimental content sentiment) has directly influenced recently published content, to demonstrate the responsiveness of the 'Zero-Data Content Strategy Huddle' and identify areas for refining the feedback-to-content pipeline.",
       "target_agent": "editor",
       "confidence": "high",
@@ -299,45 +293,15 @@
       "target_agent": "marketer",
       "confidence": "high",
       "evidence": "No analytics data means no A/B testing can occur; readiness is paramount for immediate hypothesis validation when data returns."
+    },
+    {
+      "rule": "The Director must establish a daily communication protocol to update all teams on the status of analytics data restoration, ensuring immediate awareness for activation of 'Data Restoration Readiness' plans.",
+      "target_agent": "director",
+      "confidence": "high",
+      "evidence": "No analytics data is currently available, necessitating clear and frequent communication regarding its restoration status to enable timely action."
     }
   ],
   "daily_reports": [
-    {
-      "daily_summary": {
-        "total_views_24h": 0,
-        "new_subscribers": 0,
-        "best_video": "N/A - No data available",
-        "worst_video": "N/A - No data available",
-        "avg_ctr": 0.0,
-        "avg_avd_seconds": 0.0
-      },
-      "new_rules": [
-        {
-          "rule": "The Director must immediately provide a verified report confirming successful ingestion and accessibility of at least 24 hours of analytics data (including total views, new subscribers, average CTR, and average view duration) for the previous day, along with a detailed root cause analysis for the persistent data ingestion failures and a firm, actionable timeline (with specific milestones and responsible parties) for its complete resolution, by end of day today, as the absence of this data renders all performance analysis impossible.",
-          "target_agent": "director",
-          "confidence": "high",
-          "evidence": "No analytics data available yet, despite repeated directives."
-        },
-        {
-          "rule": "The Editor must immediately submit a sample log containing key attributes (length, mood, instrumentation, visual style, upload time) for the last 5 uploaded videos, demonstrating the implemented standardized process for attribute logging, and provide a detailed explanation for the repeated failure to meet this directive, by end of day today, as this is critical for understanding content performance drivers and optimizing future uploads.",
-          "target_agent": "editor",
-          "confidence": "high",
-          "evidence": "No video attributes logged yet, despite repeated directives."
-        },
-        {
-          "rule": "The Director must provide immediate confirmation of the escalation of the persistent data ingestion failure to senior management, including a summary of the problem, the proposed resolution timeline, and the specific support requested, as the lack of critical performance data is now a severe operational impediment and requires urgent attention.",
-          "target_agent": "director",
-          "confidence": "high",
-          "evidence": "No analytics data available yet, despite repeated directives and the critical nature of the issue."
-        }
-      ],
-      "alerts": [
-        "Critical: No analytics data available, severely hindering all performance analysis and strategic decision-making.",
-        "Urgent: No video attributes logged, making it impossible to understand content performance drivers or optimize future uploads."
-      ],
-      "insight": "Without any analytics data or video attributes, it is impossible to provide strategic insights or performance analysis for the channel; immediate action is required to resolve data ingestion and logging failures to enable any meaningful channel management.",
-      "generated_at": "2026-05-22T04:20:48.230196+00:00"
-    },
     {
       "daily_summary": {
         "total_views_24h": null,
@@ -3088,11 +3052,34 @@
       ],
       "insight": "With no analytics data available, the channel's immediate strategic imperative is to rigorously continue qualitative data collection and ensure all teams are in a state of high readiness to execute post-restoration plans to quickly leverage the first batch of performance metrics.",
       "generated_at": "2026-08-20T01:42:05.350988+00:00"
+    },
+    {
+      "daily_summary": {
+        "total_views_24h": null,
+        "new_subscribers": null,
+        "best_video": "N/A - No performance data available.",
+        "worst_video": "N/A - No performance data available.",
+        "avg_ctr": null,
+        "avg_avd_seconds": null
+      },
+      "new_rules": [
+        {
+          "rule": "The Director must establish a daily communication protocol to update all teams on the status of analytics data restoration, ensuring immediate awareness for activation of 'Data Restoration Readiness' plans.",
+          "target_agent": "director",
+          "confidence": "high",
+          "evidence": "No analytics data is currently available, necessitating clear and frequent communication regarding its restoration status to enable timely action."
+        }
+      ],
+      "alerts": [
+        "Analytics data is currently unavailable. All teams must remain in 'Data Restoration Readiness' mode and continue to prioritize qualitative data collection and analysis as per established rules. Immediate action upon data restoration is critical."
+      ],
+      "insight": "With no analytics data available, the channel's strategic focus must remain on robust qualitative feedback collection and meticulous preparation for immediate data-driven action upon restoration.",
+      "generated_at": "2026-08-21T01:47:34.528460+00:00"
     }
   ],
   "weekly_reports": [],
   "_meta": {
-    "last_updated": "2026-08-20T01:42:05.360186+00:00",
+    "last_updated": "2026-08-21T01:47:34.535532+00:00",
     "memory_name": "analyst_rules"
   }
 }
