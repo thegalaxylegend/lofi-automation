@@ -134,11 +134,15 @@
     {
       "rule": "The marketing team must finalize and internally circulate the 'Qualitative A/B Test Readiness Plan', including all necessary assets and deployment protocols, to ensure instantaneous launch of A/B tests the moment analytics data is restored.",
       "source": "analyst"
+    },
+    {
+      "rule": "The marketing team must pre-load all finalized A/B test assets (thumbnails, titles, descriptions) into the YouTube Studio interface as drafts, ready for immediate publication and A/B testing the moment analytics data functionality is restored.",
+      "source": "analyst"
     }
   ],
   "thumbnail_performance": [],
   "_meta": {
-    "last_updated": "2026-08-20T01:42:05.358336+00:00",
+    "last_updated": "2026-08-22T01:40:45.408909+00:00",
     "memory_name": "marketer_keywords"
   },
   "last_title_format": "One-Word Punch: Lead with ONE bold emotional word, e.g. HEARTBREAK. | The Playlist You Need Tonight"
