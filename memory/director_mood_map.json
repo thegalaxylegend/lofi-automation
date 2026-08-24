@@ -771,10 +771,15 @@
       "rule": "The Director must ensure that all teams are fully utilizing the 'Qualitative Insights Log' as the primary source for content strategy and performance assessment until analytics data is restored, reinforcing its importance in daily operations.",
       "source": "analyst",
       "date": "2026-08-23T01:50:53.420334+00:00"
+    },
+    {
+      "rule": "The Director must schedule a follow-up call with YouTube Partner Support within 48 hours to reiterate the urgency of analytics data restoration and request a firm estimated timeline.",
+      "source": "analyst",
+      "date": "2026-08-24T01:48:15.210139+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-08-23T01:50:53.420581+00:00",
+    "last_updated": "2026-08-24T01:48:15.210385+00:00",
     "memory_name": "director_mood_map"
   }
 }
