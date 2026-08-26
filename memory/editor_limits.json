@@ -8,7 +8,7 @@
   "risky_effects": [],
   "crash_log": [],
   "_meta": {
-    "last_updated": "2026-08-25T01:42:37.395096+00:00",
+    "last_updated": "2026-08-26T01:48:09.066353+00:00",
     "memory_name": "editor_limits"
   },
   "analyst_feedback": [
@@ -323,6 +323,10 @@
     {
       "rule": "The editorial team must conduct weekly 'Content Format Experimentation' sessions, proposing and implementing at least one new video format, length, or interactive element per week based purely on qualitative feedback, to explore engagement drivers in the absence of quantitative data.",
       "date": "2026-08-25T01:42:37.394968+00:00"
+    },
+    {
+      "rule": "The editorial team must explicitly link each new content idea or experiment to specific qualitative insights documented in the 'Qualitative Insights Log', demonstrating a direct application of audience feedback and rationale for content choices.",
+      "date": "2026-08-26T01:48:09.066190+00:00"
     }
   ]
 }
