@@ -8,7 +8,7 @@
   "risky_effects": [],
   "crash_log": [],
   "_meta": {
-    "last_updated": "2026-08-26T01:48:09.066353+00:00",
+    "last_updated": "2026-08-27T08:54:02.206167+00:00",
     "memory_name": "editor_limits"
   },
   "analyst_feedback": [
@@ -327,6 +327,10 @@
     {
       "rule": "The editorial team must explicitly link each new content idea or experiment to specific qualitative insights documented in the 'Qualitative Insights Log', demonstrating a direct application of audience feedback and rationale for content choices.",
       "date": "2026-08-26T01:48:09.066190+00:00"
+    },
+    {
+      "rule": "The editorial team must explicitly document the qualitative hypothesis for each new content format or experiment before launch, outlining expected audience reactions based on sentiment analysis.",
+      "date": "2026-08-27T08:54:02.206025+00:00"
     }
   ]
 }
