@@ -791,10 +791,15 @@
       "rule": "The Director must ensure bi-weekly cross-functional collaboration sessions (Editor, Marketer, Director) are held to align on qualitative insights, content strategy, and audience engagement tactics during the analytics blackout.",
       "source": "analyst",
       "date": "2026-08-27T08:54:02.207212+00:00"
+    },
+    {
+      "rule": "The Director must establish a 'Post-Blackout Data Activation Plan' detailing the immediate steps for data validation, initial KPI reporting, and A/B test re-initiation once analytics data is restored, assigning clear responsibilities to each team.",
+      "source": "analyst",
+      "date": "2026-08-28T11:07:09.806896+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-08-27T08:54:02.207429+00:00",
+    "last_updated": "2026-08-28T11:07:09.807140+00:00",
     "memory_name": "director_mood_map"
   }
 }
