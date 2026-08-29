@@ -8,7 +8,7 @@
   "risky_effects": [],
   "crash_log": [],
   "_meta": {
-    "last_updated": "2026-08-27T08:54:02.206167+00:00",
+    "last_updated": "2026-08-29T06:51:38.920630+00:00",
     "memory_name": "editor_limits"
   },
   "analyst_feedback": [
@@ -331,6 +331,10 @@
     {
       "rule": "The editorial team must explicitly document the qualitative hypothesis for each new content format or experiment before launch, outlining expected audience reactions based on sentiment analysis.",
       "date": "2026-08-27T08:54:02.206025+00:00"
+    },
+    {
+      "rule": "The editorial team must maintain a rolling 4-week content pipeline, with each proposed video concept explicitly detailing its qualitative hypothesis and the specific audience feedback (from the 'Qualitative Insights Log') it addresses, ensuring readiness for data resumption.",
+      "date": "2026-08-29T06:51:38.920475+00:00"
     }
   ]
 }

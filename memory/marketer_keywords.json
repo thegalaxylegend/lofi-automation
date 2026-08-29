@@ -154,11 +154,15 @@
     {
       "rule": "The marketing team must implement a standardized weekly 'Qualitative Feedback Report' summarizing audience reactions, emerging themes, and engagement trends across all monitored platforms to inform editorial decisions.",
       "source": "analyst"
+    },
+    {
+      "rule": "The marketing team must expand its competitor analysis to include a weekly report on specific content themes, artist collaborations, and production styles (e.g., lyric video aesthetics, live performance setups) that are gaining traction in the Hindi music space on YouTube, beyond just engagement metrics.",
+      "source": "analyst"
     }
   ],
   "thumbnail_performance": [],
   "_meta": {
-    "last_updated": "2026-08-27T08:54:02.206874+00:00",
+    "last_updated": "2026-08-29T06:51:38.921346+00:00",
     "memory_name": "marketer_keywords"
   },
   "last_title_format": "One-Word Punch: Lead with ONE bold emotional word, e.g. HEARTBREAK. | The Playlist You Need Tonight"
