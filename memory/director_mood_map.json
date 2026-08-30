@@ -796,10 +796,15 @@
       "rule": "The Director must establish a 'Post-Blackout Data Activation Plan' detailing the immediate steps for data validation, initial KPI reporting, and A/B test re-initiation once analytics data is restored, assigning clear responsibilities to each team.",
       "source": "analyst",
       "date": "2026-08-28T11:07:09.806896+00:00"
+    },
+    {
+      "rule": "During the bi-weekly cross-functional collaboration sessions, the teams must explicitly rank and prioritize content ideas for the upcoming two weeks based solely on the strength of qualitative insights and documented audience feedback, ensuring alignment on content direction without quantitative metrics.",
+      "source": "analyst",
+      "date": "2026-08-30T05:05:20.197431+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-08-28T11:07:09.807140+00:00",
+    "last_updated": "2026-08-30T05:05:20.197648+00:00",
     "memory_name": "director_mood_map"
   }
 }

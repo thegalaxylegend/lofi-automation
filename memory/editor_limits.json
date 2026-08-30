@@ -8,7 +8,7 @@
   "risky_effects": [],
   "crash_log": [],
   "_meta": {
-    "last_updated": "2026-08-29T06:51:38.920630+00:00",
+    "last_updated": "2026-08-30T05:05:20.196440+00:00",
     "memory_name": "editor_limits"
   },
   "analyst_feedback": [
@@ -335,6 +335,10 @@
     {
       "rule": "The editorial team must maintain a rolling 4-week content pipeline, with each proposed video concept explicitly detailing its qualitative hypothesis and the specific audience feedback (from the 'Qualitative Insights Log') it addresses, ensuring readiness for data resumption.",
       "date": "2026-08-29T06:51:38.920475+00:00"
+    },
+    {
+      "rule": "The editorial team must prioritize content experiments that allow for rapid qualitative feedback collection (e.g., short-form content, community posts with polls, interactive live streams) to quickly validate qualitative hypotheses during the analytics blackout.",
+      "date": "2026-08-30T05:05:20.196281+00:00"
     }
   ]
 }

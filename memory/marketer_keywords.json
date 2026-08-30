@@ -158,11 +158,15 @@
     {
       "rule": "The marketing team must expand its competitor analysis to include a weekly report on specific content themes, artist collaborations, and production styles (e.g., lyric video aesthetics, live performance setups) that are gaining traction in the Hindi music space on YouTube, beyond just engagement metrics.",
       "source": "analyst"
+    },
+    {
+      "rule": "The marketing team must establish and track specific qualitative engagement metrics (e.g., number of unique positive comments, sentiment score of comments, participation rate in polls) for all new content, treating these as primary performance indicators until quantitative analytics are restored.",
+      "source": "analyst"
     }
   ],
   "thumbnail_performance": [],
   "_meta": {
-    "last_updated": "2026-08-29T06:51:38.921346+00:00",
+    "last_updated": "2026-08-30T05:05:20.197112+00:00",
     "memory_name": "marketer_keywords"
   },
   "last_title_format": "One-Word Punch: Lead with ONE bold emotional word, e.g. HEARTBREAK. | The Playlist You Need Tonight"
