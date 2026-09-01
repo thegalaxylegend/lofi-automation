@@ -8,7 +8,7 @@
   "risky_effects": [],
   "crash_log": [],
   "_meta": {
-    "last_updated": "2026-08-30T05:05:20.196440+00:00",
+    "last_updated": "2026-09-01T04:48:41.984442+00:00",
     "memory_name": "editor_limits"
   },
   "analyst_feedback": [
@@ -339,6 +339,10 @@
     {
       "rule": "The editorial team must prioritize content experiments that allow for rapid qualitative feedback collection (e.g., short-form content, community posts with polls, interactive live streams) to quickly validate qualitative hypotheses during the analytics blackout.",
       "date": "2026-08-30T05:05:20.196281+00:00"
+    },
+    {
+      "rule": "The editorial team must launch at least one community poll or discussion post daily, specifically asking for audience preferences on upcoming Hindi music themes, artist collaborations, or production styles to gather immediate qualitative feedback.",
+      "date": "2026-09-01T04:48:41.984299+00:00"
     }
   ]
 }

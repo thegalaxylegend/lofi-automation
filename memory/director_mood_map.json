@@ -801,10 +801,15 @@
       "rule": "During the bi-weekly cross-functional collaboration sessions, the teams must explicitly rank and prioritize content ideas for the upcoming two weeks based solely on the strength of qualitative insights and documented audience feedback, ensuring alignment on content direction without quantitative metrics.",
       "source": "analyst",
       "date": "2026-08-30T05:05:20.197431+00:00"
+    },
+    {
+      "rule": "The Director must ensure that every new content piece proposed during the blackout has a documented qualitative hypothesis directly linked to specific audience feedback collected via the established mechanisms, presented during bi-weekly sessions.",
+      "source": "analyst",
+      "date": "2026-09-01T04:48:41.985254+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-08-30T05:05:20.197648+00:00",
+    "last_updated": "2026-09-01T04:48:41.985420+00:00",
     "memory_name": "director_mood_map"
   }
 }
