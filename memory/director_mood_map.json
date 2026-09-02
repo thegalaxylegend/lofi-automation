@@ -806,10 +806,15 @@
       "rule": "The Director must ensure that every new content piece proposed during the blackout has a documented qualitative hypothesis directly linked to specific audience feedback collected via the established mechanisms, presented during bi-weekly sessions.",
       "source": "analyst",
       "date": "2026-09-01T04:48:41.985254+00:00"
+    },
+    {
+      "rule": "The Director must conduct a mandatory review session with all team leads to confirm the 'Post-Blackout Data Activation Plan' is fully understood and actionable, assigning specific roles for immediate data validation upon restoration.",
+      "source": "analyst",
+      "date": "2026-09-02T04:09:55.360888+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-09-01T04:48:41.985420+00:00",
+    "last_updated": "2026-09-02T04:09:55.361134+00:00",
     "memory_name": "director_mood_map"
   }
 }
