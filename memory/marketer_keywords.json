@@ -166,11 +166,15 @@
     {
       "rule": "The marketing team must provide a daily digest of qualitative engagement metrics (e.g., top 5 most positive comments, recurring sentiment themes, highest participation rates in polls) from all active content to the editorial team.",
       "source": "analyst"
+    },
+    {
+      "rule": "The marketing team must conduct a weekly deep-dive into one competitor's content piece that has generated significant qualitative buzz (e.g., high positive comment volume, community discussions) to identify specific elements (themes, artist choices, production nuances) contributing to its qualitative success, sharing these insights with the editorial team.",
+      "source": "analyst"
     }
   ],
   "thumbnail_performance": [],
   "_meta": {
-    "last_updated": "2026-09-01T04:48:41.984985+00:00",
+    "last_updated": "2026-09-04T04:12:21.453672+00:00",
     "memory_name": "marketer_keywords"
   },
   "last_title_format": "One-Word Punch: Lead with ONE bold emotional word, e.g. HEARTBREAK. | The Playlist You Need Tonight"

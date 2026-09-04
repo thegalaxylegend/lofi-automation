@@ -811,10 +811,15 @@
       "rule": "The Director must conduct a mandatory review session with all team leads to confirm the 'Post-Blackout Data Activation Plan' is fully understood and actionable, assigning specific roles for immediate data validation upon restoration.",
       "source": "analyst",
       "date": "2026-09-02T04:09:55.360888+00:00"
+    },
+    {
+      "rule": "The Director must ensure that for every content piece greenlit, its 'Qualitative Feedback Loop' plan explicitly outlines how the content's underlying qualitative hypothesis will be validated through audience feedback, establishing clear learning objectives for each launch.",
+      "source": "analyst",
+      "date": "2026-09-04T04:12:21.452187+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-09-02T04:09:55.361134+00:00",
+    "last_updated": "2026-09-04T04:12:21.452474+00:00",
     "memory_name": "director_mood_map"
   }
 }
