@@ -170,11 +170,15 @@
     {
       "rule": "The marketing team must conduct a weekly deep-dive into one competitor's content piece that has generated significant qualitative buzz (e.g., high positive comment volume, community discussions) to identify specific elements (themes, artist choices, production nuances) contributing to its qualitative success, sharing these insights with the editorial team.",
       "source": "analyst"
+    },
+    {
+      "rule": "The marketing team must expand its weekly competitor deep-dive to include analysis of how top-performing Hindi music channels are engaging their communities qualitatively (e.g., polls, Q&A, direct interaction) in the absence of traditional performance metrics, to inform our own qualitative strategy.",
+      "source": "analyst"
     }
   ],
   "thumbnail_performance": [],
   "_meta": {
-    "last_updated": "2026-09-04T04:12:21.453672+00:00",
+    "last_updated": "2026-09-08T04:16:30.223258+00:00",
     "memory_name": "marketer_keywords"
   },
   "last_title_format": "One-Word Punch: Lead with ONE bold emotional word, e.g. HEARTBREAK. | The Playlist You Need Tonight"
