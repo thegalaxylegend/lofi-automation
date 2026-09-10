@@ -841,10 +841,15 @@
       "rule": "The Director must facilitate a weekly 'Qualitative Synthesis Workshop' involving all teams to consolidate insights from daily syncs, competitor analyses, and feedback loops, identifying overarching qualitative trends and potential strategic shifts in content direction.",
       "source": "analyst",
       "date": "2026-09-09T04:22:21.641266+00:00"
+    },
+    {
+      "rule": "The Director must lead a session to prioritize the 'Qualitative Success Hypotheses' for each video launched during the blackout, establishing a clear hierarchy of validation efforts for when analytics data becomes available.",
+      "source": "analyst",
+      "date": "2026-09-10T04:19:30.590931+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-09-09T04:22:21.641483+00:00",
+    "last_updated": "2026-09-10T04:19:30.591283+00:00",
     "memory_name": "director_mood_map"
   }
 }
