@@ -8,7 +8,7 @@
   "risky_effects": [],
   "crash_log": [],
   "_meta": {
-    "last_updated": "2026-09-16T04:32:39.885599+00:00",
+    "last_updated": "2026-09-17T04:38:22.710436+00:00",
     "memory_name": "editor_limits"
   },
   "analyst_feedback": [
@@ -367,6 +367,10 @@
     {
       "rule": "The editorial team must establish a 'Qualitative Content Justification' process, where every new content piece or significant creative decision is accompanied by a clear, documented rationale directly referencing specific audience feedback or preferences gathered qualitatively.",
       "date": "2026-09-16T04:32:39.885468+00:00"
+    },
+    {
+      "rule": "The editorial team must implement a 'Qualitative Success Metric' for each video, defining specific qualitative indicators (e.g., sentiment keywords, specific feedback points) expected from audience reactions, and track their presence in comments/feedback post-publish.",
+      "date": "2026-09-17T04:38:22.710300+00:00"
     }
   ]
 }

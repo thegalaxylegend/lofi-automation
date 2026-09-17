@@ -194,11 +194,15 @@
     {
       "rule": "The marketing team must implement a 'Qualitative Impact Tracking' system to monitor and document the immediate audience reactions (e.g., sentiment, specific feedback points) to new engagement tactics, allowing for rapid iteration and optimization of qualitative data collection methods.",
       "source": "analyst"
+    },
+    {
+      "rule": "The marketing team must conduct weekly 'Qualitative Competitor Deep Dives' to present specific examples of competitor tactics, their hypothesized psychological triggers, and how these insights are being adapted for our channel's engagement strategy, seeking team feedback on relevance.",
+      "source": "analyst"
     }
   ],
   "thumbnail_performance": [],
   "_meta": {
-    "last_updated": "2026-09-16T04:32:39.886173+00:00",
+    "last_updated": "2026-09-17T04:38:22.709908+00:00",
     "memory_name": "marketer_keywords"
   },
   "last_title_format": "One-Word Punch: Lead with ONE bold emotional word, e.g. HEARTBREAK. | The Playlist You Need Tonight"
