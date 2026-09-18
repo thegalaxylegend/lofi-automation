@@ -876,10 +876,15 @@
       "rule": "The Director must establish a 'Qualitative Actionability Review' process during daily stand-ups, requiring each team to present how specific qualitative insights from the previous day are directly informing immediate tactical adjustments or content iterations.",
       "source": "analyst",
       "date": "2026-09-17T04:38:22.708388+00:00"
+    },
+    {
+      "rule": "The Director must immediately ensure that all necessary YouTube Analytics tracking is properly set up and functioning, and establish a daily process for accessing and reporting key quantitative metrics to all teams.",
+      "source": "analyst",
+      "date": "2026-09-18T04:23:47.276570+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-09-17T04:38:22.708650+00:00",
+    "last_updated": "2026-09-18T04:23:47.276800+00:00",
     "memory_name": "director_mood_map"
   }
 }
