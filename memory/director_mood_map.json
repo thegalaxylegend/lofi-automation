@@ -886,10 +886,20 @@
       "rule": "The Director must provide an immediate, detailed report on the status of YouTube Analytics setup, outlining specific actions taken to resolve the 'no data' issue and an estimated timeline for data availability, ensuring the previous rule regarding analytics setup is fulfilled.",
       "source": "analyst",
       "date": "2026-09-19T04:20:29.746951+00:00"
+    },
+    {
+      "rule": "The Director must issue an urgent, channel-wide communication within the next 2 hours confirming the *exact status* of YouTube Analytics data flow, specifying if data is now actively being collected and accessible, or detailing the precise technical issue and a firm resolution timeline.",
+      "source": "analyst",
+      "date": "2026-09-20T04:38:45.549318+00:00"
+    },
+    {
+      "rule": "Once analytics data is confirmed as flowing, the Director must schedule an immediate 'Initial Data Review' meeting for all team leads within 24 hours to collectively analyze the first available quantitative metrics and align on initial tactical adjustments.",
+      "source": "analyst",
+      "date": "2026-09-20T04:38:45.550911+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-09-19T04:20:29.747224+00:00",
+    "last_updated": "2026-09-20T04:38:45.551085+00:00",
     "memory_name": "director_mood_map"
   }
 }
