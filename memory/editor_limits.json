@@ -8,7 +8,7 @@
   "risky_effects": [],
   "crash_log": [],
   "_meta": {
-    "last_updated": "2026-09-17T04:38:22.710436+00:00",
+    "last_updated": "2026-09-21T04:37:11.193325+00:00",
     "memory_name": "editor_limits"
   },
   "analyst_feedback": [
@@ -371,6 +371,10 @@
     {
       "rule": "The editorial team must implement a 'Qualitative Success Metric' for each video, defining specific qualitative indicators (e.g., sentiment keywords, specific feedback points) expected from audience reactions, and track their presence in comments/feedback post-publish.",
       "date": "2026-09-17T04:38:22.710300+00:00"
+    },
+    {
+      "rule": "The editorial and marketing teams must intensify their focus on qualitative data collection and analysis, leveraging existing processes to gather audience feedback and sentiment as the sole source of performance insight until quantitative data is restored.",
+      "date": "2026-09-21T04:37:11.193183+00:00"
     }
   ]
 }
