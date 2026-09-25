@@ -926,10 +926,20 @@
       "rule": "The Director must implement a temporary, manual daily tracking system for publicly visible metrics (e.g., total views, subscriber count) within 24 hours if automated analytics are not restored, to provide *any* quantitative insight.",
       "source": "analyst",
       "date": "2026-09-24T04:26:52.814963+00:00"
+    },
+    {
+      "rule": "The Director must ensure the temporary, manual daily tracking system for publicly visible metrics (e.g., total views, subscriber count) is fully operational and its collected data is reported daily to all teams, providing the only available quantitative insights.",
+      "source": "analyst",
+      "date": "2026-09-25T04:38:46.847408+00:00"
+    },
+    {
+      "rule": "The Director must present an immediate, comprehensive action plan detailing new, aggressive strategies and resources to definitively resolve the persistent YouTube Analytics data flow issue, including a clear escalation path beyond current technical efforts, within the next 12 hours.",
+      "source": "analyst",
+      "date": "2026-09-25T04:38:46.848809+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-09-24T04:26:52.815191+00:00",
+    "last_updated": "2026-09-25T04:38:46.848995+00:00",
     "memory_name": "director_mood_map"
   }
 }
