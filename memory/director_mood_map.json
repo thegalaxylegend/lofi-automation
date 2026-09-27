@@ -941,10 +941,20 @@
       "rule": "The Director must provide an immediate status report on the implementation and operational status of the temporary, manual daily tracking system for publicly visible metrics, and explain why its collected data is not being reported as the only available quantitative insight.",
       "source": "analyst",
       "date": "2026-09-26T04:41:23.936102+00:00"
+    },
+    {
+      "rule": "The Director must provide an immediate, comprehensive update on the YouTube Analytics data flow issue, explicitly detailing the current technical root cause, the exact steps being taken for resolution, and a firm, externally validated timeline for full data restoration, including a clear explanation for the failure of all previous timelines.",
+      "source": "analyst",
+      "date": "2026-09-27T05:02:19.899097+00:00"
+    },
+    {
+      "rule": "The Director must immediately present the collected data from the temporary, manual daily tracking system for publicly visible metrics (e.g., total views, subscriber count) for the past 7 days, or provide an urgent, detailed explanation for its non-implementation or failure to report, as previously mandated.",
+      "source": "analyst",
+      "date": "2026-09-27T05:02:19.900522+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-09-26T04:41:23.936402+00:00",
+    "last_updated": "2026-09-27T05:02:19.900744+00:00",
     "memory_name": "director_mood_map"
   }
 }
