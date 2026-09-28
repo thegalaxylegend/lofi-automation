@@ -1,24 +1,6 @@
 {
   "rules": [
     {
-      "rule": "The editorial and marketing teams must conduct a daily internal sync to explicitly compare the top 3 qualitative themes identified from audience feedback with the qualitative hypotheses of recently launched content, documenting any observed alignment or divergence.",
-      "target_agent": "editor, marketer",
-      "confidence": "high",
-      "evidence": "No analytics data available yet, making qualitative hypothesis validation the primary method of content performance assessment."
-    },
-    {
-      "rule": "Upon restoration of analytics data, the Director must immediately convene a 'Data Validation Sprint' with the editorial and marketing teams to cross-reference the first 24 hours of quantitative data against all qualitative hypotheses and insights gathered during the blackout period, identifying immediate content adjustments or validations.",
-      "target_agent": "director",
-      "confidence": "high",
-      "evidence": "No analytics data available, necessitating a clear and immediate action plan for data re-engagement and validation once restored."
-    },
-    {
-      "rule": "The editorial and marketing teams must ensure the daily qualitative insights report is meticulously detailed, capturing all audience sentiment and themes, as this is the sole source of performance insight during the blackout.",
-      "target_agent": "editor, marketer",
-      "confidence": "high",
-      "evidence": "No analytics data available yet, making qualitative feedback the only current source of audience insight."
-    },
-    {
       "rule": "The Director must proactively review the 'Post-Blackout Data Activation Plan' with all teams, ensuring roles are clear and validation processes are ready for immediate execution upon data restoration.",
       "target_agent": "director",
       "confidence": "high",
@@ -299,46 +281,27 @@
       "target_agent": "editor",
       "confidence": "high",
       "evidence": "Persistent 'No analytics data available yet' necessitates a stronger demonstration of qualitative impact."
+    },
+    {
+      "rule": "The Director must immediately provide the collected data from the temporary, manual daily tracking system for the past 7 days, or a detailed explanation for its non-implementation or failure to report, as mandated by previous rules.",
+      "target_agent": "director",
+      "confidence": "high",
+      "evidence": "No analytics data available yet, and previous mandates for manual tracking data have not been met or reported, leaving the channel without any quantitative insights."
+    },
+    {
+      "rule": "The Director must provide an immediate, comprehensive update on the YouTube Analytics data flow issue, explicitly detailing the current technical root cause, the exact steps being taken for resolution, and a firm, externally validated timeline for full data restoration, including a clear explanation for the failure of all previous timelines.",
+      "target_agent": "director",
+      "confidence": "high",
+      "evidence": "The core issue of 'No analytics data available yet' persists, indicating no resolution or satisfactory update has been provided despite previous mandates."
+    },
+    {
+      "rule": "The editorial and marketing teams must submit the 'Qualitative Action & Impact Report' within 24 hours, detailing specific, tangible content adjustments and promotional strategies that have been directly implemented based on their qualitative reviews and competitor deep dives, as this is the only available basis for strategic action.",
+      "target_agent": "editor",
+      "confidence": "high",
+      "evidence": "With 'No analytics data available yet', qualitative insights are the sole source of actionable intelligence, making their reporting and demonstration of impact critical for continuous adaptation."
     }
   ],
   "daily_reports": [
-    {
-      "daily_summary": {
-        "total_views_24h": 0,
-        "new_subscribers": 0,
-        "best_video": "",
-        "worst_video": "",
-        "avg_ctr": 0.0,
-        "avg_avd_seconds": 0.0
-      },
-      "new_rules": [
-        {
-          "rule": "The CEO/Board must immediately verify the execution of all previously mandated termination procedures for the Director and Editor, and confirm the appointment of interim replacements with verifiable evidence within 1 hour.",
-          "target_agent": "director",
-          "confidence": "high",
-          "evidence": "Continued absence of all analytics and video attribute data, indicating non-compliance with previous directives."
-        },
-        {
-          "rule": "The newly appointed interim Director and Editor must immediately provide a confirmed timeline for full data availability and a plan for backfilling all missing historical data within 2 hours of this report, as previously mandated.",
-          "target_agent": "director",
-          "confidence": "high",
-          "evidence": "Continued absence of all analytics and video attribute data, and the previous mandate for this action."
-        },
-        {
-          "rule": "The emergency task force (or responsible interim team) must immediately provide a live, verifiable demonstration of the fully operational analytics data ingestion and attribute logging systems to the CEO/Board within 2 hours, confirming immediate data flow and accessibility for all new uploads, as previously mandated.",
-          "target_agent": "director",
-          "confidence": "high",
-          "evidence": "Continued absence of all analytics and video attribute data, and the previous mandate for this action."
-        }
-      ],
-      "alerts": [
-        "Critical: Complete and persistent failure to provide any analytics or video attribute data, despite multiple severe warnings, explicit ultimatums, and mandated termination procedures for key personnel. All previously established deadlines for data ingestion and reporting have been missed.",
-        "Immediate confirmation required regarding the execution of termination procedures for the Director and Editor, and the appointment of interim replacements as previously mandated.",
-        "Immediate confirmation required regarding the establishment and verification of the robust data ingestion pipeline, and the live demonstration to the CEO/Board, as previously mandated."
-      ],
-      "insight": "The complete and persistent absence of all analytics and video attribute data renders the channel entirely blind to its performance, making strategic decision-making impossible and posing an existential threat to its operations.",
-      "generated_at": "2026-06-30T04:16:25.705006+00:00"
-    },
     {
       "daily_summary": {
         "total_views_24h": 0,
@@ -3076,11 +3039,47 @@
       ],
       "insight": "The channel remains entirely blind due to the persistent lack of any analytics data, making strategic adjustments impossible; immediate and definitive action to restore data flow and implement manual tracking is paramount, while qualitative insights provide the only current guidance.",
       "generated_at": "2026-09-27T05:02:19.894079+00:00"
+    },
+    {
+      "daily_summary": {
+        "total_views_24h": null,
+        "new_subscribers": null,
+        "best_video": null,
+        "worst_video": null,
+        "avg_ctr": null,
+        "avg_avd_seconds": null
+      },
+      "new_rules": [
+        {
+          "rule": "The Director must immediately provide the collected data from the temporary, manual daily tracking system for the past 7 days, or a detailed explanation for its non-implementation or failure to report, as mandated by previous rules.",
+          "target_agent": "director",
+          "confidence": "high",
+          "evidence": "No analytics data available yet, and previous mandates for manual tracking data have not been met or reported, leaving the channel without any quantitative insights."
+        },
+        {
+          "rule": "The Director must provide an immediate, comprehensive update on the YouTube Analytics data flow issue, explicitly detailing the current technical root cause, the exact steps being taken for resolution, and a firm, externally validated timeline for full data restoration, including a clear explanation for the failure of all previous timelines.",
+          "target_agent": "director",
+          "confidence": "high",
+          "evidence": "The core issue of 'No analytics data available yet' persists, indicating no resolution or satisfactory update has been provided despite previous mandates."
+        },
+        {
+          "rule": "The editorial and marketing teams must submit the 'Qualitative Action & Impact Report' within 24 hours, detailing specific, tangible content adjustments and promotional strategies that have been directly implemented based on their qualitative reviews and competitor deep dives, as this is the only available basis for strategic action.",
+          "target_agent": "editor",
+          "confidence": "high",
+          "evidence": "With 'No analytics data available yet', qualitative insights are the sole source of actionable intelligence, making their reporting and demonstration of impact critical for continuous adaptation."
+        }
+      ],
+      "alerts": [
+        "CRITICAL: Complete absence of all analytics data (automated and manually tracked) severely hampers decision-making and strategic planning for the channel.",
+        "URGENT: Director has failed to provide mandated manual tracking data or an explanation, violating multiple previous rules and leaving the team without any quantitative insights."
+      ],
+      "insight": "The channel is currently operating in a complete data void, making it impossible to assess performance or make data-driven decisions; immediate action is required to restore data flow or, at minimum, provide mandated manual tracking and qualitative impact reports.",
+      "generated_at": "2026-09-28T05:04:03.930562+00:00"
     }
   ],
   "weekly_reports": [],
   "_meta": {
-    "last_updated": "2026-09-27T05:02:19.903150+00:00",
+    "last_updated": "2026-09-28T05:04:03.941409+00:00",
     "memory_name": "analyst_rules"
   }
 }
