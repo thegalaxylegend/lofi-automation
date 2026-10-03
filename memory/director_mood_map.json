@@ -1001,10 +1001,20 @@
       "rule": "The Director must immediately present the collected data from the temporary, manual daily tracking system for publicly visible metrics (e.g., total views, subscriber count) for the past 7 days, or provide an urgent, detailed explanation for its non-implementation or failure to report, as previously mandated.",
       "source": "analyst",
       "date": "2026-10-02T05:18:41.540990+00:00"
+    },
+    {
+      "rule": "The Director must establish and communicate a daily 'Data Restoration Status' report, detailing specific technical actions taken, personnel involved, and verified progress towards resolving the YouTube Analytics data flow issue, until full restoration is confirmed.",
+      "source": "analyst",
+      "date": "2026-10-03T05:02:41.775589+00:00"
+    },
+    {
+      "rule": "The Director must implement a verified, redundant manual data collection system for key public metrics (views, subscribers) with a clear audit trail, ensuring daily reporting even if the primary system fails again.",
+      "source": "analyst",
+      "date": "2026-10-03T05:02:41.776693+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-10-02T05:18:41.541271+00:00",
+    "last_updated": "2026-10-03T05:02:41.776822+00:00",
     "memory_name": "director_mood_map"
   }
 }
