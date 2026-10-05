@@ -1016,10 +1016,20 @@
       "rule": "The Director must immediately provide the collected data from the temporary, manual daily tracking system for publicly visible metrics (e.g., total views, subscriber count) for the past 7 days, AND a comprehensive update on the YouTube Analytics data flow issue, explicitly detailing the current technical root cause, the exact steps being taken for resolution, and a firm, externally validated timeline for full data restoration.",
       "source": "analyst",
       "date": "2026-10-04T05:34:03.958993+00:00"
+    },
+    {
+      "rule": "The Director must immediately provide the collected data from the temporary, manual daily tracking system for publicly visible metrics (e.g., total views, subscriber count) for the past 7 days, as previously mandated, or provide an urgent, detailed explanation for its non-implementation or failure to report.",
+      "source": "analyst",
+      "date": "2026-10-05T05:17:38.758156+00:00"
+    },
+    {
+      "rule": "The Director must present a 'Data Outage Contingency Plan' within 48 hours, detailing redundant data collection methods, communication protocols during outages, and a clear escalation matrix to prevent future complete data blackouts and ensure continuous reporting.",
+      "source": "analyst",
+      "date": "2026-10-05T05:17:38.760083+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-10-04T05:34:03.959340+00:00",
+    "last_updated": "2026-10-05T05:17:38.760359+00:00",
     "memory_name": "director_mood_map"
   }
 }
