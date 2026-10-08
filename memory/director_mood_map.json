@@ -1036,10 +1036,20 @@
       "rule": "The Director must provide an urgent, comprehensive update on the YouTube Analytics data flow issue within 12 hours, explicitly detailing the current technical root cause, the exact steps being taken for resolution, and a firm, externally validated timeline for full data restoration.",
       "source": "analyst",
       "date": "2026-10-07T05:37:04.788217+00:00"
+    },
+    {
+      "rule": "The Director must immediately provide the collected data from the temporary, manual daily tracking system for publicly visible metrics (e.g., total views, subscriber count) for the past 7 days, as previously mandated, or provide an urgent, detailed explanation for its complete absence and an immediate, verifiable action plan to rectify this within 6 hours.",
+      "source": "analyst",
+      "date": "2026-10-08T05:45:12.735128+00:00"
+    },
+    {
+      "rule": "The Director must provide an urgent, comprehensive update on the YouTube Analytics data flow issue within 12 hours, explicitly detailing the current technical root cause, the exact steps being taken for resolution, and a firm, externally validated timeline for full data restoration.",
+      "source": "analyst",
+      "date": "2026-10-08T05:45:12.736842+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-10-07T05:37:04.788530+00:00",
+    "last_updated": "2026-10-08T05:45:12.737099+00:00",
     "memory_name": "director_mood_map"
   }
 }
