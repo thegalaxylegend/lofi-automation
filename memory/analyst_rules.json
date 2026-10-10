@@ -1,30 +1,6 @@
 {
   "rules": [
     {
-      "rule": "Once analytics data is confirmed as flowing, the Director must schedule an immediate 'Initial Data Review' meeting for all team leads within 24 hours to collectively analyze the first available quantitative metrics and align on initial tactical adjustments.",
-      "target_agent": "director",
-      "confidence": "high",
-      "evidence": "The absence of data prevents any data-driven decisions; immediate review is critical once data becomes available."
-    },
-    {
-      "rule": "The Director must provide a daily, concise update on the exact status of YouTube Analytics data flow, including any technical hurdles and revised resolution timelines, until data is confirmed as fully operational and accessible.",
-      "target_agent": "director",
-      "confidence": "high",
-      "evidence": "No analytics data available yet, preventing any data-driven analysis."
-    },
-    {
-      "rule": "The Director must ensure all team leads are actively preparing for the 'Initial Data Review' meeting by reviewing key YouTube Analytics metrics and their implications, to maximize the value of the first available data.",
-      "target_agent": "director",
-      "confidence": "medium",
-      "evidence": "Previous rule established an 'Initial Data Review' meeting once data flows, requiring preparedness."
-    },
-    {
-      "rule": "The editorial and marketing teams must intensify their focus on qualitative data collection and analysis, leveraging existing processes to gather audience feedback and sentiment as the sole source of performance insight until quantitative data is restored.",
-      "target_agent": "editor",
-      "confidence": "high",
-      "evidence": "With no quantitative data, qualitative insights are the only available performance indicators."
-    },
-    {
       "rule": "The Director must immediately escalate the YouTube Analytics data flow issue to a critical priority, engaging all necessary technical resources to identify and rectify the root cause within the next 8 hours, and provide a firm, updated resolution timeline to all teams.",
       "target_agent": "director",
       "confidence": "high",
@@ -299,39 +275,33 @@
       "target_agent": "editor",
       "confidence": "high",
       "evidence": "No analytics data available yet, meaning qualitative insights are the only actionable information, and no report on their impact has been provided despite previous directives."
+    },
+    {
+      "rule": "The Director must immediately provide the collected data from the temporary, manual daily tracking system for publicly visible metrics (e.g., total views, subscriber count) for the past 7 days, or provide an urgent, detailed explanation for its complete absence and an immediate, verifiable action plan to rectify this within 1 hour, with direct accountability for non-compliance.",
+      "target_agent": "director",
+      "confidence": "high",
+      "evidence": "Complete absence of all analytics data and manually tracked metrics, despite repeated, escalating mandates."
+    },
+    {
+      "rule": "The Director must immediately provide a critical incident report on the YouTube Analytics data flow issue, explicitly detailing the current technical root cause, the exact steps taken for resolution, and a firm, externally validated timeline for full data restoration, with hourly updates until resolved. Failure to comply will result in immediate escalation.",
+      "target_agent": "director",
+      "confidence": "high",
+      "evidence": "'No analytics data available yet' indicates the issue remains unresolved and previous deadlines have been missed."
+    },
+    {
+      "rule": "The editorial and marketing teams must immediately submit the 'Enhanced Qualitative Strategy Impact Report' within 2 hours, detailing specific content adjustments and promotional strategies that have been directly implemented based on qualitative insights, and their perceived impact, as this remains the sole basis for strategic action and measurement in the absence of quantitative data.",
+      "target_agent": "editor",
+      "confidence": "high",
+      "evidence": "With no quantitative data, the qualitative report is the only available strategic input, and previous deadlines have been missed."
+    },
+    {
+      "rule": "The Director must provide a detailed explanation for the repeated failure to provide mandated data and a comprehensive plan to ensure immediate and future compliance with all data reporting requirements within 1 hour.",
+      "target_agent": "director",
+      "confidence": "high",
+      "evidence": "Repeated non-compliance with previous, escalating rules regarding data provision."
     }
   ],
   "daily_reports": [
-    {
-      "daily_summary": {
-        "total_views_24h": 0,
-        "new_subscribers": 0,
-        "best_video": "N/A - No data",
-        "worst_video": "N/A - No data",
-        "avg_ctr": 0.0,
-        "avg_avd_seconds": 0.0
-      },
-      "new_rules": [
-        {
-          "rule": "The Director must immediately initiate a cross-functional task force (including Marketing and Finance) to quantify the estimated financial and audience growth impact of the prolonged data outage, presenting a detailed report to the CEO/Board within 24 hours.",
-          "target_agent": "director",
-          "confidence": "high",
-          "evidence": "The persistent absence of analytics data prevents informed strategic decisions and obscures the true cost of operational failure for Hindi music content."
-        },
-        {
-          "rule": "Upon any reported resolution of the data ingestion and logging systems, the Director must ensure a mandatory, independent third-party validation of data accuracy and completeness for all new uploads over a 72-hour period before any content uploads resume or data is used for strategic decision-making.",
-          "target_agent": "director",
-          "confidence": "high",
-          "evidence": "The history of persistent system failures necessitates rigorous, independent verification to prevent recurrence and ensure data integrity upon restoration."
-        }
-      ],
-      "alerts": [
-        "Critical: No analytics data or video attributes are being ingested or logged, rendering all Hindi music channel performance unmeasurable and strategic decision-making impossible.",
-        "Urgent: The persistent failure to resolve data ingestion issues, despite multiple previous mandates, indicates a severe systemic problem that demands immediate, decisive, and accountable intervention from the CEO/Board."
-      ],
-      "insight": "Operating without any analytics data means the Hindi music channel is completely blind to its performance and audience engagement, making every content and promotional decision speculative and jeopardizing its long-term viability and competitive standing.",
-      "generated_at": "2026-07-12T03:40:35.137830+00:00"
-    },
     {
       "daily_summary": {
         "total_views_24h": null,
@@ -3112,11 +3082,54 @@
       ],
       "insight": "The channel is operating in a complete data vacuum, rendering all strategic decision-making impossible. Immediate priority must be placed on restoring *any* form of data collection and resolving the core analytics outage, while the editorial team must demonstrate proactive qualitative strategy implementation.",
       "generated_at": "2026-10-09T05:49:40.982877+00:00"
+    },
+    {
+      "daily_summary": {
+        "total_views_24h": 0,
+        "new_subscribers": 0,
+        "best_video": "",
+        "worst_video": "",
+        "avg_ctr": 0.0,
+        "avg_avd_seconds": 0.0
+      },
+      "new_rules": [
+        {
+          "rule": "The Director must immediately provide the collected data from the temporary, manual daily tracking system for publicly visible metrics (e.g., total views, subscriber count) for the past 7 days, or provide an urgent, detailed explanation for its complete absence and an immediate, verifiable action plan to rectify this within 1 hour, with direct accountability for non-compliance.",
+          "target_agent": "director",
+          "confidence": "high",
+          "evidence": "Complete absence of all analytics data and manually tracked metrics, despite repeated, escalating mandates."
+        },
+        {
+          "rule": "The Director must immediately provide a critical incident report on the YouTube Analytics data flow issue, explicitly detailing the current technical root cause, the exact steps taken for resolution, and a firm, externally validated timeline for full data restoration, with hourly updates until resolved. Failure to comply will result in immediate escalation.",
+          "target_agent": "director",
+          "confidence": "high",
+          "evidence": "'No analytics data available yet' indicates the issue remains unresolved and previous deadlines have been missed."
+        },
+        {
+          "rule": "The editorial and marketing teams must immediately submit the 'Enhanced Qualitative Strategy Impact Report' within 2 hours, detailing specific content adjustments and promotional strategies that have been directly implemented based on qualitative insights, and their perceived impact, as this remains the sole basis for strategic action and measurement in the absence of quantitative data.",
+          "target_agent": "editor",
+          "confidence": "high",
+          "evidence": "With no quantitative data, the qualitative report is the only available strategic input, and previous deadlines have been missed."
+        },
+        {
+          "rule": "The Director must provide a detailed explanation for the repeated failure to provide mandated data and a comprehensive plan to ensure immediate and future compliance with all data reporting requirements within 1 hour.",
+          "target_agent": "director",
+          "confidence": "high",
+          "evidence": "Repeated non-compliance with previous, escalating rules regarding data provision."
+        }
+      ],
+      "alerts": [
+        "CRITICAL: Complete absence of all YouTube analytics data and manually tracked metrics. The channel is operating blind, severely compromising strategic decision-making.",
+        "URGENT: The Director has failed to provide mandated manual data and an update on the analytics data flow issue despite repeated, escalating deadlines.",
+        "URGENT: The editorial and marketing teams must immediately provide the 'Enhanced Qualitative Strategy Impact Report' as it is the only current basis for strategic action."
+      ],
+      "insight": "The channel is in a critical state due to a complete lack of performance data, making it impossible to assess content effectiveness or audience engagement. All strategic decisions must currently rely solely on immediate qualitative insights and direct audience feedback until data flow is fully restored.",
+      "generated_at": "2026-10-10T05:32:24.132127+00:00"
     }
   ],
   "weekly_reports": [],
   "_meta": {
-    "last_updated": "2026-10-09T05:49:40.992749+00:00",
+    "last_updated": "2026-10-10T05:32:24.144719+00:00",
     "memory_name": "analyst_rules"
   }
 }
