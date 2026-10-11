@@ -1071,10 +1071,20 @@
       "rule": "The Director must provide a detailed explanation for the repeated failure to provide mandated data and a comprehensive plan to ensure immediate and future compliance with all data reporting requirements within 1 hour.",
       "source": "analyst",
       "date": "2026-10-10T05:32:24.143180+00:00"
+    },
+    {
+      "rule": "The Director must immediately escalate the complete data blackout (YouTube Analytics and manual tracking) to senior management, providing a root cause analysis and a verifiable recovery plan for both systems within 30 minutes, with direct accountability for non-compliance.",
+      "source": "analyst",
+      "date": "2026-10-11T05:28:12.274191+00:00"
+    },
+    {
+      "rule": "A mandatory emergency meeting involving the Director, Editor, and Marketing lead must be convened within 1 hour to address the complete data blackout, review the qualitative report, and formulate immediate contingency plans for content and promotion.",
+      "source": "analyst",
+      "date": "2026-10-11T05:28:12.276483+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-10-10T05:32:24.143335+00:00",
+    "last_updated": "2026-10-11T05:28:12.276701+00:00",
     "memory_name": "director_mood_map"
   }
 }
