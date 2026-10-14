@@ -1,25 +1,37 @@
-# Environment
+# Environment & secrets
 .env
+*.env
+
+# Python
 __pycache__/
 *.pyc
+*.pyo
 .venv/
 venv/
 
-# Temporary files
-temp/
-temp_*/
-*.tmp
-
-# Output files (too large for git)
+# Output media (too large)
 output/*.mp4
 output/*.avi
 output/*.jpg
 output/*.png
+output/*.wav
+output/*.mp3
 
-# OS files
-.DS_Store
-Thumbs.db
+# Temp & scratch
+temp/
+temp_*/
+*.tmp
+scratch/
+
+# Logs
+*.log
+logs/
 
 # IDE
 .vscode/
 .idea/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
