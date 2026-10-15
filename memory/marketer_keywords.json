@@ -198,11 +198,15 @@
     {
       "rule": "The marketing team must conduct weekly 'Qualitative Competitor Deep Dives' to present specific examples of competitor tactics, their hypothesized psychological triggers, and how these insights are being adapted for our channel's engagement strategy, seeking team feedback on relevance.",
       "source": "analyst"
+    },
+    {
+      "rule": "The Marketing lead must develop and implement an immediate audience communication strategy across all active social platforms, transparently informing viewers about the technical issues, reassuring them of continued content, and actively soliciting direct feedback to compensate for missing analytics.",
+      "source": "analyst"
     }
   ],
   "thumbnail_performance": [],
   "_meta": {
-    "last_updated": "2026-09-17T04:38:22.709908+00:00",
+    "last_updated": "2026-10-15T04:18:28.856994+00:00",
     "memory_name": "marketer_keywords"
   },
   "last_title_format": "One-Word Punch: Lead with ONE bold emotional word, e.g. HEARTBREAK. | The Playlist You Need Tonight"

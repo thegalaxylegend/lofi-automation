@@ -1111,10 +1111,15 @@
       "rule": "The Director must outline an immediate interim operational plan detailing how content and promotional decisions will be made and measured for the next 72 hours, assuming continued data unavailability, to minimize further strategic drift.",
       "source": "analyst",
       "date": "2026-10-14T04:35:50.492533+00:00"
+    },
+    {
+      "rule": "The Director must present a detailed 'Extended Data Outage Contingency Plan' within 24 hours, outlining content strategy, promotional activities, and alternative performance measurement for a scenario where YouTube Analytics remains unavailable for 1-2 weeks, including potential platform diversification.",
+      "source": "analyst",
+      "date": "2026-10-15T04:18:28.855051+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-10-14T04:35:50.492667+00:00",
+    "last_updated": "2026-10-15T04:18:28.855368+00:00",
     "memory_name": "director_mood_map"
   }
 }
