@@ -8,7 +8,7 @@
   "risky_effects": [],
   "crash_log": [],
   "_meta": {
-    "last_updated": "2026-10-15T04:18:28.854207+00:00",
+    "last_updated": "2026-10-17T04:04:26.148321+00:00",
     "memory_name": "editor_limits"
   },
   "analyst_feedback": [
@@ -463,6 +463,10 @@
     {
       "rule": "The editorial and marketing teams must establish a daily, standardized qualitative performance report, synthesizing audience feedback, social media sentiment, and direct engagement metrics, to serve as the primary performance indicator until quantitative data is restored.",
       "date": "2026-10-15T04:18:28.854032+00:00"
+    },
+    {
+      "rule": "The editorial and marketing teams must immediately submit the daily, standardized qualitative performance report for the last 24 hours, synthesizing audience feedback, social media sentiment, and direct engagement metrics, as mandated, to serve as the primary performance indicator.",
+      "date": "2026-10-17T04:04:26.148131+00:00"
     }
   ]
 }

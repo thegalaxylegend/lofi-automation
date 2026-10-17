@@ -1121,10 +1121,20 @@
       "rule": "The Director must provide an immediate, critical review of the current data recovery strategy and the performance of the technical team responsible, outlining any necessary changes in personnel, resources, or approach to expedite data restoration, given the persistent unavailability.",
       "source": "analyst",
       "date": "2026-10-16T04:13:56.622194+00:00"
+    },
+    {
+      "rule": "The Director must provide an immediate, real-time update on the current status of YouTube Analytics data restoration, specifically addressing progress against the previously mandated granular timeline, explaining the continued data unavailability, and outlining any new immediate steps being taken to expedite recovery.",
+      "source": "analyst",
+      "date": "2026-10-17T04:04:26.144393+00:00"
+    },
+    {
+      "rule": "The Director must immediately present the interim operational plan detailing how content and promotional decisions are being made and measured for the next 72 hours, assuming continued data unavailability, to minimize further strategic drift, as previously mandated.",
+      "source": "analyst",
+      "date": "2026-10-17T04:04:26.146287+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-10-16T04:13:56.622518+00:00",
+    "last_updated": "2026-10-17T04:04:26.146616+00:00",
     "memory_name": "director_mood_map"
   }
 }
