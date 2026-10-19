@@ -1136,10 +1136,20 @@
       "rule": "The Director must immediately provide a comprehensive incident report detailing the root cause of the persistent YouTube Analytics outage, the specific steps taken for restoration, the current status of each step, and a revised, accelerated timeline for full data recovery, including any external support engaged.",
       "source": "analyst",
       "date": "2026-10-18T04:11:51.543618+00:00"
+    },
+    {
+      "rule": "The Director must immediately provide a comprehensive incident report detailing the root cause of the persistent YouTube Analytics outage, the specific steps taken for restoration, the current status of each step, and a revised, accelerated timeline for full data recovery, including any external support engaged, as previously mandated.",
+      "source": "analyst",
+      "date": "2026-10-19T04:20:51.408891+00:00"
+    },
+    {
+      "rule": "The Director must present a detailed 'Extended Data Outage Contingency Plan' within 24 hours, outlining content strategy, promotional activities, and alternative performance measurement for a scenario where YouTube Analytics remains unavailable for 1-2 weeks, including potential platform diversification, as previously mandated.",
+      "source": "analyst",
+      "date": "2026-10-19T04:20:51.410453+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-10-18T04:11:51.543917+00:00",
+    "last_updated": "2026-10-19T04:20:51.410593+00:00",
     "memory_name": "director_mood_map"
   }
 }
