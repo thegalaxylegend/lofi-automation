@@ -1156,10 +1156,15 @@
       "rule": "The Director must approve and oversee a transparent communication strategy to inform the audience about the ongoing technical issues, manage expectations, and reinforce the channel's commitment to quality content, leveraging the marketing team's strategy.",
       "source": "analyst",
       "date": "2026-10-20T04:31:49.092276+00:00"
+    },
+    {
+      "rule": "The Director must provide a daily, granular update on the analytics restoration efforts, including specific technical hurdles encountered, solutions being implemented, and a revised, firm timeline for full data recovery, with an emphasis on preventing recurrence.",
+      "source": "analyst",
+      "date": "2026-10-21T04:24:15.356142+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-10-20T04:31:49.092512+00:00",
+    "last_updated": "2026-10-21T04:24:15.356428+00:00",
     "memory_name": "director_mood_map"
   }
 }

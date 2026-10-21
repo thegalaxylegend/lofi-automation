@@ -218,11 +218,15 @@
     {
       "rule": "The Marketing lead must outline specific proactive engagement strategies being deployed to gather audience feedback and sentiment, beyond passive monitoring, to inform content and promotional decisions during the analytics outage.",
       "source": "analyst"
+    },
+    {
+      "rule": "The Marketing lead must launch a series of targeted polls or direct questions on social media platforms, specifically asking for audience preferences on upcoming content themes, song choices, or collaboration ideas, to directly inform the editorial calendar and measure engagement during the data outage.",
+      "source": "analyst"
     }
   ],
   "thumbnail_performance": [],
   "_meta": {
-    "last_updated": "2026-10-20T04:31:49.091795+00:00",
+    "last_updated": "2026-10-21T04:24:15.359119+00:00",
     "memory_name": "marketer_keywords"
   },
   "last_title_format": "One-Word Punch: Lead with ONE bold emotional word, e.g. HEARTBREAK. | The Playlist You Need Tonight"
