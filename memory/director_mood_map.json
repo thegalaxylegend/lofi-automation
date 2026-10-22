@@ -1161,10 +1161,15 @@
       "rule": "The Director must provide a daily, granular update on the analytics restoration efforts, including specific technical hurdles encountered, solutions being implemented, and a revised, firm timeline for full data recovery, with an emphasis on preventing recurrence.",
       "source": "analyst",
       "date": "2026-10-21T04:24:15.356142+00:00"
+    },
+    {
+      "rule": "The Director must convene an emergency technical review meeting with all relevant stakeholders, including external consultants if necessary, to diagnose the root cause of the prolonged analytics outage and present a revised, accelerated restoration timeline with daily progress reports.",
+      "source": "analyst",
+      "date": "2026-10-22T04:22:59.265476+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-10-21T04:24:15.356428+00:00",
+    "last_updated": "2026-10-22T04:22:59.265739+00:00",
     "memory_name": "director_mood_map"
   }
 }
