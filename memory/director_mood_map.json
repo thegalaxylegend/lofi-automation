@@ -1166,10 +1166,15 @@
       "rule": "The Director must convene an emergency technical review meeting with all relevant stakeholders, including external consultants if necessary, to diagnose the root cause of the prolonged analytics outage and present a revised, accelerated restoration timeline with daily progress reports.",
       "source": "analyst",
       "date": "2026-10-22T04:22:59.265476+00:00"
+    },
+    {
+      "rule": "The Director must conduct a daily executive review of all qualitative performance reports and audience feedback initiatives, ensuring that immediate content adjustments and strategic decisions are directly informed by these insights, and documenting the rationale for each decision made during the outage.",
+      "source": "analyst",
+      "date": "2026-10-23T04:27:41.652315+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-10-22T04:22:59.265739+00:00",
+    "last_updated": "2026-10-23T04:27:41.652664+00:00",
     "memory_name": "director_mood_map"
   }
 }

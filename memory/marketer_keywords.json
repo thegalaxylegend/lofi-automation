@@ -226,11 +226,15 @@
     {
       "rule": "The Marketing lead must launch a 'Community Voice' initiative, actively featuring audience feedback (with permission) in short social media posts or video segments, demonstrating how their input is directly shaping content and reinforcing their critical role during the analytics outage.",
       "source": "analyst"
+    },
+    {
+      "rule": "The Marketing lead must establish and report on proxy engagement metrics (e.g., number of poll responses, social media reach of 'Community Voice' posts, direct message volume) derived from their proactive strategies, providing a quantitative measure of audience interaction in the absence of YouTube analytics.",
+      "source": "analyst"
     }
   ],
   "thumbnail_performance": [],
   "_meta": {
-    "last_updated": "2026-10-22T04:22:59.267984+00:00",
+    "last_updated": "2026-10-23T04:27:41.654353+00:00",
     "memory_name": "marketer_keywords"
   },
   "last_title_format": "One-Word Punch: Lead with ONE bold emotional word, e.g. HEARTBREAK. | The Playlist You Need Tonight"
