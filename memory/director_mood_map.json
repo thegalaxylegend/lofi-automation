@@ -1171,10 +1171,15 @@
       "rule": "The Director must conduct a daily executive review of all qualitative performance reports and audience feedback initiatives, ensuring that immediate content adjustments and strategic decisions are directly informed by these insights, and documenting the rationale for each decision made during the outage.",
       "source": "analyst",
       "date": "2026-10-23T04:27:41.652315+00:00"
+    },
+    {
+      "rule": "The Director must conduct a daily executive review of the Marketing lead's consolidated report on proactive engagement and proxy metrics, ensuring immediate strategic adjustments are made to content and promotional plans based on these qualitative and proxy insights.",
+      "source": "analyst",
+      "date": "2026-10-24T04:18:01.378231+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-10-23T04:27:41.652664+00:00",
+    "last_updated": "2026-10-24T04:18:01.378557+00:00",
     "memory_name": "director_mood_map"
   }
 }
