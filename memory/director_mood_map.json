@@ -1176,10 +1176,15 @@
       "rule": "The Director must conduct a daily executive review of the Marketing lead's consolidated report on proactive engagement and proxy metrics, ensuring immediate strategic adjustments are made to content and promotional plans based on these qualitative and proxy insights.",
       "source": "analyst",
       "date": "2026-10-24T04:18:01.378231+00:00"
+    },
+    {
+      "rule": "The Director must establish a clear, documented escalation path for the analytics restoration efforts, including specific triggers for involving higher management or external experts if the revised, firm timeline for full data recovery is not met.",
+      "source": "analyst",
+      "date": "2026-10-25T04:21:29.103124+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-10-24T04:18:01.378557+00:00",
+    "last_updated": "2026-10-25T04:21:29.103326+00:00",
     "memory_name": "director_mood_map"
   }
 }
