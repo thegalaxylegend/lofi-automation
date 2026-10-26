@@ -234,11 +234,15 @@
     {
       "rule": "The Marketing lead must provide a daily, consolidated report detailing the implementation status and preliminary findings from all proactive engagement strategies (polls, 'Community Voice', direct questions) and the established proxy engagement metrics, demonstrating active audience interaction.",
       "source": "analyst"
+    },
+    {
+      "rule": "The Marketing lead and Editorial team must expand qualitative data gathering to actively monitor and analyze engagement and sentiment across *all* social media platforms (e.g., Instagram, Facebook, TikTok) where the channel has a presence, identifying broader trends and preferences to inform content creation.",
+      "source": "analyst"
     }
   ],
   "thumbnail_performance": [],
   "_meta": {
-    "last_updated": "2026-10-24T04:18:01.377608+00:00",
+    "last_updated": "2026-10-26T04:24:59.295600+00:00",
     "memory_name": "marketer_keywords"
   },
   "last_title_format": "One-Word Punch: Lead with ONE bold emotional word, e.g. HEARTBREAK. | The Playlist You Need Tonight"

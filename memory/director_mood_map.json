@@ -1181,10 +1181,20 @@
       "rule": "The Director must establish a clear, documented escalation path for the analytics restoration efforts, including specific triggers for involving higher management or external experts if the revised, firm timeline for full data recovery is not met.",
       "source": "analyst",
       "date": "2026-10-25T04:21:29.103124+00:00"
+    },
+    {
+      "rule": "The Director must establish a 'no-data operating model' outlining content strategy, alternative performance indicators, and decision-making processes for an extended analytics outage, ensuring business continuity and minimal disruption.",
+      "source": "analyst",
+      "date": "2026-10-26T04:24:59.293923+00:00"
+    },
+    {
+      "rule": "The Director must conduct a weekly 'Outage Impact Assessment' meeting to review the operational and financial implications of the prolonged analytics outage, including potential revenue loss and resource allocation, and present mitigation strategies to senior management.",
+      "source": "analyst",
+      "date": "2026-10-26T04:24:59.296085+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-10-25T04:21:29.103326+00:00",
+    "last_updated": "2026-10-26T04:24:59.296293+00:00",
     "memory_name": "director_mood_map"
   }
 }
