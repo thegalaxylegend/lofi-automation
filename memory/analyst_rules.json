@@ -304,20 +304,6 @@
   "daily_reports": [
     {
       "daily_summary": {
-        "total_views_24h": null,
-        "new_subscribers": null,
-        "best_video": null,
-        "worst_video": null,
-        "avg_ctr": null,
-        "avg_avd_seconds": null
-      },
-      "new_rules": [],
-      "alerts": [],
-      "insight": "With analytics data still unavailable, the channel's strategic focus remains entirely on leveraging qualitative feedback and adhering to the established 'Zero-Data Content Strategy' to maintain audience engagement and prepare for post-restoration analysis.",
-      "generated_at": "2026-07-29T03:23:43.080755+00:00"
-    },
-    {
-      "daily_summary": {
         "total_views_24h": 0,
         "new_subscribers": 0,
         "best_video": "N/A (No analytics data)",
@@ -3143,11 +3129,27 @@
       ],
       "insight": "With no analytics data available, the channel's immediate strategic imperative is to aggressively pursue analytics restoration while simultaneously maximizing the utility of qualitative feedback and proxy engagement metrics to guide content decisions and maintain audience connection.",
       "generated_at": "2026-10-26T04:24:59.289546+00:00"
+    },
+    {
+      "daily_summary": {
+        "total_views_24h": 0,
+        "new_subscribers": 0,
+        "best_video": "N/A - No analytics data available",
+        "worst_video": "N/A - No analytics data available",
+        "avg_ctr": 0.0,
+        "avg_avd_seconds": 0.0
+      },
+      "new_rules": [],
+      "alerts": [
+        "Critical: No YouTube analytics data available. All content and marketing decisions must rely entirely on established qualitative feedback mechanisms and proxy engagement metrics as per the 'no-data operating model'."
+      ],
+      "insight": "With no analytics data available, the channel's strategic focus must be on diligently implementing the established 'no-data operating model', prioritizing qualitative audience feedback and proxy engagement metrics to guide all content and promotional efforts.",
+      "generated_at": "2026-10-27T04:43:55.477715+00:00"
     }
   ],
   "weekly_reports": [],
   "_meta": {
-    "last_updated": "2026-10-26T04:24:59.298152+00:00",
+    "last_updated": "2026-10-27T04:43:55.478702+00:00",
     "memory_name": "analyst_rules"
   }
 }
