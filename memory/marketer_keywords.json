@@ -238,11 +238,15 @@
     {
       "rule": "The Marketing lead and Editorial team must expand qualitative data gathering to actively monitor and analyze engagement and sentiment across *all* social media platforms (e.g., Instagram, Facebook, TikTok) where the channel has a presence, identifying broader trends and preferences to inform content creation.",
       "source": "analyst"
+    },
+    {
+      "rule": "The Marketing lead must implement targeted polls and direct questions on social media platforms, specifically asking for audience feedback on individual content elements (e.g., song choice, vocal style, production quality, visual aesthetics) to gather actionable, granular insights for content refinement.",
+      "source": "analyst"
     }
   ],
   "thumbnail_performance": [],
   "_meta": {
-    "last_updated": "2026-10-26T04:24:59.295600+00:00",
+    "last_updated": "2026-10-28T05:17:54.999674+00:00",
     "memory_name": "marketer_keywords"
   },
   "last_title_format": "One-Word Punch: Lead with ONE bold emotional word, e.g. HEARTBREAK. | The Playlist You Need Tonight"
