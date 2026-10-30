@@ -242,11 +242,15 @@
     {
       "rule": "The Marketing lead must implement targeted polls and direct questions on social media platforms, specifically asking for audience feedback on individual content elements (e.g., song choice, vocal style, production quality, visual aesthetics) to gather actionable, granular insights for content refinement.",
       "source": "analyst"
+    },
+    {
+      "rule": "The Marketing lead must conduct a weekly deep-dive analysis of all collected qualitative feedback and proxy metrics, identifying emerging content preferences, sentiment shifts, and actionable insights to directly inform the Editorial team's content pipeline.",
+      "source": "analyst"
     }
   ],
   "thumbnail_performance": [],
   "_meta": {
-    "last_updated": "2026-10-28T05:17:54.999674+00:00",
+    "last_updated": "2026-10-30T05:28:29.770990+00:00",
     "memory_name": "marketer_keywords"
   },
   "last_title_format": "One-Word Punch: Lead with ONE bold emotional word, e.g. HEARTBREAK. | The Playlist You Need Tonight"
