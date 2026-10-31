@@ -1196,10 +1196,15 @@
       "rule": "The Director must provide a daily, concise update to the entire team regarding the status of analytics restoration efforts, including any revised timelines or challenges, to maintain transparency, manage team expectations, and sustain morale during the prolonged outage.",
       "source": "analyst",
       "date": "2026-10-28T05:17:55.000221+00:00"
+    },
+    {
+      "rule": "The Director, in collaboration with the Marketing lead, must establish clear, measurable success criteria for each content experiment using the defined proxy engagement metrics, enabling data-informed decisions within the 'no-data operating model'.",
+      "source": "analyst",
+      "date": "2026-10-31T05:14:25.177147+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-10-28T05:17:55.000559+00:00",
+    "last_updated": "2026-10-31T05:14:25.177458+00:00",
     "memory_name": "director_mood_map"
   }
 }

@@ -246,11 +246,15 @@
     {
       "rule": "The Marketing lead must conduct a weekly deep-dive analysis of all collected qualitative feedback and proxy metrics, identifying emerging content preferences, sentiment shifts, and actionable insights to directly inform the Editorial team's content pipeline.",
       "source": "analyst"
+    },
+    {
+      "rule": "The Marketing lead must conduct bi-weekly workshops with the Editorial team to collaboratively brainstorm and plan content ideas directly informed by the latest qualitative feedback and proxy metric trends, fostering a direct and actionable feedback loop.",
+      "source": "analyst"
     }
   ],
   "thumbnail_performance": [],
   "_meta": {
-    "last_updated": "2026-10-30T05:28:29.770990+00:00",
+    "last_updated": "2026-10-31T05:14:25.179207+00:00",
     "memory_name": "marketer_keywords"
   },
   "last_title_format": "One-Word Punch: Lead with ONE bold emotional word, e.g. HEARTBREAK. | The Playlist You Need Tonight"
