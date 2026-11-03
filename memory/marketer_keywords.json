@@ -250,11 +250,19 @@
     {
       "rule": "The Marketing lead must conduct bi-weekly workshops with the Editorial team to collaboratively brainstorm and plan content ideas directly informed by the latest qualitative feedback and proxy metric trends, fostering a direct and actionable feedback loop.",
       "source": "analyst"
+    },
+    {
+      "rule": "The Marketing lead must establish a structured system for categorizing and tagging all qualitative feedback (e.g., by content element, sentiment, topic) collected from social media and polls, to enable more efficient trend identification and actionable insight generation.",
+      "source": "analyst"
+    },
+    {
+      "rule": "The Marketing lead must conduct a weekly competitive analysis, monitoring content themes, engagement patterns, and audience sentiment of 3-5 top-performing Hindi music channels on social media, to identify broader market trends and potential content opportunities.",
+      "source": "analyst"
     }
   ],
   "thumbnail_performance": [],
   "_meta": {
-    "last_updated": "2026-10-31T05:14:25.179207+00:00",
+    "last_updated": "2026-11-03T06:22:34.916212+00:00",
     "memory_name": "marketer_keywords"
   },
   "last_title_format": "One-Word Punch: Lead with ONE bold emotional word, e.g. HEARTBREAK. | The Playlist You Need Tonight"
