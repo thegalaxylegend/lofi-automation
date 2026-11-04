@@ -258,11 +258,15 @@
     {
       "rule": "The Marketing lead must conduct a weekly competitive analysis, monitoring content themes, engagement patterns, and audience sentiment of 3-5 top-performing Hindi music channels on social media, to identify broader market trends and potential content opportunities.",
       "source": "analyst"
+    },
+    {
+      "rule": "The Marketing lead must conduct a 'pre-mortem' exercise with the Editorial team, anticipating potential content performance issues or opportunities once data is restored, to prepare agile response strategies.",
+      "source": "analyst"
     }
   ],
   "thumbnail_performance": [],
   "_meta": {
-    "last_updated": "2026-11-03T06:22:34.916212+00:00",
+    "last_updated": "2026-11-04T05:56:10.229675+00:00",
     "memory_name": "marketer_keywords"
   },
   "last_title_format": "One-Word Punch: Lead with ONE bold emotional word, e.g. HEARTBREAK. | The Playlist You Need Tonight"

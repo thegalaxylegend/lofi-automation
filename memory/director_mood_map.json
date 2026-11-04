@@ -1206,10 +1206,15 @@
       "rule": "The Director must schedule a bi-weekly review session with all team leads to assess the practical effectiveness and adherence to the 'no-data operating model', identifying any bottlenecks or areas needing adjustment to maintain operational efficiency.",
       "source": "analyst",
       "date": "2026-11-01T05:43:04.173060+00:00"
+    },
+    {
+      "rule": "The Director must establish a dedicated task force or point person responsible for daily communication with the analytics provider/technical team, pushing for immediate restoration and providing granular updates on progress to the internal team.",
+      "source": "analyst",
+      "date": "2026-11-04T05:56:10.227582+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-11-01T05:43:04.173380+00:00",
+    "last_updated": "2026-11-04T05:56:10.227877+00:00",
     "memory_name": "director_mood_map"
   }
 }
