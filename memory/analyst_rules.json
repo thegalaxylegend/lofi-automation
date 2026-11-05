@@ -306,42 +306,6 @@
       "daily_summary": {
         "total_views_24h": 0,
         "new_subscribers": 0,
-        "best_video": "N/A - No analytics data available",
-        "worst_video": "N/A - No analytics data available",
-        "avg_ctr": 0.0,
-        "avg_avd_seconds": 0.0
-      },
-      "new_rules": [
-        {
-          "rule": "The Director must conduct a daily stand-up with team leads to review progress on all 'Zero-Data Content Strategy' tasks and 'Analytics Restoration Action Plan' readiness, ensuring no critical steps are missed.",
-          "target_agent": "director",
-          "confidence": "high",
-          "evidence": "Ongoing lack of analytics data necessitates rigorous oversight of preparatory and qualitative strategy execution."
-        },
-        {
-          "rule": "The editorial team must publish at least one piece of 'Zero-Data Content' this week, explicitly stating in the description or a pinned comment that it's based on community feedback, to maintain audience engagement and transparency.",
-          "target_agent": "editor",
-          "confidence": "high",
-          "evidence": "The 'Zero-Data Content Strategy' needs active implementation to keep the channel alive and test hypotheses, even without quantitative metrics."
-        },
-        {
-          "rule": "The marketing team must finalize and share the 'Analytics Restoration Action Plan' for promotional activities, including specific A/B test setups and reporting templates, with the Director for final approval this week.",
-          "target_agent": "marketer",
-          "confidence": "medium",
-          "evidence": "Preparation for data restoration is critical; marketing needs to be ready to execute immediately upon data availability."
-        }
-      ],
-      "alerts": [
-        "CRITICAL: Analytics data is still unavailable. This severely impacts data-driven decision making and requires continued reliance on qualitative strategies.",
-        "URGENT: Ensure all teams are actively executing their assigned tasks within the 'Zero-Data Content Strategy' and 'Analytics Restoration Action Plan' to minimize impact and prepare for data re-engagement."
-      ],
-      "insight": "The channel is currently operating in a data void, making the diligent execution of the 'Zero-Data Content Strategy' and comprehensive preparation for analytics restoration paramount to maintain momentum and ensure a swift return to data-driven growth.",
-      "generated_at": "2026-08-07T03:10:13.784261+00:00"
-    },
-    {
-      "daily_summary": {
-        "total_views_24h": 0,
-        "new_subscribers": 0,
         "best_video": "N/A",
         "worst_video": "N/A",
         "avg_ctr": 0.0,
@@ -3158,11 +3122,15 @@
       ],
       "insight": "The channel is currently operating in a complete data vacuum. The immediate strategic imperative is to prioritize and expedite the restoration of analytics, while rigorously adhering to the established 'no-data operating model' to maintain audience engagement and content relevance through qualitative feedback.",
       "generated_at": "2026-11-04T05:56:10.222029+00:00"
+    },
+    {
+      "error": "All API keys exhausted across all providers.",
+      "generated_at": "2026-11-05T06:19:16.482410+00:00"
     }
   ],
   "weekly_reports": [],
   "_meta": {
-    "last_updated": "2026-11-04T05:56:10.231955+00:00",
+    "last_updated": "2026-11-05T06:19:16.484288+00:00",
     "memory_name": "analyst_rules"
   }
 }
