@@ -1211,10 +1211,15 @@
       "rule": "The Director must establish a dedicated task force or point person responsible for daily communication with the analytics provider/technical team, pushing for immediate restoration and providing granular updates on progress to the internal team.",
       "source": "analyst",
       "date": "2026-11-04T05:56:10.227582+00:00"
+    },
+    {
+      "rule": "The Director must provide a daily internal update to all team leads on the status of analytics data restoration, including any new timelines, roadblocks, or communication from the technical team, to maintain transparency and manage expectations across the organization.",
+      "source": "analyst",
+      "date": "2026-11-07T05:41:39.632406+00:00"
     }
   ],
   "_meta": {
-    "last_updated": "2026-11-04T05:56:10.227877+00:00",
+    "last_updated": "2026-11-07T05:41:39.632725+00:00",
     "memory_name": "director_mood_map"
   }
 }

@@ -262,11 +262,15 @@
     {
       "rule": "The Marketing lead must conduct a 'pre-mortem' exercise with the Editorial team, anticipating potential content performance issues or opportunities once data is restored, to prepare agile response strategies.",
       "source": "analyst"
+    },
+    {
+      "rule": "The Marketing lead must increase the frequency of qualitative feedback collection (e.g., social media polls, direct audience questions, comment analysis, community tab posts) to at least three times per week, specifically asking about content preferences, engagement, and perceived value of recent uploads.",
+      "source": "analyst"
     }
   ],
   "thumbnail_performance": [],
   "_meta": {
-    "last_updated": "2026-11-04T05:56:10.229675+00:00",
+    "last_updated": "2026-11-07T05:41:39.634785+00:00",
     "memory_name": "marketer_keywords"
   },
   "last_title_format": "One-Word Punch: Lead with ONE bold emotional word, e.g. HEARTBREAK. | The Playlist You Need Tonight"

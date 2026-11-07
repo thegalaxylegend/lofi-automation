@@ -8,7 +8,7 @@
   "risky_effects": [],
   "crash_log": [],
   "_meta": {
-    "last_updated": "2026-11-04T05:56:10.230392+00:00",
+    "last_updated": "2026-11-07T05:41:39.635858+00:00",
     "memory_name": "editor_limits"
   },
   "analyst_feedback": [
@@ -503,6 +503,10 @@
     {
       "rule": "The Editorial team must dedicate a portion of their content creation efforts to 'evergreen' or foundational Hindi music content that is less reliant on trending data, ensuring a stable content pipeline during the outage.",
       "date": "2026-11-04T05:56:10.230234+00:00"
+    },
+    {
+      "rule": "The Editorial team must prioritize creating short-form, highly shareable content pieces (e.g., reels, shorts, trending audio snippets) based on current social media trends and direct audience feedback, as these often have lower production costs, higher potential for organic reach, and provide immediate qualitative feedback.",
+      "date": "2026-11-07T05:41:39.635641+00:00"
     }
   ]
 }
